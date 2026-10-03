@@ -1,0 +1,6 @@
+.env
+__pycache__/
+*.pyc
+.DS_Store
+legacy_birthday_bot_files/
+candidates_*.csv
