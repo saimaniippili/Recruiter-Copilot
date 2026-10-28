@@ -31,7 +31,7 @@ class Settings:
     
     # Execution & Sourcing Budgets
     SEARCH_TIMEOUT_SECONDS: int = int(os.getenv("SEARCH_TIMEOUT_SECONDS", "10"))
-    MAX_SEARCH_QUERIES_PER_JOB: int = int(os.getenv("MAX_SEARCH_QUERIES_PER_JOB", "4"))
+    MAX_SEARCH_QUERIES_PER_JOB: int = int(os.getenv("MAX_SEARCH_QUERIES_PER_JOB", "3"))
     MAX_RESULTS_PER_QUERY: int = int(os.getenv("MAX_RESULTS_PER_QUERY", "10"))
     MAX_CANDIDATES_EVALUATED: int = int(os.getenv("MAX_CANDIDATES_EVALUATED", "15"))
     

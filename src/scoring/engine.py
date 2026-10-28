@@ -124,29 +124,7 @@ def score_and_rank_candidates(jd: JobDescriptionSchema, candidates: List[Candida
             settings.WEIGHT_PREFERRED * m_pref
         )
 
-        # Geographic Prioritization (e.g. Hyderabad & Bangalore -> Chennai -> Other States)
-        geo_bonus = 0.0
-        candidate_text = f"{c.headline or ''} " + " ".join(c.source_snippets)
-        cand_text_lower = candidate_text.lower()
-        
-        jd_locs_str = ' '.join(jd.locations).lower() if jd.locations else ""
-        tier1_cities = ["hyderabad", "bangalore", "bengaluru"]
-        tier2_cities = ["chennai"]
-        
-        has_tier1_in_jd = any(re.search(r'\b' + city + r'\b', jd_locs_str) for city in tier1_cities)
-        has_tier2_in_jd = any(re.search(r'\b' + city + r'\b', jd_locs_str) for city in tier2_cities)
-
-        if has_tier1_in_jd or has_tier2_in_jd:
-            if any(re.search(r'\b' + city + r'\b', cand_text_lower) for city in tier1_cities):
-                geo_bonus = 15.0  # Top focus: Hyderabad and Bangalore
-                c.fit_summary = f"[PRIMARY FOCUS: Hyderabad/Bangalore] {c.fit_summary}"
-            elif any(re.search(r'\b' + city + r'\b', cand_text_lower) for city in tier2_cities):
-                geo_bonus = 10.0  # Secondary focus: Chennai
-                c.fit_summary = f"[TIER-2 FOCUS: Chennai] {c.fit_summary}"
-            else:
-                c.fit_summary = f"[FALLBACK: Other States] {c.fit_summary}"
-
-        c.preliminary_match_score = round(max(0.0, min(100.0, total_score + geo_bonus)), 1)
+        c.preliminary_match_score = round(max(0.0, min(100.0, total_score)), 1)
 
         # Evidence completeness
         total_mand = len(jd.mandatory_requirements)

@@ -7,15 +7,14 @@ let activeCandidate = null;
 
 // Presets / Templates
 const TEMPLATES = {
-  founders: {
-    title: 'Startup Founder / Co-Founder',
-    loc: 'Hyderabad, Bangalore, Chennai',
-    exp: '4 - 10 years',
-    skills: ['Founder', 'Co-Founder', 'CEO'],
-    pref: ['Tech Startup', 'Fundraising', 'Product Strategy'],
-    text: `Role: Startup Founder / Co-Founder\nLocation: Hyderabad, Bangalore, Chennai\nExperience: 4 - 10 years\n\nMust-Have Requirements:\n*Founder\n*Co-Founder\n*CEO\n\nPrimary Focus:\nHigh-priority sourcing for startup founders in Hyderabad and Bangalore, then Chennai, with pan-India fallback.`
-  },
   sap: {
+    title: 'SAP HANA Specialist',
+    loc: 'Global / Remote',
+    exp: '7 - 11 years',
+    skills: ['SAP BODS', 'SLT', 'AMS Support'],
+    pref: ['SAP BW/4HANA', 'Jira', 'Agile'],
+    text: `Role: SAP HANA Architect\nLocation: Global / Remote\nExperience: 7-11 years\n\nMust-Have Requirements:\n*SLT\n*SAP BODS\n*AMS Support\n\nNice to Have:\nSAP BW/4HANA, SAP BW on HANA, SAP FI / SD integration, Jenkins, Jira, Agile / Scrum\n\nExperience:\n*7-11 years of professional SAP HANA architecture, data modeling, and production support experience.`
+  },
     title: 'SAP HANA Specialist',
     loc: 'Global / Remote',
     exp: '7 - 11 years',
@@ -51,8 +50,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Load Founders template by default
-  loadTemplate('founders');
+  // Load SAP template by default
+  loadTemplate('sap');
   fetchRecentSearches();
 });
 
