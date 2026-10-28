@@ -4,3 +4,7 @@ __pycache__/
 .DS_Store
 legacy_birthday_bot_files/
 candidates_*.csv
+recruiter_copilot.db
+exports_data/
+bot_debug.txt
+.pytest_cache/
