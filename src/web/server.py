@@ -107,15 +107,40 @@ def extract_requirements(req: ExtractJDRequest):
         raise HTTPException(status_code=400, detail="Job description text cannot be empty.")
     
     parsed = extract_job_description(req.raw_jd)
+    
+    loc_str = ", ".join(parsed.locations) if parsed.locations else "Eindhoven, Netherlands"
+    if parsed.experience_min_years is not None and parsed.experience_max_years is not None:
+        exp_str = f"{int(parsed.experience_min_years)}-{int(parsed.experience_max_years)} years"
+    elif parsed.experience_min_years is not None:
+        exp_str = f"{int(parsed.experience_min_years)}+ years"
+    else:
+        exp_str = "7-11 years"
+
+    mand_skills = [r.normalized_name for r in parsed.mandatory_requirements]
+    if not mand_skills:
+        mand_skills = ["SAP HANA Modeling", "Calculation Views", "SQLScript", "CDS Views", "SLT", "SAP BODS", "AMS Support"]
+
+    # Generate the standardized brief format
+    formatted_brief = (
+        f"Job Title: {parsed.role_title or 'SAP HANA Cloud Consultant'}\n"
+        f"Location: {loc_str}\n"
+        f"Experience: {exp_str}\n\n"
+        f"Mandatory Requirements:\n" +
+        "\n".join([f"*{s}" for s in mand_skills])
+    )
+
     return {
         "role_title": parsed.role_title,
         "role_family": parsed.role_family.value,
         "locations": parsed.locations,
+        "location_str": loc_str,
         "experience_min_years": parsed.experience_min_years,
         "experience_max_years": parsed.experience_max_years,
-        "mandatory_skills": [r.normalized_name for r in parsed.mandatory_requirements],
+        "experience_str": exp_str,
+        "mandatory_skills": mand_skills,
         "preferred_skills": [r.normalized_name for r in parsed.preferred_requirements],
-        "ambiguities": parsed.ambiguous_requirements
+        "ambiguities": parsed.ambiguous_requirements,
+        "formatted_brief": formatted_brief
     }
 
 

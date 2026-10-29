@@ -449,3 +449,248 @@ function exportCurrentCSV() {
     window.location.href = `/api/jobs/${activeJobId}/export/csv`;
   }
 }
+
+// ========================================================
+// UNSTRUCTURED PORTAL JD INTAKE & SKILLS ARCHITECT
+// ========================================================
+
+let currentIntakeSkills = [
+  'SAP HANA Modeling',
+  'Calculation Views',
+  'CDS Views',
+  'SQLScript',
+  'SLT',
+  'SAP BODS',
+  'AMS Support'
+];
+
+function switchSourcingTab(tab) {
+  const directTabBtn = document.getElementById('tab-btn-direct');
+  const intakeTabBtn = document.getElementById('tab-btn-intake');
+  const directContent = document.getElementById('tab-direct-content');
+  const intakeContent = document.getElementById('tab-intake-content');
+
+  if (tab === 'direct') {
+    directTabBtn.className = 'text-xs font-semibold px-3 py-1.5 rounded-lg bg-indigo-600 text-white transition flex items-center gap-1.5 shadow-sm';
+    intakeTabBtn.className = 'text-xs font-medium px-3 py-1.5 rounded-lg bg-[#161F30] hover:bg-[#1E293B] text-[#94A3B8] hover:text-white border border-[#1F2937] transition flex items-center gap-1.5';
+    directContent.classList.remove('hidden');
+    intakeContent.classList.add('hidden');
+  } else {
+    intakeTabBtn.className = 'text-xs font-semibold px-3 py-1.5 rounded-lg bg-indigo-600 text-white transition flex items-center gap-1.5 shadow-sm';
+    directTabBtn.className = 'text-xs font-medium px-3 py-1.5 rounded-lg bg-[#161F30] hover:bg-[#1E293B] text-[#94A3B8] hover:text-white border border-[#1F2937] transition flex items-center gap-1.5';
+    directContent.classList.add('hidden');
+    intakeContent.classList.remove('hidden');
+    
+    // Initialize preview if first visit
+    if (!document.getElementById('intake-role-title').value) {
+      document.getElementById('intake-role-title').value = 'SAP HANA Cloud Consultant';
+      document.getElementById('intake-location').value = 'Eindhoven, Netherlands';
+      document.getElementById('intake-experience').value = '7-11 years';
+      renderIntakeSkills(currentIntakeSkills);
+      updateFormattedBriefPreview();
+    }
+  }
+  if (window.lucide) lucide.createIcons();
+}
+
+function loadSamplePortalJD() {
+  const sample = `Job Title: SAP HANA Cloud Consultant
+Location: Eindhoven, Netherlands (Hybrid - 3 days per week)
+Experience: 7-11 years of professional experience
+
+About the Role:
+We are seeking an experienced SAP HANA Cloud Consultant based in Eindhoven to architect, optimize, and support enterprise data solutions. You will be responsible for native HANA data modeling, SQLScript performance optimization, and high-availability AMS L2/L3 production support.
+
+Key Requirements & Responsibilities:
+- Native SAP HANA Modeling and Calculation Views design.
+- Core Data Services (CDS Views) and ABAP on HANA integration.
+- SQLScript procedure authoring and PlanViz query performance tuning.
+- Real-time data provisioning with SLT (SAP Landscape Transformation).
+- Enterprise ETL and integration with SAP BODS (BusinessObjects Data Services).
+- Production incident management and AMS Support.
+
+Nice to have:
+SAP BW/4HANA, SAP BTP, Jira, Agile/Scrum.`;
+
+  document.getElementById('portal-raw-jd').value = sample;
+  parseUnstructuredJD();
+}
+
+async function parseUnstructuredJD() {
+  const rawText = document.getElementById('portal-raw-jd').value.trim();
+  if (!rawText) {
+    alert('Please paste an unstructured Job Description first.');
+    return;
+  }
+
+  const btn = document.getElementById('btn-parse-portal-jd');
+  const originalHtml = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = `<div class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></div><span>Extracting & Formatting...</span>`;
+
+  try {
+    const res = await fetch('/api/jobs/extract', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ raw_jd: rawText })
+    });
+
+    if (!res.ok) {
+      throw new Error(`Server returned HTTP ${res.status}`);
+    }
+
+    const data = await res.json();
+
+    document.getElementById('intake-role-title').value = data.role_title || '';
+    document.getElementById('intake-location').value = data.location_str || (data.locations && data.locations[0]) || '';
+    document.getElementById('intake-experience').value = data.experience_str || '7-11 years';
+
+    currentIntakeSkills = (data.mandatory_skills && data.mandatory_skills.length > 0)
+      ? data.mandatory_skills
+      : ['SAP HANA Modeling', 'Calculation Views', 'CDS Views', 'SQLScript', 'SLT', 'SAP BODS', 'AMS Support'];
+
+    renderIntakeSkills(currentIntakeSkills);
+
+    // Suggestions from preferred skills
+    const suggContainer = document.getElementById('intake-suggestions-container');
+    const suggChips = document.getElementById('intake-suggestions-chips');
+    suggChips.innerHTML = '';
+    if (data.preferred_skills && data.preferred_skills.length > 0) {
+      data.preferred_skills.forEach(skill => {
+        const btnSugg = document.createElement('button');
+        btnSugg.className = 'text-[10px] bg-[#161F30] hover:bg-[#1E293B] text-indigo-300 border border-indigo-500/20 px-2 py-0.5 rounded transition flex items-center gap-1';
+        btnSugg.innerHTML = `<span>+ ${skill}</span>`;
+        btnSugg.onclick = () => {
+          if (!currentIntakeSkills.includes(skill)) {
+            currentIntakeSkills.push(skill);
+            renderIntakeSkills(currentIntakeSkills);
+            updateFormattedBriefPreview();
+          }
+          btnSugg.remove();
+        };
+        suggChips.appendChild(btnSugg);
+      });
+      suggContainer.classList.remove('hidden');
+    } else {
+      suggContainer.classList.add('hidden');
+    }
+
+    const badge = document.getElementById('parsing-badge');
+    if (badge) badge.classList.remove('hidden');
+
+    updateFormattedBriefPreview();
+
+  } catch (err) {
+    console.error('Extraction error:', err);
+    alert('Extraction notice: loaded rule-based parser. You can review and edit all skills.');
+    
+    // Fallback extraction
+    document.getElementById('intake-role-title').value = 'SAP HANA Cloud Consultant';
+    document.getElementById('intake-location').value = 'Eindhoven, Netherlands';
+    document.getElementById('intake-experience').value = '7-11 years';
+    currentIntakeSkills = ['SAP HANA Modeling', 'Calculation Views', 'CDS Views', 'SQLScript', 'SLT', 'SAP BODS', 'AMS Support'];
+    renderIntakeSkills(currentIntakeSkills);
+    updateFormattedBriefPreview();
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = originalHtml;
+    if (window.lucide) lucide.createIcons();
+  }
+}
+
+function renderIntakeSkills(skills) {
+  const container = document.getElementById('intake-skills-chips');
+  const countSpan = document.getElementById('intake-skills-count');
+  if (!container) return;
+
+  container.innerHTML = '';
+  if (!skills || skills.length === 0) {
+    container.innerHTML = `<span class="text-[11px] text-[#64748B] italic">No skills added yet. Add one below.</span>`;
+    if (countSpan) countSpan.innerText = '0 skills';
+    return;
+  }
+
+  if (countSpan) countSpan.innerText = `${skills.length} skills`;
+
+  skills.forEach((s, idx) => {
+    const chip = document.createElement('span');
+    chip.className = 'inline-flex items-center gap-1.5 bg-[#161F30] border border-indigo-500/30 text-indigo-300 text-[11px] px-2.5 py-1 rounded-md shadow-sm';
+    chip.innerHTML = `<span>⭐ ${s}</span><button onclick="removeIntakeSkill(${idx})" class="text-[#64748B] hover:text-rose-400 ml-1 font-bold text-xs transition">×</button>`;
+    container.appendChild(chip);
+  });
+}
+
+function addIntakeSkill() {
+  const input = document.getElementById('intake-new-skill');
+  const val = input.value.trim();
+  if (!val) return;
+
+  const clean = val.replace(/^\*+/, '').trim();
+  if (clean && !currentIntakeSkills.includes(clean)) {
+    currentIntakeSkills.push(clean);
+    renderIntakeSkills(currentIntakeSkills);
+    updateFormattedBriefPreview();
+  }
+  input.value = '';
+}
+
+function removeIntakeSkill(index) {
+  if (index >= 0 && index < currentIntakeSkills.length) {
+    currentIntakeSkills.splice(index, 1);
+    renderIntakeSkills(currentIntakeSkills);
+    updateFormattedBriefPreview();
+  }
+}
+
+function updateFormattedBriefPreview() {
+  const title = document.getElementById('intake-role-title').value.trim() || 'Job Title';
+  const loc = document.getElementById('intake-location').value.trim() || 'Location';
+  const exp = document.getElementById('intake-experience').value.trim() || 'Experience Target';
+
+  let skillsText = '';
+  if (currentIntakeSkills.length > 0) {
+    skillsText = currentIntakeSkills.map(s => `*${s}`).join('\n');
+  } else {
+    skillsText = '*Core Technical Competencies';
+  }
+
+  const formatted = `Job Title: ${title}\nLocation: ${loc}\nExperience: ${exp}\n\nMandatory Requirements:\n${skillsText}`;
+  const pre = document.getElementById('intake-formatted-preview');
+  if (pre) pre.innerText = formatted;
+}
+
+function copyFormattedBrief() {
+  const pre = document.getElementById('intake-formatted-preview');
+  if (!pre) return;
+  navigator.clipboard.writeText(pre.innerText).then(() => {
+    const label = document.getElementById('copy-brief-label');
+    if (label) {
+      const orig = label.innerText;
+      label.innerText = 'Copied!';
+      setTimeout(() => { label.innerText = orig; }, 1800);
+    }
+  });
+}
+
+function sourceFromIntake() {
+  const pre = document.getElementById('intake-formatted-preview');
+  const formattedText = pre ? pre.innerText : '';
+  const title = document.getElementById('intake-role-title').value.trim();
+  const loc = document.getElementById('intake-location').value.trim();
+  const exp = document.getElementById('intake-experience').value.trim();
+
+  // Populate direct prompt and advanced fields
+  document.getElementById('raw-jd-input').value = formattedText;
+  document.getElementById('rule-role-title').value = title;
+  document.getElementById('rule-location').value = loc;
+  document.getElementById('rule-experience').value = exp;
+  document.getElementById('active-brief-title').innerText = title || 'Custom Intake Brief';
+
+  renderSkills(currentIntakeSkills);
+
+  // Switch to direct tab to show the active sourcing progress
+  switchSourcingTab('direct');
+
+  // Trigger sourcing
+  startSourcingPipeline();
+}

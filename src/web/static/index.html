@@ -87,15 +87,30 @@
       <!-- ======================================================== -->
       <!-- CLEAN MINIMALIST SEARCH HERO                             -->
       <!-- ======================================================== -->
-      <div class="max-w-4xl mx-auto space-y-5">
+      <div class="max-w-4xl mx-auto space-y-4">
         
-        <div class="text-center space-y-1.5 pt-2">
-          <h2 class="text-2xl font-bold text-white tracking-tight">Source Top Technical Talent</h2>
-          <p class="text-xs text-[#94A3B8]">Autonomous Sourcing with 3-Tier Geographic Verification and ATS Evidence Rubric.</p>
+        <div class="text-center space-y-1 pt-1">
+          <h2 class="text-2xl font-bold text-white tracking-tight">Autonomous Talent Intelligence</h2>
+          <p class="text-xs text-[#94A3B8]">Candidate Sourcing with 3-Tier Geographic Verification and ATS Evidence Rubric.</p>
         </div>
 
-        <!-- Unified Prompt Box (ChatGPT Style) -->
-        <div class="surface-card p-4 border border-[#1F2937] shadow-xl space-y-3">
+        <!-- Mode Switcher Tabs -->
+        <div class="flex items-center justify-between border-b border-[#1F2937] pb-2">
+          <div class="flex items-center gap-2">
+            <button id="tab-btn-direct" onclick="switchSourcingTab('direct')" class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-indigo-600 text-white transition flex items-center gap-1.5 shadow-sm">
+              <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+              <span>Direct Sourcing Brief</span>
+            </button>
+            <button id="tab-btn-intake" onclick="switchSourcingTab('intake')" class="text-xs font-medium px-3 py-1.5 rounded-lg bg-[#161F30] hover:bg-[#1E293B] text-[#94A3B8] hover:text-white border border-[#1F2937] transition flex items-center gap-1.5">
+              <i data-lucide="wand-2" class="w-3.5 h-3.5 text-indigo-400"></i>
+              <span>Portal JD Parser & Skill Architect</span>
+              <span class="text-[9px] bg-indigo-500/20 text-indigo-300 px-1.5 py-0.2 rounded-full font-mono">NEW</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- TAB 1: Direct Prompt Box -->
+        <div id="tab-direct-content" class="surface-card p-4 border border-[#1F2937] shadow-xl space-y-3 rounded-xl">
           <div class="relative">
             <textarea id="raw-jd-input" rows="4" class="w-full bg-[#0A0D14] border border-[#1F2937] rounded-lg p-3.5 text-xs text-white placeholder-[#64748B] font-sans leading-relaxed focus:outline-none focus:border-indigo-500 resize-y" placeholder="Describe the candidate you need, or paste a job brief...&#10;e.g. Job Title: SAP HANA Cloud Consultant&#10;Location: Eindhoven, Netherlands&#10;Experience: 7-11 years..."></textarea>
           </div>
@@ -105,7 +120,7 @@
             <div class="flex flex-wrap items-center gap-1.5">
               <span class="text-[11px] text-[#64748B] mr-1">Quick Presets:</span>
               <button onclick="loadTemplate('sap')" class="text-[11px] bg-[#161F30] hover:bg-[#1E293B] text-[#CBD5E1] hover:text-white border border-[#1F2937] px-2.5 py-1 rounded-full transition">SAP HANA (Eindhoven)</button>
-              <button onclick="loadTemplate('embedded')" class="text-[11px] bg-[#161F30] hover:bg-[#1E293B] text-[#CBD5E1] hover:text-white border border-[#1F2937] px-2.5 py-1 rounded-full transition">Embedded C++ (NL)</button>
+              <button onclick="loadTemplate('embedded')" class="text-[11px] bg-[#161F30] hover:bg-[#1E293B] text-[#CBD5E1] hover:text-white border border-[#1F2937] px-2.5 py-1 rounded-full transition">Embedded C++ (Munich)</button>
               <button onclick="loadTemplate('cloud')" class="text-[11px] bg-[#161F30] hover:bg-[#1E293B] text-[#CBD5E1] hover:text-white border border-[#1F2937] px-2.5 py-1 rounded-full transition">Cloud Architect (US)</button>
             </div>
 
@@ -147,12 +162,144 @@
                 <!-- Chips rendered by JS -->
               </div>
               <div class="flex gap-2 mt-2">
-                <input type="text" id="new-skill-input" placeholder="Add custom skill..." class="flex-1 bg-[#0A0D14] border border-[#1F2937] rounded-lg px-2.5 py-1 text-xs text-white focus:outline-none focus:border-indigo-500">
+                <input type="text" id="new-skill-input" placeholder="Add custom skill..." class="flex-1 bg-[#0A0D14] border border-[#1F2937] rounded-lg px-2.5 py-1 text-xs text-white focus:outline-none focus:border-indigo-500" onkeydown="if(event.key==='Enter'){event.preventDefault();addSkill();}">
                 <button onclick="addSkill()" class="bg-[#161F30] border border-[#1F2937] hover:bg-[#1E293B] text-xs px-3 py-1 rounded-lg text-white">Add</button>
               </div>
             </div>
           </div>
 
+        </div>
+
+        <!-- TAB 2: Dedicated Unstructured Portal JD Intake & Skills Architect -->
+        <div id="tab-intake-content" class="hidden surface-card p-5 border border-[#1F2937] shadow-2xl space-y-5 rounded-xl">
+          
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#1F2937] pb-3">
+            <div>
+              <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                <i data-lucide="wand-2" class="w-4 h-4 text-indigo-400"></i>
+                <span>Unstructured Portal JD Intake & Skill Extraction</span>
+              </h3>
+              <p class="text-xs text-[#94A3B8]">Paste messy JD text from LinkedIn, Indeed, Greenhouse, or PDF. The engine formats it into standard brief format with editable skills.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="loadSamplePortalJD()" class="text-[11px] bg-[#161F30] hover:bg-[#1E293B] text-indigo-300 border border-[#1F2937] px-2.5 py-1 rounded-md transition flex items-center gap-1">
+                <i data-lucide="file-input" class="w-3 h-3"></i>
+                <span>Load Sample Unstructured JD</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 2-Column Workspace -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            
+            <!-- Left: Raw Unstructured Input -->
+            <div class="space-y-3 flex flex-col">
+              <div class="flex items-center justify-between">
+                <label class="text-[11px] font-semibold uppercase tracking-wider text-[#94A3B8] flex items-center gap-1.5">
+                  <i data-lucide="clipboard-paste" class="w-3.5 h-3.5 text-indigo-400"></i>
+                  <span>1. Paste Raw Portal JD</span>
+                </label>
+                <span class="text-[10px] text-[#64748B]">LinkedIn / Indeed / PDF text</span>
+              </div>
+              
+              <textarea id="portal-raw-jd" rows="13" class="w-full flex-1 bg-[#0A0D14] border border-[#1F2937] rounded-lg p-3.5 text-xs text-white placeholder-[#64748B] font-sans leading-relaxed focus:outline-none focus:border-indigo-500 resize-y" placeholder="Paste full unstructured job post here from LinkedIn, Indeed, Workday, etc...&#10;&#10;The parser will extract:&#10;• Job Title&#10;• Location & Region&#10;• Experience Range&#10;• Core Mandatory Technical Skills"></textarea>
+
+              <button id="btn-parse-portal-jd" onclick="parseUnstructuredJD()" class="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2.5 px-4 rounded-lg text-xs shadow-lg shadow-indigo-600/20 transition">
+                <i data-lucide="cpu" class="w-4 h-4"></i>
+                <span>⚡ Parse & Structure JD</span>
+              </button>
+            </div>
+
+            <!-- Right: Structured Brief & Skills Architect -->
+            <div class="space-y-3.5 flex flex-col bg-[#0A0D14]/70 border border-[#1F2937] rounded-lg p-4">
+              <div class="flex items-center justify-between border-b border-[#1F2937] pb-2">
+                <label class="text-[11px] font-semibold uppercase tracking-wider text-[#94A3B8] flex items-center gap-1.5">
+                  <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-400"></i>
+                  <span>2. Structured Brief & Skills Architect</span>
+                </label>
+                <span id="parsing-badge" class="hidden text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full font-mono">
+                  ✓ Parsed
+                </span>
+              </div>
+
+              <!-- Editable Meta Fields -->
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <div>
+                  <label class="text-[10px] text-[#64748B] uppercase font-semibold block mb-1">Job Title</label>
+                  <input type="text" id="intake-role-title" placeholder="e.g. SAP HANA Cloud Consultant" oninput="updateFormattedBriefPreview()" class="w-full bg-[#111827] border border-[#1F2937] rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+                </div>
+                <div>
+                  <label class="text-[10px] text-[#64748B] uppercase font-semibold block mb-1">Location</label>
+                  <input type="text" id="intake-location" placeholder="e.g. Eindhoven, Netherlands" oninput="updateFormattedBriefPreview()" class="w-full bg-[#111827] border border-[#1F2937] rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+                </div>
+                <div>
+                  <label class="text-[10px] text-[#64748B] uppercase font-semibold block mb-1">Experience</label>
+                  <input type="text" id="intake-experience" placeholder="e.g. 7-11 years" oninput="updateFormattedBriefPreview()" class="w-full bg-[#111827] border border-[#1F2937] rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+                </div>
+              </div>
+
+              <!-- Interactive Mandatory Skills Manager -->
+              <div class="space-y-1.5">
+                <div class="flex items-center justify-between">
+                  <label class="text-[10px] text-[#64748B] uppercase font-semibold">Mandatory Skills (Click × to remove)</label>
+                  <span class="text-[10px] text-indigo-400 font-mono" id="intake-skills-count">0 skills</span>
+                </div>
+                
+                <!-- Interactive Chips Container -->
+                <div id="intake-skills-chips" class="flex flex-wrap gap-1.5 min-h-[44px] max-h-32 overflow-y-auto p-2 bg-[#111827] border border-[#1F2937] rounded-lg">
+                  <span class="text-[11px] text-[#64748B] italic">No skills added yet. Paste a JD and click parse, or add manually below.</span>
+                </div>
+
+                <!-- Add Custom Skill Input -->
+                <div class="flex gap-2 pt-1">
+                  <input type="text" id="intake-new-skill" placeholder="Add missing skill (e.g. PlanViz, SLT, CDS Views)..." class="flex-1 bg-[#111827] border border-[#1F2937] rounded px-2.5 py-1 text-xs text-white placeholder-[#64748B] focus:outline-none focus:border-indigo-500" onkeydown="if(event.key==='Enter'){event.preventDefault();addIntakeSkill();}">
+                  <button onclick="addIntakeSkill()" class="bg-[#161F30] hover:bg-[#1E293B] border border-[#1F2937] text-white text-xs px-3 py-1 rounded font-medium transition flex items-center gap-1">
+                    <i data-lucide="plus" class="w-3 h-3 text-indigo-400"></i>
+                    <span>Add Skill</span>
+                  </button>
+                </div>
+
+                <!-- Quick Suggestions / Preferred Skills -->
+                <div id="intake-suggestions-container" class="hidden pt-1 space-y-1">
+                  <span class="text-[10px] text-[#64748B] block">Quick-add secondary skills detected:</span>
+                  <div id="intake-suggestions-chips" class="flex flex-wrap gap-1"></div>
+                </div>
+              </div>
+
+              <!-- Standardized Brief Live Preview (Exact Format) -->
+              <div class="space-y-1 pt-2 border-t border-[#1F2937]">
+                <div class="flex items-center justify-between">
+                  <label class="text-[10px] text-[#64748B] uppercase font-semibold">Standardized Agent Brief Preview</label>
+                  <button onclick="copyFormattedBrief()" class="text-[10px] text-indigo-400 hover:text-indigo-300 flex items-center gap-1">
+                    <i data-lucide="copy" class="w-3 h-3"></i>
+                    <span id="copy-brief-label">Copy Format</span>
+                  </button>
+                </div>
+                <pre id="intake-formatted-preview" class="w-full bg-[#0A0D14] border border-[#1F2937] rounded-lg p-2.5 text-[11px] font-mono text-[#E2E8F0] whitespace-pre-wrap leading-relaxed max-h-32 overflow-y-auto">Job Title: SAP HANA Cloud Consultant
+Location: Eindhoven, Netherlands
+Experience: 7-11 years
+
+Mandatory Requirements:
+*SAP HANA Modeling
+*Calculation Views
+*CDS Views
+*SQLScript
+*SLT
+*SAP BODS
+*AMS Support</pre>
+              </div>
+
+              <!-- Action: Find Candidates with this profile -->
+              <div class="pt-1">
+                <button id="btn-intake-source" onclick="sourceFromIntake()" class="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2.5 px-4 rounded-lg text-xs shadow-lg shadow-emerald-600/20 transition">
+                  <i data-lucide="search" class="w-4 h-4"></i>
+                  <span>Find Candidates with this Profile</span>
+                </button>
+              </div>
+
+            </div>
+
+          </div>
         </div>
 
       </div>
