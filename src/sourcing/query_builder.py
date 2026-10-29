@@ -98,8 +98,15 @@ def build_search_queries(jd: JobDescriptionSchema, max_queries: int = 4) -> List
     primary_title = title_variants[0]
     flexible_title = title_variants[1] if len(title_variants) > 1 else primary_title
     
-    # Base site target placed at the END of the query with trailing slash for 100% LinkedIn precision
-    site_suffix = 'site:linkedin.com/in/'
+    # Base site target with exact subdomain for 100% personal profile precision
+    if subdomain:
+        site_suffix = f"site:{subdomain}.linkedin.com/in"
+    else:
+        all_text = f"{jd.role_title} {' '.join(jd.locations)}".lower()
+        if any(c in all_text for c in ["india", "hyderabad", "bangalore", "bengaluru", "chennai", "pune", "mumbai", "delhi", "noida", "gurgaon"]):
+            site_suffix = "site:in.linkedin.com/in"
+        else:
+            site_suffix = "site:www.linkedin.com/in"
 
     # 1. Skill-Combination Query (Pairs of top mandatory skills)
     if len(mandatory_skills) >= 2:

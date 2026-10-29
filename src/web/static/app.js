@@ -1,55 +1,37 @@
-// Recruiter Copilot — Simple Talent Intelligence Client
+// Recruiter Copilot — Minimalist Talent Sourcing Client
 
 let activeJobId = null;
 let activeJobTitle = 'SAP HANA Specialist';
 let allCandidates = [];
 let activeCandidate = null;
 
-// Presets / Templates
 const TEMPLATES = {
   sap: {
     title: 'SAP HANA Specialist',
-    loc: 'Global / Remote',
+    loc: 'India',
     exp: '7 - 11 years',
     skills: ['SAP BODS', 'SLT', 'AMS Support'],
-    pref: ['SAP BW/4HANA', 'Jira', 'Agile'],
-    text: `Role: SAP HANA Architect\nLocation: Global / Remote\nExperience: 7-11 years\n\nMust-Have Requirements:\n*SLT\n*SAP BODS\n*AMS Support\n\nNice to Have:\nSAP BW/4HANA, SAP BW on HANA, SAP FI / SD integration, Jenkins, Jira, Agile / Scrum\n\nExperience:\n*7-11 years of professional SAP HANA architecture, data modeling, and production support experience.`
-  },
-    title: 'SAP HANA Specialist',
-    loc: 'Global / Remote',
-    exp: '7 - 11 years',
-    skills: ['SAP BODS', 'SLT', 'AMS Support'],
-    pref: ['SAP BW/4HANA', 'Jira', 'Agile'],
-    text: `Role: SAP HANA Architect\nLocation: Global / Remote\nExperience: 7-11 years\n\nMust-Have Requirements:\n*SLT\n*SAP BODS\n*AMS Support\n\nNice to Have:\nSAP BW/4HANA, SAP BW on HANA, SAP FI / SD integration, Jenkins, Jira, Agile / Scrum\n\nExperience:\n*7-11 years of professional SAP HANA architecture, data modeling, and production support experience.`
+    prompt: 'Senior SAP HANA Architect with SLT and SAP BODS experience in India, 7-11 years experience'
   },
   embedded: {
     title: 'Senior Embedded Software Engineer',
-    loc: 'Eindhoven, Netherlands',
+    loc: 'Netherlands / Europe',
     exp: '6 - 8 years',
     skills: ['C++17', 'C', 'RTOS', 'ARM Cortex-M'],
-    pref: ['Python', 'CAN bus', 'ISO 26262'],
-    text: `Senior Embedded Software Engineer\nLocation: Eindhoven, Netherlands\nExperience: 6 - 8 years\n\nMust-Have Requirements:\n* Proven experience with *C++17 and *C in safety-critical firmware\n* Hands-on RTOS experience (FreeRTOS or Zephyr)\n* Microcontroller platforms: ARM Cortex-M\n\nPreferred:\n* Experience with Python for hardware test automation\n* Knowledge of ISO 26262 functional safety standards`
+    prompt: 'Senior Embedded Software Engineer with C++17, RTOS, and ARM Cortex-M in Netherlands or Europe'
   },
   cloud: {
     title: 'Staff Cloud Platform Architect',
-    loc: 'Remote / US',
+    loc: 'US / Remote',
     exp: '8 - 12 years',
     skills: ['Kubernetes', 'Terraform', 'AWS', 'Go'],
-    pref: ['Kafka', 'Service Mesh', 'ArgoCD'],
-    text: `Staff Cloud Platform Architect\nLocation: Remote / US\nExperience: 8-12 years\n\nMust-Haves:\n*Kubernetes\n*Terraform\n*AWS\n*Go\n\nNice to Have:\nKafka, Istio, ArgoCD, Distributed Systems Architecture`
+    prompt: 'Staff Cloud Platform Architect with Kubernetes, Terraform, AWS, and Go, Remote'
   }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
   if (window.lucide) lucide.createIcons();
   
-  const rawInput = document.getElementById('raw-jd-input');
-  if (rawInput) {
-    rawInput.addEventListener('input', () => {
-      document.getElementById('char-count').innerText = `${rawInput.value.length} characters`;
-    });
-  }
-
   // Load SAP template by default
   loadTemplate('sap');
   fetchRecentSearches();
@@ -57,23 +39,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
-  if (sidebar) {
-    sidebar.classList.toggle('hidden');
+  if (sidebar) sidebar.classList.toggle('hidden');
+}
+
+function toggleAdvancedOptions() {
+  const panel = document.getElementById('advanced-options-panel');
+  if (panel) {
+    panel.classList.toggle('hidden');
+    const btn = document.getElementById('btn-toggle-advanced');
+    if (panel.classList.contains('hidden')) {
+      btn.classList.remove('text-indigo-400');
+    } else {
+      btn.classList.add('text-indigo-400');
+    }
   }
 }
 
 function startNewSearch() {
   document.getElementById('raw-jd-input').value = '';
-  document.getElementById('char-count').innerText = '0 characters';
   document.getElementById('rule-role-title').value = '';
   document.getElementById('rule-location').value = '';
   document.getElementById('rule-experience').value = '';
   document.getElementById('mandatory-chips').innerHTML = '';
-  document.getElementById('preferred-chips').innerHTML = '';
   document.getElementById('results-container').classList.add('hidden');
   document.getElementById('sourcing-progress-card').classList.add('hidden');
   document.getElementById('btn-export-csv').classList.add('hidden');
-  document.getElementById('active-brief-title').innerText = 'New Search Brief';
+  document.getElementById('active-brief-title').innerText = 'Ready to source';
   activeJobId = null;
   allCandidates = [];
 }
@@ -82,33 +73,26 @@ function loadTemplate(key) {
   const t = TEMPLATES[key];
   if (!t) return;
   
-  document.getElementById('raw-jd-input').value = t.text;
-  document.getElementById('char-count').innerText = `${t.text.length} characters`;
+  document.getElementById('raw-jd-input').value = t.prompt;
   document.getElementById('rule-role-title').value = t.title;
   document.getElementById('rule-location').value = t.loc;
   document.getElementById('rule-experience').value = t.exp;
   document.getElementById('active-brief-title').innerText = t.title;
   
-  renderSkills(t.skills, 'mandatory');
-  renderSkills(t.pref, 'preferred');
+  renderSkills(t.skills);
 }
 
-function renderSkills(skills, type) {
-  const container = document.getElementById(`${type}-chips`);
+function renderSkills(skills) {
+  const container = document.getElementById('mandatory-chips');
   if (!container) return;
   container.innerHTML = '';
   
   skills.forEach(skill => {
     if (!skill) return;
     const chip = document.createElement('span');
-    if (type === 'mandatory') {
-      chip.className = 'inline-flex items-center gap-1.5 bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-xs px-2.5 py-1 rounded-md font-medium';
-      chip.innerHTML = `⭐ ${skill} <button type="button" onclick="this.parentElement.remove()" class="text-indigo-400 hover:text-white ml-0.5">&times;</button>`;
-      chip.dataset.skill = skill;
-    } else {
-      chip.className = 'text-xs bg-[#161F30] border border-[#263244] text-slate-300 px-2 py-0.5 rounded';
-      chip.innerText = skill;
-    }
+    chip.className = 'inline-flex items-center gap-1.5 bg-[#161F30] border border-[#1F2937] text-indigo-300 text-xs px-2.5 py-1 rounded-md';
+    chip.innerHTML = `${skill} <button type="button" onclick="this.parentElement.remove()" class="text-[#64748B] hover:text-white">&times;</button>`;
+    chip.dataset.skill = skill;
     container.appendChild(chip);
   });
 }
@@ -120,82 +104,28 @@ function addSkill() {
   
   const container = document.getElementById('mandatory-chips');
   const chip = document.createElement('span');
-  chip.className = 'inline-flex items-center gap-1.5 bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-xs px-2.5 py-1 rounded-md font-medium';
-  chip.innerHTML = `⭐ ${val} <button type="button" onclick="this.parentElement.remove()" class="text-indigo-400 hover:text-white ml-0.5">&times;</button>`;
+  chip.className = 'inline-flex items-center gap-1.5 bg-[#161F30] border border-[#1F2937] text-indigo-300 text-xs px-2.5 py-1 rounded-md';
+  chip.innerHTML = `${val} <button type="button" onclick="this.parentElement.remove()" class="text-[#64748B] hover:text-white">&times;</button>`;
   chip.dataset.skill = val;
   container.appendChild(chip);
   input.value = '';
 }
 
-function handleFileUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    const text = e.target.result;
-    document.getElementById('raw-jd-input').value = text;
-    document.getElementById('char-count').innerText = `${text.length} characters`;
-    runExtraction();
-  };
-  reader.readAsText(file);
-}
-
-async function runExtraction() {
-  const text = document.getElementById('raw-jd-input').value.trim();
-  if (!text) return alert('Please enter or paste a job description first.');
-
-  const statusEl = document.getElementById('extraction-status');
-  statusEl.innerText = 'Extracting criteria...';
-  statusEl.className = 'text-xs text-indigo-400 animate-pulse';
-
-  try {
-    const res = await fetch('/api/jobs/extract', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ raw_jd: text })
-    });
-    const data = await res.json();
-    
-    if (data.role_title) {
-      document.getElementById('rule-role-title').value = data.role_title;
-      document.getElementById('active-brief-title').innerText = data.role_title;
-    }
-    if (data.locations && data.locations.length > 0) {
-      document.getElementById('rule-location').value = data.locations.join(', ');
-    }
-    if (data.experience_min_years) {
-      const maxExp = data.experience_max_years ? ` - ${data.experience_max_years}` : '+';
-      document.getElementById('rule-experience').value = `${data.experience_min_years}${maxExp} years`;
-    }
-
-    renderSkills(data.mandatory_skills || [], 'mandatory');
-    renderSkills(data.preferred_skills || [], 'preferred');
-
-    statusEl.innerText = 'Requirements verified';
-    statusEl.className = 'text-xs text-emerald-400 font-medium';
-  } catch (e) {
-    statusEl.innerText = 'Extraction complete';
-    statusEl.className = 'text-xs text-[#94A3B8]';
-  }
-}
-
 async function startSourcingPipeline() {
   const text = document.getElementById('raw-jd-input').value.trim();
-  if (!text) return alert('Please enter a job description first.');
+  if (!text) return alert('Please describe the role or candidate requirements first.');
 
-  const roleTitle = document.getElementById('rule-role-title').value.trim() || 'Software Engineer';
+  const roleTitle = document.getElementById('rule-role-title').value.trim();
   const location = document.getElementById('rule-location').value.trim();
   
   const skillChips = document.querySelectorAll('#mandatory-chips span');
-  const skills = Array.from(skillChips).map(c => c.dataset.skill || c.innerText.replace('⭐', '').replace('×', '').trim()).filter(Boolean);
+  const skills = Array.from(skillChips).map(c => c.dataset.skill || c.innerText.replace('×', '').trim()).filter(Boolean);
 
-  // Show inline progress card right under the boxes
   const progressCard = document.getElementById('sourcing-progress-card');
   const statusText = document.getElementById('sourcing-status-text');
   progressCard.classList.remove('hidden');
-  statusText.innerText = `Searching Google X-Ray & LinkedIn for ${roleTitle} profiles...`;
+  statusText.innerText = 'Searching verified LinkedIn profiles and technical platforms...';
   
-  // Hide past results while loading
   document.getElementById('results-container').classList.add('hidden');
 
   try {
@@ -204,9 +134,9 @@ async function startSourcingPipeline() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         raw_jd: text,
-        override_role_title: roleTitle,
-        override_location: location,
-        override_mandatory_skills: skills
+        override_role_title: roleTitle || undefined,
+        override_location: location || undefined,
+        override_mandatory_skills: skills.length > 0 ? skills : undefined
       })
     });
 
@@ -234,13 +164,12 @@ async function loadJobCandidates(jobId) {
     allCandidates = data.candidates || [];
     
     document.getElementById('active-brief-title').innerText = data.job.role_title || 'Candidates';
-    document.getElementById('results-count-badge').innerText = `${allCandidates.length} Candidates Found`;
+    document.getElementById('results-count-badge').innerText = `${allCandidates.length} Found`;
     document.getElementById('btn-export-csv').classList.remove('hidden');
     
     renderCandidates(allCandidates);
     document.getElementById('results-container').classList.remove('hidden');
     
-    // Smooth scroll to results
     document.getElementById('results-container').scrollIntoView({ behavior: 'smooth' });
   } catch (e) {
     console.error('Failed to load candidates', e);
@@ -248,71 +177,62 @@ async function loadJobCandidates(jobId) {
 }
 
 function renderCandidates(candidates) {
-  const grid = document.getElementById('candidates-grid');
-  grid.innerHTML = '';
+  const list = document.getElementById('candidates-grid');
+  list.innerHTML = '';
 
   if (candidates.length === 0) {
-    grid.innerHTML = `<div class="col-span-full p-8 text-center text-[#94A3B8] surface-card">No candidates matched the current filter.</div>`;
+    list.innerHTML = `<div class="p-8 text-center text-[#94A3B8] surface-card border border-[#1F2937]">No candidate profiles matched the filter.</div>`;
     return;
   }
 
   candidates.forEach(c => {
-    const card = document.createElement('div');
-    card.className = 'surface-card p-4 space-y-3 hover:border-indigo-500/40 transition cursor-pointer flex flex-col justify-between';
-    card.onclick = () => openDrawer(c);
+    const item = document.createElement('div');
+    item.className = 'surface-card p-4 border border-[#1F2937] hover:border-indigo-500/40 transition flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer';
+    item.onclick = () => openDrawer(c);
 
     let scoreBadge = 'badge-strong';
-    let scoreLabel = 'Strong Match';
-    if (c.score < 50) {
-      scoreBadge = 'badge-error';
-      scoreLabel = 'Low Fit';
-    } else if (c.score < 75) {
-      scoreBadge = 'badge-review';
-      scoreLabel = 'Review Needed';
-    }
+    if (c.score < 50) scoreBadge = 'badge-error';
+    else if (c.score < 75) scoreBadge = 'badge-review';
 
     const initials = c.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'CA';
     
-    // Skills tags (up to 3)
+    // Skills tags
     const skillsList = (c.mandatory_matches || []).slice(0, 3).map(s => 
-      `<span class="text-[10px] bg-[#161F30] border border-[#263244] text-indigo-300 px-2 py-0.5 rounded font-medium">${s}</span>`
+      `<span class="text-[10px] bg-[#161F30] border border-[#1F2937] text-indigo-300 px-2 py-0.5 rounded font-mono">${s}</span>`
     ).join(' ');
 
-    card.innerHTML = `
-      <div class="space-y-2">
-        <div class="flex items-start justify-between gap-2">
-          <div class="flex items-center gap-2.5">
-            <div class="w-9 h-9 rounded-full bg-indigo-600/30 border border-indigo-500/30 flex items-center justify-center font-bold text-xs text-white shrink-0">
-              ${initials}
-            </div>
-            <div>
-              <h4 class="font-semibold text-xs text-white hover:text-indigo-400 transition leading-snug">${c.name}</h4>
-              <p class="text-[11px] text-[#94A3B8] line-clamp-1">${c.headline || 'Technical Professional'}</p>
-            </div>
-          </div>
-          <span class="${scoreBadge} text-[10px] font-mono font-bold px-2 py-0.5 rounded-full shrink-0">
-            ${c.score.toFixed(1)}%
-          </span>
+    item.innerHTML = `
+      <div class="flex items-center gap-3.5 min-w-0">
+        <div class="w-9 h-9 rounded-full bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center font-bold text-xs text-indigo-300 shrink-0">
+          ${initials}
         </div>
-
-        <div class="flex flex-wrap gap-1 pt-1">
-          ${skillsList || '<span class="text-[10px] text-[#64748B]">Skills evaluated</span>'}
+        <div class="min-w-0">
+          <div class="flex items-center gap-2">
+            <h4 class="font-semibold text-xs text-white hover:text-indigo-400 transition truncate">${c.name}</h4>
+            <span class="${scoreBadge} text-[10px] font-mono font-bold px-1.5 py-0.2 rounded shrink-0">
+              ${c.score.toFixed(0)}%
+            </span>
+          </div>
+          <p class="text-[11px] text-[#94A3B8] truncate max-w-md">${c.headline || 'Technical Professional'}</p>
+          <div class="flex flex-wrap gap-1 mt-1">
+            ${skillsList || '<span class="text-[10px] text-[#64748B]">Skills evaluated</span>'}
+          </div>
         </div>
       </div>
 
-      <div class="pt-2 border-t border-[#263244] flex items-center justify-between gap-2" onclick="event.stopPropagation()">
-        <a href="${c.profile_url}" target="_blank" class="flex items-center gap-1 text-[11px] text-[#94A3B8] hover:text-white py-1">
+      <div class="flex items-center gap-2 shrink-0 self-end sm:self-center" onclick="event.stopPropagation()">
+        <a href="${c.profile_url}" target="_blank" class="flex items-center gap-1 bg-[#161F30] hover:bg-[#1E293B] border border-[#1F2937] text-[#CBD5E1] text-[11px] px-2.5 py-1 rounded transition">
           <span>LinkedIn</span>
-          <i data-lucide="external-link" class="w-3 h-3"></i>
+          <i data-lucide="external-link" class="w-3 h-3 text-[#94A3B8]"></i>
         </a>
-        <button onclick="openOutreach('${c.candidate_id}')" class="flex items-center gap-1 bg-indigo-600/20 hover:bg-indigo-600 border border-indigo-500/40 text-indigo-300 hover:text-white text-[11px] font-medium px-2.5 py-1 rounded transition">
+        <button onclick="openOutreach('${c.candidate_id}')" class="flex items-center gap-1 bg-indigo-600 hover:bg-indigo-500 text-white text-[11px] font-medium px-3 py-1 rounded transition">
           <i data-lucide="sparkles" class="w-3 h-3"></i>
-          <span>Draft Outreach</span>
+          <span>Outreach</span>
         </button>
       </div>
     `;
 
-    grid.appendChild(card);
+    list.appendChild(item);
   });
 
   if (window.lucide) lucide.createIcons();
@@ -320,12 +240,10 @@ function renderCandidates(candidates) {
 
 function filterResults(query) {
   const kw = (query || '').toLowerCase().trim();
-  const minScore = parseFloat(document.getElementById('results-min-score').value) || 0;
 
   const filtered = allCandidates.filter(c => {
-    const matchesKw = !kw || c.name.toLowerCase().includes(kw) || c.headline.toLowerCase().includes(kw);
-    const matchesScore = c.score >= minScore;
-    return matchesKw && matchesScore;
+    const matchesKw = !kw || c.name.toLowerCase().includes(kw) || (c.headline && c.headline.toLowerCase().includes(kw));
+    return matchesKw;
   });
 
   renderCandidates(filtered);
@@ -342,23 +260,20 @@ function openDrawer(candidate) {
   document.getElementById('drawer-headline').innerText = candidate.headline || 'Technical Candidate';
   
   const badge = document.getElementById('drawer-score-badge');
-  badge.innerText = `${candidate.score.toFixed(1)}%`;
+  badge.innerText = `${candidate.score.toFixed(0)}% Fit`;
   badge.className = candidate.score >= 75 ? 'badge-strong text-xs font-mono font-bold px-2 py-0.5 rounded-full' : 'badge-review text-xs font-mono font-bold px-2 py-0.5 rounded-full';
   
-  document.getElementById('drawer-score-bar').style.width = `${candidate.score}%`;
   document.getElementById('drawer-profile-link').href = candidate.profile_url;
 
-  // Skills list
   const skillsListEl = document.getElementById('drawer-skills-list');
   skillsListEl.innerHTML = '';
   (candidate.mandatory_matches || []).forEach(skill => {
     const chip = document.createElement('span');
-    chip.className = 'text-xs bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded font-medium';
+    chip.className = 'text-[11px] bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded';
     chip.innerText = `✓ ${skill}`;
     skillsListEl.appendChild(chip);
   });
 
-  // Prepare or generate outreach draft
   if (candidate.outreach_draft) {
     document.getElementById('drawer-outreach-text').value = candidate.outreach_draft;
   } else {
@@ -379,9 +294,7 @@ function closeDrawer() {
 
 function openOutreach(candidateId) {
   const candidate = allCandidates.find(c => c.candidate_id === candidateId);
-  if (candidate) {
-    openDrawer(candidate);
-  }
+  if (candidate) openDrawer(candidate);
 }
 
 async function generateOutreachForCandidate(candidate) {
@@ -402,25 +315,23 @@ async function generateOutreachForCandidate(candidate) {
       })
     });
     const data = await res.json();
-    textarea.value = data.draft || `Hi ${candidate.name.split(' ')[0]},\n\nI was impressed by your experience with ${candidate.mandatory_matches?.join(', ') || 'your technical domain'} and wanted to reach out regarding an exciting ${activeJobTitle} role with our team.\n\nWould you be open to a brief conversation this week?`;
+    textarea.value = data.draft || `Hi ${candidate.name.split(' ')[0]},\n\nI noticed your strong background in ${candidate.mandatory_matches?.join(', ') || 'your technical domain'} and wanted to connect regarding a ${activeJobTitle} role with our team.\n\nWould you be open to a brief chat this week?`;
   } catch (e) {
     textarea.value = `Hi ${candidate.name.split(' ')[0]},\n\nI came across your profile and noticed your background in ${activeJobTitle}. We have an open role where your expertise would be a tremendous fit.\n\nBest regards,\nTechnical Talent Team`;
   }
 }
 
 function regenerateOutreach() {
-  if (activeCandidate) {
-    generateOutreachForCandidate(activeCandidate);
-  }
+  if (activeCandidate) generateOutreachForCandidate(activeCandidate);
 }
 
 function copyOutreachText() {
   const text = document.getElementById('drawer-outreach-text').value;
   navigator.clipboard.writeText(text).then(() => {
     const label = document.getElementById('copy-text-label');
-    label.innerText = 'Copied to Clipboard!';
+    label.innerText = 'Copied!';
     setTimeout(() => {
-      label.innerText = 'Copy Outreach';
+      label.innerText = 'Copy Message';
     }, 2000);
   });
 }
@@ -433,13 +344,13 @@ async function fetchRecentSearches() {
     listEl.innerHTML = '';
 
     if (!jobs || jobs.length === 0) {
-      listEl.innerHTML = `<div class="text-xs text-[#64748B] px-2 py-3 text-center">No previous searches</div>`;
+      listEl.innerHTML = `<div class="text-xs text-[#64748B] px-2 py-3 text-center">No recent searches</div>`;
       return;
     }
 
     jobs.slice(0, 10).forEach(j => {
       const btn = document.createElement('button');
-      btn.className = 'w-full text-left px-2.5 py-1.5 rounded-lg text-xs text-[#CBD5E1] hover:bg-[#161F30] hover:text-white transition flex items-center justify-between group';
+      btn.className = 'w-full text-left px-2 py-1.5 rounded-md text-xs text-[#CBD5E1] hover:bg-[#161F30] hover:text-white transition flex items-center justify-between group';
       btn.onclick = () => loadJobCandidates(j.job_id);
 
       btn.innerHTML = `
