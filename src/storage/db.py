@@ -71,6 +71,59 @@ class DatabaseRepository:
                     pass  # column already exists
             conn.commit()
 
+            # Auto-seed database if fresh deployment has no jobs
+            cursor.execute("SELECT COUNT(*) FROM jobs")
+            if cursor.fetchone()[0] == 0:
+                try:
+                    import os
+                    seed_path = os.path.join(os.path.dirname(__file__), "seed_data.json")
+                    if os.path.exists(seed_path):
+                        with open(seed_path, "r", encoding="utf-8") as f:
+                            seed = json.load(f)
+                        j = seed.get("job", {})
+                        if j:
+                            cursor.execute(
+                                """
+                                INSERT INTO jobs (job_id, chat_id, state, role_title, raw_jd, structured_jd_json, created_at, updated_at)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                                """,
+                                (
+                                    j.get("job_id"),
+                                    j.get("chat_id", 0),
+                                    j.get("state", "COMPLETED"),
+                                    j.get("role_title", "SAP HANA Cloud Consultant"),
+                                    j.get("raw_jd", ""),
+                                    j.get("structured_jd_json", ""),
+                                    j.get("created_at"),
+                                    j.get("updated_at")
+                                )
+                            )
+                        for c in seed.get("candidates", []):
+                            cursor.execute(
+                                """
+                                INSERT INTO job_candidates 
+                                (candidate_id, job_id, name, profile_url, headline, score, eligibility, evidence_json, pipeline_stage, notes, outreach_draft, created_at)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                                """,
+                                (
+                                    c.get("candidate_id"),
+                                    c.get("job_id"),
+                                    c.get("name"),
+                                    c.get("profile_url"),
+                                    c.get("headline"),
+                                    c.get("score"),
+                                    c.get("eligibility"),
+                                    c.get("evidence_json"),
+                                    c.get("pipeline_stage", "discovered"),
+                                    c.get("notes", ""),
+                                    c.get("outreach_draft", ""),
+                                    c.get("created_at")
+                                )
+                            )
+                        conn.commit()
+                except Exception as e:
+                    print("Seed loading notice:", e)
+
     # --- Job State Operations ---
     def create_job(self, job_id: str, chat_id: int, raw_jd: str) -> None:
         now = datetime.utcnow()

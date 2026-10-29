@@ -39,7 +39,6 @@ const REAL_NETHERLANDS_CANDIDATES = [
     score: 92,
     years_experience: 10,
     profile_url: "https://nl.linkedin.com/in/ajinkyapatil447",
-    avatar_url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
     skills: ["SAP HANA Cloud", "Calculation Views", "SQLScript", "SLT", "SAP BODS", "CDS Views"],
     match_status: "EXPLICIT_MATCH",
     mandatory_skill_coverage: 0.95,
@@ -62,7 +61,6 @@ const REAL_NETHERLANDS_CANDIDATES = [
     score: 89,
     years_experience: 8,
     profile_url: "https://nl.linkedin.com/in/rupal-arora-9b603a3a",
-    avatar_url: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&auto=format&fit=crop&q=80",
     skills: ["SAP HANA Modeling", "Calculation Views", "SQLScript", "CDS Views", "AMS Support"],
     match_status: "EXPLICIT_MATCH",
     mandatory_skill_coverage: 0.90,
@@ -84,7 +82,6 @@ const REAL_NETHERLANDS_CANDIDATES = [
     score: 86,
     years_experience: 11,
     profile_url: "https://nl.linkedin.com/in/kostertim",
-    avatar_url: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80",
     skills: ["SAP HANA", "Data Architecture", "SQLScript", "Analytics", "PlanViz"],
     match_status: "EXPLICIT_MATCH",
     mandatory_skill_coverage: 0.86,
@@ -105,7 +102,6 @@ const REAL_NETHERLANDS_CANDIDATES = [
     score: 84,
     years_experience: 12,
     profile_url: "https://nl.linkedin.com/in/martien-steeghs-30029b2",
-    avatar_url: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&auto=format&fit=crop&q=80",
     skills: ["SAP HANA", "SLT", "SAP BODS", "Data Modeling", "Calculation Views"],
     match_status: "EXPLICIT_MATCH",
     mandatory_skill_coverage: 0.85,
@@ -126,7 +122,6 @@ const REAL_NETHERLANDS_CANDIDATES = [
     score: 81,
     years_experience: 9,
     profile_url: "https://nl.linkedin.com/in/michelblok",
-    avatar_url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
     skills: ["SAP HANA", "Calculation Views", "CDS Views", "SQLScript"],
     match_status: "EXPLICIT_MATCH",
     mandatory_skill_coverage: 0.82,
@@ -147,7 +142,6 @@ const REAL_NETHERLANDS_CANDIDATES = [
     score: 78,
     years_experience: 11,
     profile_url: "https://nl.linkedin.com/in/nannesluis",
-    avatar_url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80",
     skills: ["SAP HANA", "Data Modeling", "SLT", "Calculation Views"],
     match_status: "EXPLICIT_MATCH",
     mandatory_skill_coverage: 0.80,
@@ -352,11 +346,9 @@ function renderCandidates(candidates) {
     // Score Calculations
     const scoreNum = Math.round(c.score || 85);
 
-    // Avatar
+    // Monogram Initials Avatar (No stock photos)
     const initials = (c.name || 'Candidate').split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
-    const avatarHtml = c.avatar_url 
-      ? `<img src="${c.avatar_url}" alt="${c.name}" class="w-10 h-10 rounded-full object-cover border border-[#27272A] shrink-0" onerror="this.outerHTML='<div class=\\'w-10 h-10 rounded-full bg-[#18181B] border border-[#27272A] flex items-center justify-center font-bold text-xs text-[#E4E4E7] shrink-0\\'>${initials}</div>'">`
-      : `<div class="w-10 h-10 rounded-full bg-[#18181B] border border-[#27272A] flex items-center justify-center font-bold text-xs text-[#E4E4E7] shrink-0">${initials}</div>`;
+    const avatarHtml = `<div class="w-10 h-10 rounded-full bg-[#1A1A20] border border-[#27272A] flex items-center justify-center font-bold text-xs text-[#E4E4E7] shrink-0">${initials}</div>`;
 
     // Geographic Status Badge
     const geoStatus = c.geographic_eligibility?.status || (c.eligibility === 'eligible' ? 'ELIGIBLE' : 'UNKNOWN');
@@ -445,11 +437,7 @@ function openDrawer(candidate) {
   
   const initials = (candidate.name || 'CA').split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
   const avatarEl = document.getElementById('drawer-avatar');
-  if (candidate.avatar_url) {
-    avatarEl.innerHTML = `<img src="${candidate.avatar_url}" class="w-full h-full rounded-full object-cover">`;
-  } else {
-    avatarEl.innerText = initials;
-  }
+  avatarEl.innerText = initials;
 
   // Scores
   document.getElementById('drawer-score-badge').innerText = `${Math.round(candidate.score || 85)}% Match`;
