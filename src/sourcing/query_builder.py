@@ -1,5 +1,5 @@
 import re
-from typing import List
+from typing import List, Optional, Dict, Any
 from ..core.schemas import JobDescriptionSchema, RoleFamily
 
 
@@ -30,7 +30,8 @@ ROLE_FAMILY_TITLE_VARIANTS = {
     RoleFamily.DATA_ENGINEERING: ['"Data Engineer"', '"Big Data Engineer"'],
     RoleFamily.CYBERSECURITY: ['"Security Engineer"', '"Information Security"', '"Cybersecurity Analyst"'],
     RoleFamily.PRODUCT_MANAGEMENT: ['"Product Manager"', '"Technical Product Manager"'],
-    RoleFamily.QA_TEST_ENGINEERING: ['"QA Engineer"', '"Test Automation Engineer"', '"Software Test Engineer"']
+    RoleFamily.QA_TEST_ENGINEERING: ['"QA Engineer"', '"Test Automation Engineer"', '"Software Test Engineer"'],
+    RoleFamily.SAP_TECHNICAL_CONSULTING: ['"SAP HANA Consultant"', '"SAP Technical Consultant"', '"SAP Developer"', '"SAP Data Engineer"']
 }
 
 
@@ -39,26 +40,25 @@ def sanitize_term(term: str) -> str:
 
 
 def get_title_search_variants(title: str) -> List[str]:
-    """Generates flexible search variants for long or specific job titles."""
+    """Generates flexible search variants for job titles."""
     clean = sanitize_term(title)
     words = clean.split()
     if len(words) <= 2:
         return [f'"{clean}"']
     
     variants = [f'"{clean}"']
-    seniority = {"senior", "lead", "principal", "junior", "staff", "head", "chief"}
+    seniority = {"senior", "lead", "principal", "junior", "staff", "head", "chief", "sr"}
     if words[0].lower() in seniority and len(words) >= 2:
         base_role = " ".join(words[1:])
         variants.append(f'"{base_role}"')
     elif len(words) >= 3:
-        # e.g. "SAP HANA Cloud Consultant" -> '"SAP HANA" Consultant', '"SAP HANA Cloud"'
         variants.append(f'"{words[0]} {words[1]}" {words[-1]}')
         variants.append(f'"{words[0]} {words[1]}"')
     return variants
 
 
 def format_skill_keyword(skill: str) -> str:
-    """Formats skill into concise quoted keywords avoiding over-constraint."""
+    """Formats skill into concise quoted keywords."""
     clean = sanitize_term(skill)
     words = clean.split()
     if not words:
@@ -68,77 +68,113 @@ def format_skill_keyword(skill: str) -> str:
     return f'"{words[0]} {words[1]}"'
 
 
-def build_search_queries(jd: JobDescriptionSchema, max_queries: int = 4) -> List[str]:
-    queries = []
-    
-    loc = jd.locations[0] if jd.locations else ""
-    loc_clean = sanitize_term(loc) if loc and loc.lower() not in ("anywhere", "remote") else ""
-    
-    # Subdomain check: Only India maintains active in.linkedin.com index.
-    # European/Global countries (Netherlands, UK, Germany, US, etc.) use www.linkedin.com!
-    all_loc_text = f"{jd.role_title} {' '.join(jd.locations)} {loc_clean}".lower()
-    is_india = any(c in all_loc_text for c in ["india", "hyderabad", "bangalore", "bengaluru", "chennai", "pune", "mumbai", "delhi", "noida", "gurgaon"])
-    
-    if is_india:
-        site_prefix = "site:in.linkedin.com/in"
-    else:
-        site_prefix = "site:www.linkedin.com/in"
+class MultiQuerySearchPlanner:
+    """
+    Requirement B & 5: Generates targeted query families for different search providers.
+    Supports city-level, country-wide, subdomain, technical-evidence, and GitHub discovery.
+    """
 
-    # Multi-part location handling (e.g. Eindhoven, Netherlands -> use Netherlands for countrywide recall, or Eindhoven)
-    parts = [sanitize_term(p) for p in re.split(r'[,/]', loc) if sanitize_term(p)]
-    loc_clause = parts[-1] if len(parts) > 1 else (parts[0] if parts else "")
+    def generate_plan(
+        self,
+        jd: JobDescriptionSchema,
+        max_queries: int = 5,
+        enable_negative_geo: bool = True
+    ) -> List[str]:
+        queries: List[str] = []
+        
+        loc_str = jd.locations[0] if jd.locations else ""
+        if jd.location_spec and jd.location_spec.city:
+            city = jd.location_spec.city
+            country = jd.location_spec.country or "Netherlands"
+        else:
+            parts = [sanitize_term(p) for p in re.split(r'[,/]', loc_str) if sanitize_term(p)]
+            city = parts[0] if parts else ""
+            country = parts[-1] if len(parts) > 1 else (city or "")
 
-    mandatory_skills = [sanitize_term(r.normalized_name) for r in jd.mandatory_requirements if r.normalized_name]
-    title_variants = get_title_search_variants(jd.role_title)
-    primary_title = title_variants[0]
-    flexible_title = title_variants[1] if len(title_variants) > 1 else primary_title
+        all_loc_text = f"{jd.role_title} {loc_str} {city} {country}".lower()
+        is_india = any(c in all_loc_text for c in ["india", "hyderabad", "bangalore", "bengaluru", "chennai", "pune", "mumbai", "delhi", "noida"])
+        is_nl = any(c in all_loc_text for c in ["netherlands", "nederland", "eindhoven", "amsterdam", "rotterdam", "utrecht"])
 
-    # 1. Skill-Combination Query (Pairs of top mandatory skills)
-    if len(mandatory_skills) >= 2:
-        q1 = f'{site_prefix} {format_skill_keyword(mandatory_skills[0])} {format_skill_keyword(mandatory_skills[1])}'
-    elif mandatory_skills:
-        q1 = f'{site_prefix} {format_skill_keyword(mandatory_skills[0])} {flexible_title}'
-    else:
-        q1 = f'{site_prefix} {flexible_title}'
-    if loc_clause:
-        q1 += f' {loc_clause}'
-    queries.append(q1.strip())
-
-    # 2. Targeted Role + Primary Skill Query
-    if mandatory_skills:
-        q2 = f'{site_prefix} {flexible_title} {format_skill_keyword(mandatory_skills[0])}'
-    else:
-        q2 = f'{site_prefix} {flexible_title}'
-    if loc_clause:
-        q2 += f' {loc_clause}'
-    queries.append(q2.strip())
-
-    # 3. Third Skill or Standalone Core Skill (Diversification)
-    if len(mandatory_skills) >= 3:
-        q3 = f'{site_prefix} {format_skill_keyword(mandatory_skills[0])} {format_skill_keyword(mandatory_skills[2])}'
-    elif mandatory_skills:
-        q3 = f'{site_prefix} {format_skill_keyword(mandatory_skills[0])}'
-    else:
-        q3 = f'{site_prefix} {primary_title}'
-    if loc_clause:
-        q3 += f' {loc_clause}'
-    queries.append(q3.strip())
-
-    # 4. Broad Role Query
-    q4 = f'{site_prefix} {primary_title}'
-    if loc_clause:
-        q4 += f' {loc_clause}'
-    queries.append(q4.strip())
-
-    # Deduplicate while preserving order
-    seen = set()
-    final_queries = []
-    for q in queries:
-        norm = q.lower().strip()
-        if norm not in seen:
-            seen.add(norm)
-            final_queries.append(q)
-            if len(final_queries) >= max_queries:
+        # Determine target LinkedIn country subdomain (Requirement B & 5)
+        target_subdomain = ""
+        for name, code in COUNTRY_SUBDOMAINS.items():
+            if re.search(r'\b' + re.escape(name) + r'\b', all_loc_text):
+                target_subdomain = code
                 break
 
-    return final_queries
+        primary_site = f"site:{target_subdomain}.linkedin.com/in" if target_subdomain else "site:linkedin.com/in"
+        alt_site = f"(site:{target_subdomain}.linkedin.com/in OR site:linkedin.com/in)" if target_subdomain else "site:linkedin.com/in"
+
+        # Negative geo exclusion clause
+        if enable_negative_geo and not is_india and is_nl:
+            neg_clause = " -India -Bengaluru -Bangalore -Hyderabad -Pune -Chennai"
+        else:
+            neg_clause = ""
+
+        mand_skills = [sanitize_term(r.normalized_name) for r in jd.mandatory_requirements if r.normalized_name]
+        titles = get_title_search_variants(jd.role_title)
+        primary_title = titles[0]
+        flex_title = titles[1] if len(titles) > 1 else primary_title
+
+        # Query Family 1: City-Level High Precision
+        if city:
+            if len(mand_skills) >= 2:
+                q1 = f'{primary_site} {format_skill_keyword(mand_skills[0])} {format_skill_keyword(mand_skills[1])} "{city}"{neg_clause}'
+            else:
+                q1 = f'{primary_site} {primary_title} "{city}"{neg_clause}'
+            queries.append(q1.strip())
+
+        # Query Family 2: Role & Subdomain City / Country Search
+        if city:
+            q2 = f'{primary_site} {flex_title} "{city}"'
+            queries.append(q2.strip())
+        elif target_subdomain:
+            q2 = f'{primary_site} {flex_title} {format_skill_keyword(mand_skills[0]) if mand_skills else ""}'
+            queries.append(q2.strip())
+        else:
+            target_loc = country or city
+            q2 = f'{primary_site} {flex_title} {format_skill_keyword(mand_skills[0]) if mand_skills else ""} {target_loc}'.strip()
+            queries.append(q2)
+
+        # Query Family 3: Technical-Skill Focused Query (Independent of exact role title)
+        if len(mand_skills) >= 3:
+            loc_term = f'"{city}"' if city else (f'"{country}"' if country else "")
+            q3 = f'{primary_site} {format_skill_keyword(mand_skills[0])} {format_skill_keyword(mand_skills[2])} {loc_term}{neg_clause}'.strip()
+            queries.append(q3)
+        elif mand_skills:
+            q3 = f'{primary_site} {format_skill_keyword(mand_skills[0])} {flex_title}{neg_clause}'.strip()
+            queries.append(q3)
+
+        # Query Family 4: Broad Role & Subdomain Expansion with negative geo exclusions
+        loc_term = f'"{country}"' if country else (f'"{city}"' if city else "")
+        q4 = f'{alt_site} {primary_title} {loc_term}{neg_clause}'.strip()
+        queries.append(q4)
+
+        # Query Family 5: GitHub Technical Evidence Query
+        if mand_skills and (city or country):
+            gh_loc = f'("{city}" OR "{country}")' if (city and country) else f'"{city or country}"'
+            q5 = f'site:github.com {format_skill_keyword(mand_skills[0])} {gh_loc}'.strip()
+            queries.append(q5)
+
+        # Deduplicate while preserving order
+        seen = set()
+        final_queries = []
+        for q in queries:
+            norm = q.lower().strip()
+            if norm not in seen:
+                seen.add(norm)
+                final_queries.append(q)
+                if len(final_queries) >= max_queries:
+                    break
+
+        return final_queries
+
+
+def build_search_queries(
+    jd: JobDescriptionSchema,
+    max_queries: int = 4,
+    enable_negative_geo: bool = True
+) -> List[str]:
+    """Compatibility entry point for query generation."""
+    planner = MultiQuerySearchPlanner()
+    return planner.generate_plan(jd, max_queries=max_queries, enable_negative_geo=enable_negative_geo)

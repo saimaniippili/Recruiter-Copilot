@@ -1,7 +1,8 @@
 import re
 import urllib.parse
-from typing import Optional, Tuple, List
-from ..core.schemas import SearchResultSchema, CandidateSchema
+from typing import Optional, Tuple, List, Dict, Any
+from ..core.schemas import SearchResultSchema, CandidateSchema, CandidateLocationModel
+from ..geography.location_extractor import extract_location_evidence
 
 
 INVALID_NAME_WORDS = [
@@ -23,20 +24,55 @@ NON_TECHNICAL_TITLES = [
 
 
 def canonicalize_url(url: str) -> str:
-    """Strips tracking query parameters and trailing slashes from URLs."""
-    parsed = urllib.parse.urlparse(url)
-    clean_path = parsed.path.rstrip('/')
-    return f"{parsed.scheme}://{parsed.netloc}{clean_path}".lower()
+    """
+    Normalizes public profile URLs to a standard canonical representation.
+    Handles LinkedIn (converting country subdomains like nl.linkedin.com to www.linkedin.com),
+    stripping trailing slashes, fragments, and tracking parameters.
+    """
+    if not url:
+        return ""
+    parsed = urllib.parse.urlparse(url.strip())
+    netloc = parsed.netloc.lower()
+    path = parsed.path.rstrip('/')
+
+    # LinkedIn normalization (Requirement D)
+    if "linkedin.com" in netloc:
+        # Match /in/username
+        in_match = re.search(r'/in/([a-zA-Z0-9_\-%]+)', path, re.IGNORECASE)
+        if in_match:
+            username = in_match.group(1).lower()
+            return f"https://www.linkedin.com/in/{username}"
+        return f"https://www.linkedin.com{path}".lower()
+
+    # GitHub normalization
+    if "github.com" in netloc:
+        parts = [p for p in path.split('/') if p]
+        if parts:
+            username = parts[0].lower()
+            return f"https://github.com/{username}"
+        return f"https://github.com{path}".lower()
+
+    clean_path = path.lower()
+    return f"{parsed.scheme or 'https'}://{netloc}{clean_path}"
 
 
 def is_valid_profile_url(url: str) -> bool:
-    """Verifies that the URL is a personal LinkedIn profile."""
+    """Verifies that the URL is a personal professional profile (LinkedIn or GitHub)."""
     if not url:
         return False
+    url_lower = url.lower()
+    
+    if "github.com" in url_lower:
+        parsed = urllib.parse.urlparse(url_lower)
+        parts = [p for p in parsed.path.split('/') if p]
+        if len(parts) == 1 and parts[0] not in ("features", "pricing", "topics", "collections", "trending", "explore", "search"):
+            return True
+        return False
+
     if not re.search(r'linkedin\.com/in/[a-zA-Z0-9_\-%]+', url, re.IGNORECASE):
         return False
     for forbidden in ["/jobs/", "/company/", "/school/", "/dir/", "/pulse/", "/learning/", "/posts/"]:
-        if forbidden in url.lower():
+        if forbidden in url_lower:
             return False
     return True
 
@@ -55,20 +91,17 @@ def extract_name_and_headline(title: str, snippet: str) -> Tuple[str, str]:
     
     raw_headline = " - ".join(p.strip() for p in parts[1:] if p.strip()) if len(parts) > 1 else ""
     
-    # Remove directory leakage from snippets (e.g., "...Aditya Sehrawat - SAP Technical Architect...")
+    # Remove directory leakage from snippets
     if raw_headline:
-        # Cut off at ellipses or subsequent person names
         headline = re.split(r'\.\.\.|\b[A-Z][a-z]+\s+[A-Z][a-z]+\s*[-–|:]', raw_headline)[0].strip()
     else:
         headline = ""
     
     # Fallback to snippet preview if headline is short/missing
     if not headline and snippet:
-        # Clean leading noise from snippet
         snippet_clean = re.sub(r'^[A-Z][a-z]+\s+[A-Z][a-z]+\s*[-–|:]', '', snippet).strip()
         headline = snippet_clean.split("·")[-1].strip()[:100]
         
-    # Final cleanups: strip trailing dashes or punctuation
     headline = re.sub(r'[\s\-–|]+$', '', headline).strip()
     if not headline:
         headline = "Technical Professional"
@@ -77,7 +110,7 @@ def extract_name_and_headline(title: str, snippet: str) -> Tuple[str, str]:
 
 
 def is_candidate_relevant(name: str, headline: str, snippet: str) -> bool:
-    """Filters out non-person entries, recruiters, and obvious non-tech profiles."""
+    """Filters out non-person entries, recruiters, and non-tech profiles."""
     name_lower = name.lower()
     for bad in INVALID_NAME_WORDS:
         if bad in name_lower:
@@ -90,7 +123,6 @@ def is_candidate_relevant(name: str, headline: str, snippet: str) -> bool:
     # Anti-recruiter filter
     for rec in RECRUITER_KEYWORDS:
         if rec in full_text:
-            # Allow only if headline explicitly indicates technical/engineering role
             if not any(t in headline.lower() for t in ["engineer", "developer", "architect", "programmer", "designer"]):
                 return False
 
@@ -102,45 +134,77 @@ def is_candidate_relevant(name: str, headline: str, snippet: str) -> bool:
     return True
 
 
-def normalize_search_results(results: List[SearchResultSchema], expected_subdomain: str = "") -> List[CandidateSchema]:
-    """Converts raw search results into canonical, deduplicated candidate models."""
-    candidates = []
-    seen_urls = set()
+def normalize_search_results(
+    results: List[SearchResultSchema],
+    expected_subdomain: str = ""
+) -> List[CandidateSchema]:
+    """
+    Converts raw search results into canonical, deduplicated candidate models with
+    source provenance and 3-tier geographic extraction.
+    """
+    candidates_by_canonical: Dict[str, CandidateSchema] = {}
 
     for r in results:
         if not is_valid_profile_url(r.url):
             continue
 
-        # Geo-fencing: reject profiles whose country subdomain explicitly conflicts with target
-        if expected_subdomain:
-            netloc = urllib.parse.urlparse(r.url).netloc.lower()
-            subparts = netloc.split('.')
-            if len(subparts) >= 3 and subparts[0] not in ('www', 'linkedin'):
-                cand_sub = subparts[0]
-                if cand_sub != expected_subdomain:
-                    continue
-
         canon_url = canonicalize_url(r.url)
-        if canon_url in seen_urls:
+        if not canon_url:
+            continue
+
+        netloc = urllib.parse.urlparse(r.url).netloc.lower()
+
+        # Strict country subdomain check for India accounts
+        if expected_subdomain and expected_subdomain != 'in' and 'in.linkedin.com' in netloc:
+            continue
+
+        # Extract geographic evidence via 3-Tier Layer 2 extractor
+        loc_evidence: CandidateLocationModel = extract_location_evidence(r.title, r.snippet, r.url)
+
+        # Merge duplicates if already seen (preserving source provenance)
+        if canon_url in candidates_by_canonical:
+            existing = candidates_by_canonical[canon_url]
+            # Record multi-provider provenance
+            existing.sources.append({
+                "provider": r.provider,
+                "url": r.url,
+                "retrieved_at": r.retrieved_at,
+                "query_used": r.query_used
+            })
+            if r.snippet and r.snippet not in existing.source_snippets:
+                existing.source_snippets.append(r.snippet)
+            # Update location if previous was empty or ambiguous
+            if not existing.location and loc_evidence.value:
+                existing.location = loc_evidence.value
+                existing.current_location = loc_evidence
             continue
 
         name, headline = extract_name_and_headline(r.title, r.snippet)
         if not is_candidate_relevant(name, headline, r.snippet):
             continue
 
-        seen_urls.add(canon_url)
         c_id = f"cand_{hash(canon_url) & 0xffffffff:08x}"
         
-        candidates.append(
-            CandidateSchema(
-                candidate_id=c_id,
-                name=name,
-                profile_url=r.url,
-                headline=headline,
-                source_snippets=[r.snippet] if r.snippet else [],
-                source_provider=r.provider,
-                retrieved_at=r.retrieved_at
-            )
+        cand = CandidateSchema(
+            candidate_id=c_id,
+            name=name,
+            profile_url=r.url,
+            canonical_profile_url=canon_url,
+            headline=headline,
+            location=loc_evidence.value,
+            current_location=loc_evidence,
+            source_snippets=[r.snippet] if r.snippet else [],
+            source_provider=r.provider,
+            sources=[{
+                "provider": r.provider,
+                "url": r.url,
+                "retrieved_at": r.retrieved_at,
+                "query_used": r.query_used
+            }],
+            retrieved_at=r.retrieved_at,
+            last_observed_at=r.retrieved_at
         )
 
-    return candidates
+        candidates_by_canonical[canon_url] = cand
+
+    return list(candidates_by_canonical.values())
