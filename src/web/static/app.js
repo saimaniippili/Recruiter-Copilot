@@ -7,11 +7,11 @@ let activeCandidate = null;
 
 const TEMPLATES = {
   sap: {
-    title: 'SAP HANA Specialist',
-    loc: 'India',
+    title: 'SAP HANA Cloud Consultant',
+    loc: 'Eindhoven, Netherlands',
     exp: '7 - 11 years',
-    skills: ['SAP BODS', 'SLT', 'AMS Support'],
-    prompt: 'Senior SAP HANA Architect with SLT and SAP BODS experience in India, 7-11 years experience'
+    skills: ['SAP HANA Cloud', 'SLT', 'SAP BODS', 'Native SAP HANA Modeling'],
+    prompt: `Job Title: SAP HANA Cloud Consultant\nLocation: Eindhoven, Netherlands\nExperience: 7-11 years\n\nMandatory Requirements:\n*SAP HANA Cloud\n*Native SAP HANA Modeling\n*Calculation Views\n*CDS Views\n*SQLScript\n*PlanViz\n*SLT\n*SAP BODS\n*AMS Support`
   },
   embedded: {
     title: 'Senior Embedded Software Engineer',
@@ -32,6 +32,20 @@ const TEMPLATES = {
 document.addEventListener('DOMContentLoaded', () => {
   if (window.lucide) lucide.createIcons();
   
+  const rawInput = document.getElementById('raw-jd-input');
+  if (rawInput) {
+    rawInput.addEventListener('input', () => {
+      // If the advanced panel is closed, clear stale overrides so the AI extracts location directly from pasted text
+      const panel = document.getElementById('advanced-options-panel');
+      if (panel && panel.classList.contains('hidden')) {
+        document.getElementById('rule-role-title').value = '';
+        document.getElementById('rule-location').value = '';
+        document.getElementById('rule-experience').value = '';
+        document.getElementById('mandatory-chips').innerHTML = '';
+      }
+    });
+  }
+
   // Load SAP template by default
   loadTemplate('sap');
   fetchRecentSearches();
@@ -115,11 +129,17 @@ async function startSourcingPipeline() {
   const text = document.getElementById('raw-jd-input').value.trim();
   if (!text) return alert('Please describe the role or candidate requirements first.');
 
-  const roleTitle = document.getElementById('rule-role-title').value.trim();
-  const location = document.getElementById('rule-location').value.trim();
+  // Only pass explicit overrides if the advanced options panel is currently open
+  const advancedOpen = !document.getElementById('advanced-options-panel').classList.contains('hidden');
+  const roleTitle = advancedOpen ? document.getElementById('rule-role-title').value.trim() : null;
+  const location = advancedOpen ? document.getElementById('rule-location').value.trim() : null;
   
-  const skillChips = document.querySelectorAll('#mandatory-chips span');
-  const skills = Array.from(skillChips).map(c => c.dataset.skill || c.innerText.replace('×', '').trim()).filter(Boolean);
+  let skills = undefined;
+  if (advancedOpen) {
+    const skillChips = document.querySelectorAll('#mandatory-chips span');
+    const extractedSkills = Array.from(skillChips).map(c => c.dataset.skill || c.innerText.replace('×', '').trim()).filter(Boolean);
+    if (extractedSkills.length > 0) skills = extractedSkills;
+  }
 
   const progressCard = document.getElementById('sourcing-progress-card');
   const statusText = document.getElementById('sourcing-status-text');
@@ -136,7 +156,7 @@ async function startSourcingPipeline() {
         raw_jd: text,
         override_role_title: roleTitle || undefined,
         override_location: location || undefined,
-        override_mandatory_skills: skills.length > 0 ? skills : undefined
+        override_mandatory_skills: skills
       })
     });
 
