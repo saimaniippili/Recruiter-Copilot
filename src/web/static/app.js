@@ -61,9 +61,9 @@ function toggleAdvancedOptions() {
     panel.classList.toggle('hidden');
     const btn = document.getElementById('btn-toggle-advanced');
     if (panel.classList.contains('hidden')) {
-      btn.classList.remove('text-indigo-400');
+      btn.classList.remove('text-orange-400');
     } else {
-      btn.classList.add('text-indigo-400');
+      btn.classList.add('text-orange-400');
     }
   }
 }
@@ -101,8 +101,8 @@ function renderSkills(skills) {
   container.innerHTML = '';
   (skills || []).forEach(s => {
     const chip = document.createElement('span');
-    chip.className = 'inline-flex items-center gap-1 bg-[#161F30] border border-[#1F2937] text-indigo-300 text-[11px] px-2 py-0.5 rounded-full';
-    chip.innerHTML = `<span>⭐ ${s}</span><button onclick="this.parentElement.remove()" class="text-[#64748B] hover:text-white ml-0.5">×</button>`;
+    chip.className = 'inline-flex items-center gap-1 bg-[#18181B] border border-[#27272A] text-orange-400 text-[11px] px-2 py-0.5 rounded-full';
+    chip.innerHTML = `<span>⭐ ${s}</span><button onclick="this.parentElement.remove()" class="text-[#71717A] hover:text-white ml-0.5">×</button>`;
     container.appendChild(chip);
   });
 }
@@ -114,8 +114,8 @@ function addSkill() {
   
   const container = document.getElementById('mandatory-chips');
   const chip = document.createElement('span');
-  chip.className = 'inline-flex items-center gap-1 bg-[#161F30] border border-[#1F2937] text-indigo-300 text-[11px] px-2 py-0.5 rounded-full';
-  chip.innerHTML = `<span>⭐ ${val}</span><button onclick="this.parentElement.remove()" class="text-[#64748B] hover:text-white ml-0.5">×</button>`;
+  chip.className = 'inline-flex items-center gap-1 bg-[#18181B] border border-[#27272A] text-orange-400 text-[11px] px-2 py-0.5 rounded-full';
+  chip.innerHTML = `<span>⭐ ${val}</span><button onclick="this.parentElement.remove()" class="text-[#71717A] hover:text-white ml-0.5">×</button>`;
   container.appendChild(chip);
   input.value = '';
 }
@@ -208,7 +208,7 @@ function renderCandidates(candidates) {
 
   candidates.forEach(c => {
     const item = document.createElement('div');
-    item.className = 'surface-card p-4 border border-[#1F2937] hover:border-indigo-500/40 transition flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer';
+    item.className = 'surface-card p-4 border border-[#27272A] hover:border-orange-500/40 transition flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer';
     item.onclick = () => openDrawer(c);
 
     // Score badge style
@@ -226,9 +226,9 @@ function renderCandidates(candidates) {
     }
 
     // Match status label
-    let matchBadge = `<span class="text-[10px] bg-[#161F30] border border-[#1F2937] text-slate-300 px-2 py-0.5 rounded font-mono">${c.match_status || 'EVALUATED'}</span>`;
+    let matchBadge = `<span class="text-[10px] bg-[#18181B] border border-[#27272A] text-zinc-300 px-2 py-0.5 rounded font-mono">${c.match_status || 'EVALUATED'}</span>`;
     if (c.match_status === 'EXPLICIT_MATCH') {
-      matchBadge = `<span class="text-[10px] bg-indigo-600/20 border border-indigo-500/30 text-indigo-300 px-2 py-0.5 rounded font-mono font-bold">⭐ EXPLICIT MATCH</span>`;
+      matchBadge = `<span class="text-[10px] bg-orange-500/10 border border-orange-500/30 text-orange-400 px-2 py-0.5 rounded font-mono font-bold">⭐ EXPLICIT MATCH</span>`;
     }
 
     const initials = (c.name || 'Candidate').split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'CA';
@@ -236,41 +236,41 @@ function renderCandidates(candidates) {
     
     // Skills tags
     const skillsList = (c.supporting_evidence || []).slice(0, 3).map(s => 
-      `<span class="text-[10px] bg-[#161F30] border border-[#1F2937] text-indigo-300 px-2 py-0.5 rounded font-mono">${s.skill}</span>`
+      `<span class="text-[10px] bg-[#18181B] border border-[#27272A] text-orange-300 px-2 py-0.5 rounded font-mono">${s.skill}</span>`
     ).join(' ');
 
     item.innerHTML = `
       <div class="flex items-center gap-3.5 min-w-0">
-        <div class="w-9 h-9 rounded-full bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center font-bold text-xs text-indigo-300 shrink-0">
+        <div class="w-9 h-9 rounded-full bg-orange-500/10 border border-orange-500/30 flex items-center justify-center font-bold text-xs text-orange-400 shrink-0">
           ${initials}
         </div>
         <div class="min-w-0">
           <div class="flex flex-wrap items-center gap-2">
-            <h4 class="font-semibold text-xs text-white hover:text-indigo-400 transition truncate">${c.name}</h4>
+            <h4 class="font-semibold text-xs text-white hover:text-orange-400 transition truncate">${c.name}</h4>
             <span class="${scoreBadge} text-[10px] font-mono font-bold px-1.5 py-0.2 rounded shrink-0">
               ${c.score ? c.score.toFixed(0) : '0'}%
             </span>
             ${geoBadge}
             ${matchBadge}
           </div>
-          <p class="text-[11px] text-[#94A3B8] truncate max-w-md">${c.headline || 'Technical Professional'}</p>
-          <div class="flex items-center gap-2 text-[10px] text-[#64748B] mt-0.5">
+          <p class="text-[11px] text-[#A1A1AA] truncate max-w-md">${c.headline || 'Technical Professional'}</p>
+          <div class="flex items-center gap-2 text-[10px] text-[#71717A] mt-0.5">
             <span class="flex items-center gap-1">📍 ${locText}</span>
             <span>•</span>
             <span>${c.mandatory_skill_coverage ? Math.round(c.mandatory_skill_coverage * 100) : '0'}% skill coverage</span>
           </div>
           <div class="flex flex-wrap gap-1 mt-1">
-            ${skillsList || '<span class="text-[10px] text-[#64748B]">Skills evaluated</span>'}
+            ${skillsList || '<span class="text-[10px] text-[#71717A]">Skills evaluated</span>'}
           </div>
         </div>
       </div>
 
       <div class="flex items-center gap-2 shrink-0 self-end sm:self-center" onclick="event.stopPropagation()">
-        <a href="${c.profile_url}" target="_blank" class="flex items-center gap-1 bg-[#161F30] hover:bg-[#1E293B] border border-[#1F2937] text-[#CBD5E1] text-[11px] px-2.5 py-1 rounded transition">
+        <a href="${c.profile_url}" target="_blank" class="flex items-center gap-1 bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-[#E4E4E7] text-[11px] px-2.5 py-1 rounded transition">
           <span>Profile</span>
-          <i data-lucide="external-link" class="w-3 h-3 text-[#94A3B8]"></i>
+          <i data-lucide="external-link" class="w-3 h-3 text-[#A1A1AA]"></i>
         </a>
-        <button onclick="openOutreach('${c.candidate_id}')" class="flex items-center gap-1 bg-indigo-600 hover:bg-indigo-500 text-white text-[11px] font-medium px-3 py-1 rounded transition">
+        <button onclick="openOutreach('${c.candidate_id}')" class="flex items-center gap-1 bg-orange-500 hover:bg-orange-600 text-white text-[11px] font-semibold px-3 py-1 rounded transition shadow-sm">
           <i data-lucide="sparkles" class="w-3 h-3"></i>
           <span>Evidence</span>
         </button>
@@ -343,13 +343,13 @@ function openDrawer(candidate) {
   } else {
     evidenceList.forEach(item => {
       const el = document.createElement('div');
-      el.className = 'p-2 rounded bg-[#0A0D14] border border-[#1F2937] text-xs space-y-1';
+      el.className = 'p-2 rounded bg-[#09090B] border border-[#27272A] text-xs space-y-1';
       el.innerHTML = `
         <div class="flex items-center justify-between font-mono text-[10px]">
-          <span class="text-indigo-400 font-bold">✓ ${item.skill}</span>
+          <span class="text-orange-400 font-bold">✓ ${item.skill}</span>
           <span class="text-emerald-400">${item.state} (${(item.evidence_level*100).toFixed(0)}%)</span>
         </div>
-        <p class="text-[11px] text-[#CBD5E1] italic">"${item.quotation}"</p>
+        <p class="text-[11px] text-[#E4E4E7] italic">"${item.quotation}"</p>
       `;
       quotList.appendChild(el);
     });
@@ -471,13 +471,13 @@ function switchSourcingTab(tab) {
   const intakeContent = document.getElementById('tab-intake-content');
 
   if (tab === 'direct') {
-    directTabBtn.className = 'text-xs font-semibold px-3 py-1.5 rounded-lg bg-indigo-600 text-white transition flex items-center gap-1.5 shadow-sm';
-    intakeTabBtn.className = 'text-xs font-medium px-3 py-1.5 rounded-lg bg-[#161F30] hover:bg-[#1E293B] text-[#94A3B8] hover:text-white border border-[#1F2937] transition flex items-center gap-1.5';
+    directTabBtn.className = 'text-xs font-semibold px-3 py-1.5 rounded-lg bg-orange-500 text-white transition flex items-center gap-1.5 shadow-sm';
+    intakeTabBtn.className = 'text-xs font-medium px-3 py-1.5 rounded-lg bg-[#18181B] hover:bg-[#27272A] text-[#A1A1AA] hover:text-white border border-[#27272A] transition flex items-center gap-1.5';
     directContent.classList.remove('hidden');
     intakeContent.classList.add('hidden');
   } else {
-    intakeTabBtn.className = 'text-xs font-semibold px-3 py-1.5 rounded-lg bg-indigo-600 text-white transition flex items-center gap-1.5 shadow-sm';
-    directTabBtn.className = 'text-xs font-medium px-3 py-1.5 rounded-lg bg-[#161F30] hover:bg-[#1E293B] text-[#94A3B8] hover:text-white border border-[#1F2937] transition flex items-center gap-1.5';
+    intakeTabBtn.className = 'text-xs font-semibold px-3 py-1.5 rounded-lg bg-orange-500 text-white transition flex items-center gap-1.5 shadow-sm';
+    directTabBtn.className = 'text-xs font-medium px-3 py-1.5 rounded-lg bg-[#18181B] hover:bg-[#27272A] text-[#A1A1AA] hover:text-white border border-[#27272A] transition flex items-center gap-1.5';
     directContent.classList.add('hidden');
     intakeContent.classList.remove('hidden');
     
@@ -558,7 +558,7 @@ async function parseUnstructuredJD() {
     if (data.preferred_skills && data.preferred_skills.length > 0) {
       data.preferred_skills.forEach(skill => {
         const btnSugg = document.createElement('button');
-        btnSugg.className = 'text-[10px] bg-[#161F30] hover:bg-[#1E293B] text-indigo-300 border border-indigo-500/20 px-2 py-0.5 rounded transition flex items-center gap-1';
+        btnSugg.className = 'text-[10px] bg-[#18181B] hover:bg-[#27272A] text-orange-300 border border-orange-500/20 px-2 py-0.5 rounded transition flex items-center gap-1';
         btnSugg.innerHTML = `<span>+ ${skill}</span>`;
         btnSugg.onclick = () => {
           if (!currentIntakeSkills.includes(skill)) {
@@ -614,7 +614,7 @@ function renderIntakeSkills(skills) {
 
   skills.forEach((s, idx) => {
     const chip = document.createElement('span');
-    chip.className = 'inline-flex items-center gap-1.5 bg-[#161F30] border border-indigo-500/30 text-indigo-300 text-[11px] px-2.5 py-1 rounded-md shadow-sm';
+    chip.className = 'inline-flex items-center gap-1.5 bg-[#18181B] border border-orange-500/30 text-orange-300 text-[11px] px-2.5 py-1 rounded-md shadow-sm';
     chip.innerHTML = `<span>⭐ ${s}</span><button onclick="removeIntakeSkill(${idx})" class="text-[#64748B] hover:text-rose-400 ml-1 font-bold text-xs transition">×</button>`;
     container.appendChild(chip);
   });

@@ -1,56 +1,58 @@
 :root {
-  --bg-app: #0A0D14;
-  --surface-primary: #111827;
-  --surface-elevated: #161F30;
-  --surface-subtle: #0D1320;
-  --border-primary: #1F2937;
-  --border-secondary: #374151;
-  --text-primary: #F8FAFC;
-  --text-secondary: #CBD5E1;
-  --text-muted: #94A3B8;
-  --text-disabled: #64748B;
-  --accent-primary: #6366F1;
-  --accent-hover: #4F46E5;
+  --bg-app: #09090B;
+  --surface-primary: #121215;
+  --surface-elevated: #18181B;
+  --surface-subtle: #0F0F12;
+  --border-primary: #27272A;
+  --border-secondary: #3F3F46;
+  --text-primary: #FFFFFF;
+  --text-secondary: #E4E4E7;
+  --text-muted: #A1A1AA;
+  --text-disabled: #71717A;
+  --accent-primary: #F97316;
+  --accent-hover: #EA580C;
+  --accent-subtle: rgba(249, 115, 22, 0.12);
+  --accent-border: rgba(249, 115, 22, 0.3);
   --match-strong: #10B981;
   --match-review: #F59E0B;
   --match-error: #EF4444;
-  --match-info: #38BDF8;
+  --match-info: #F97316;
 }
 
 body {
   background-color: var(--bg-app);
   color: var(--text-primary);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
 /* Custom Scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
   background: var(--bg-app);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--border-primary);
+  background: #27272A;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--border-secondary);
+  background: #3F3F46;
 }
 
-/* Glassmorphism & Surface Tokens */
+/* Precision Surface Tokens */
 .surface-card {
   background: var(--surface-primary);
   border: 1px solid var(--border-primary);
-  border-radius: 10px;
+  border-radius: 8px;
 }
 .surface-elevated {
   background: var(--surface-elevated);
   border: 1px solid var(--border-secondary);
-  border-radius: 12px;
+  border-radius: 8px;
 }
 
 /* Badges */
@@ -60,9 +62,9 @@ body {
   border: 1px solid rgba(16, 185, 129, 0.3);
 }
 .badge-review {
-  background-color: rgba(245, 158, 11, 0.12);
-  color: #FBBF24;
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  background-color: rgba(249, 115, 22, 0.12);
+  color: #FB923C;
+  border: 1px solid rgba(249, 115, 22, 0.3);
 }
 .badge-error {
   background-color: rgba(239, 68, 68, 0.12);
@@ -70,30 +72,31 @@ body {
   border: 1px solid rgba(239, 68, 68, 0.3);
 }
 .badge-info {
-  background-color: rgba(56, 189, 248, 0.12);
-  color: #38BDF8;
-  border: 1px solid rgba(56, 189, 248, 0.3);
+  background-color: rgba(249, 115, 22, 0.12);
+  color: #FB923C;
+  border: 1px solid rgba(249, 115, 22, 0.3);
 }
 
 /* Drawer Transitions */
 .drawer-backdrop {
-  background: rgba(11, 15, 25, 0.75);
+  background: rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(4px);
   transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .drawer-panel {
-  background: var(--surface-primary);
-  border-left: 1px solid var(--border-secondary);
-  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+  background: #101014;
+  border-left: 1px solid #27272A;
+  box-shadow: -12px 0 40px rgba(0, 0, 0, 0.8);
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Interactive Candidate Rows */
 .candidate-row {
-  transition: background-color 0.12s ease;
+  transition: background-color 0.12s ease, border-color 0.12s ease;
 }
 .candidate-row:hover {
-  background-color: rgba(22, 31, 48, 0.6);
+  background-color: #18181C;
+  border-color: #3F3F46;
 }
 
 /* Micro-animations */

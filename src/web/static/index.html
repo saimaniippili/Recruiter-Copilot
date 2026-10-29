@@ -3,56 +3,56 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Recruiter Copilot — Autonomous Talent Intelligence</title>
+  <title>Recruiter Copilot — Enterprise Talent Intelligence</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="/static/styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
-<body class="bg-[#0A0D14] text-[#E2E8F0] font-sans antialiased min-h-screen flex">
+<body class="bg-[#09090B] text-[#EDEDED] font-sans antialiased min-h-screen flex">
 
   <!-- ======================================================== -->
   <!-- COLLAPSIBLE MINIMALIST SIDEBAR                           -->
   <!-- ======================================================== -->
-  <aside id="sidebar" class="w-64 bg-[#111827]/90 border-r border-[#1F2937] flex flex-col justify-between shrink-0 transition-all duration-300">
+  <aside id="sidebar" class="w-64 bg-[#0E0E11] border-r border-[#27272A] flex flex-col justify-between shrink-0 transition-all duration-300">
     <div class="p-4 space-y-5">
       <!-- App Brand -->
-      <div class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
-          <i data-lucide="crosshair" class="w-4 h-4"></i>
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded bg-[#F97316] flex items-center justify-center text-black font-extrabold text-sm shadow-md shadow-orange-500/20">
+          RC
         </div>
         <div>
           <h1 class="font-bold text-sm text-white tracking-tight leading-none">Recruiter Copilot</h1>
-          <span class="text-[10px] text-emerald-400 font-medium">3-Tier Geo Verified</span>
+          <span class="text-[10px] text-[#A1A1AA] font-mono tracking-wider">TALENT INTELLIGENCE</span>
         </div>
       </div>
 
       <!-- New Search CTA -->
-      <button onclick="startNewSearch()" class="w-full flex items-center justify-center gap-2 bg-indigo-600/10 hover:bg-indigo-600/20 text-indigo-400 hover:text-indigo-300 border border-indigo-500/20 rounded-lg py-2 text-xs font-semibold transition">
-        <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+      <button onclick="startNewSearch()" class="w-full flex items-center justify-center gap-2 bg-[#18181B] hover:bg-[#27272A] text-white border border-[#27272A] hover:border-[#3F3F46] rounded-md py-2 text-xs font-semibold transition">
+        <i data-lucide="plus" class="w-3.5 h-3.5 text-[#F97316]"></i>
         <span>New Sourcing Brief</span>
       </button>
 
       <!-- Recent Searches -->
       <div class="space-y-2">
-        <span class="text-[10px] text-[#64748B] uppercase font-semibold tracking-wider block px-1">Recent Briefs</span>
+        <span class="text-[10px] text-[#71717A] uppercase font-semibold tracking-wider block px-1">Recent Campaigns</span>
         <div id="recent-searches-list" class="space-y-1">
           <!-- Populated by JS -->
-          <div class="text-[11px] text-[#64748B] px-2 py-1">Loading campaigns...</div>
+          <div class="text-[11px] text-[#71717A] px-2 py-1">Loading campaigns...</div>
         </div>
       </div>
     </div>
 
     <!-- Health / Status -->
-    <div class="p-4 border-t border-[#1F2937] space-y-2">
-      <div class="flex items-center justify-between text-[11px] text-[#94A3B8]">
-        <span class="flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span>Google / DDG / Bing</span>
+    <div class="p-4 border-t border-[#27272A] space-y-2">
+      <div class="flex items-center justify-between text-[11px] text-[#A1A1AA]">
+        <span class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-[#10B981] animate-pulse"></span>
+          <span class="text-xs">Search Pipeline</span>
         </span>
-        <span class="font-mono text-[10px] text-emerald-400">ONLINE</span>
+        <span class="font-mono text-[10px] text-[#F97316] font-semibold">ACTIVE</span>
       </div>
     </div>
   </aside>
@@ -63,19 +63,19 @@
   <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
     
     <!-- Top Minimal Bar -->
-    <header class="h-12 border-b border-[#1F2937] bg-[#111827]/70 backdrop-blur-md px-5 flex items-center justify-between shrink-0">
+    <header class="h-12 border-b border-[#27272A] bg-[#0E0E11]/90 backdrop-blur-md px-5 flex items-center justify-between shrink-0">
       <div class="flex items-center gap-3">
-        <button onclick="toggleSidebar()" class="text-[#94A3B8] hover:text-white p-1 rounded-md">
+        <button onclick="toggleSidebar()" class="text-[#71717A] hover:text-white p-1 rounded transition">
           <i data-lucide="panel-left" class="w-4 h-4"></i>
         </button>
-        <span id="active-brief-title" class="text-xs font-medium text-[#CBD5E1]">
+        <span id="active-brief-title" class="text-xs font-medium text-white tracking-tight">
           Ready to source
         </span>
       </div>
 
       <div class="flex items-center gap-2">
-        <button onclick="exportCurrentCSV()" id="btn-export-csv" class="hidden flex items-center gap-1.5 bg-[#161F30] hover:bg-[#1E293B] text-[#CBD5E1] border border-[#1F2937] text-xs font-medium px-2.5 py-1 rounded-md transition">
-          <i data-lucide="download" class="w-3.5 h-3.5"></i>
+        <button onclick="exportCurrentCSV()" id="btn-export-csv" class="hidden flex items-center gap-1.5 bg-[#18181B] hover:bg-[#27272A] text-white border border-[#27272A] text-xs font-medium px-3 py-1.5 rounded-md transition">
+          <i data-lucide="download" class="w-3.5 h-3.5 text-[#F97316]"></i>
           <span>Export CSV</span>
         </button>
       </div>
@@ -91,79 +91,79 @@
         
         <div class="text-center space-y-1 pt-1">
           <h2 class="text-2xl font-bold text-white tracking-tight">Autonomous Talent Intelligence</h2>
-          <p class="text-xs text-[#94A3B8]">Candidate Sourcing with 3-Tier Geographic Verification and ATS Evidence Rubric.</p>
+          <p class="text-xs text-[#A1A1AA]">Geographically Verified Candidate Sourcing with Strict ATS Evidence Rubric.</p>
         </div>
 
         <!-- Mode Switcher Tabs -->
-        <div class="flex items-center justify-between border-b border-[#1F2937] pb-2">
+        <div class="flex items-center justify-between border-b border-[#27272A] pb-2">
           <div class="flex items-center gap-2">
-            <button id="tab-btn-direct" onclick="switchSourcingTab('direct')" class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-indigo-600 text-white transition flex items-center gap-1.5 shadow-sm">
+            <button id="tab-btn-direct" onclick="switchSourcingTab('direct')" class="text-xs font-bold px-3 py-1.5 rounded-md bg-[#F97316] text-black transition flex items-center gap-1.5 shadow-sm shadow-orange-500/20">
               <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
               <span>Direct Sourcing Brief</span>
             </button>
-            <button id="tab-btn-intake" onclick="switchSourcingTab('intake')" class="text-xs font-medium px-3 py-1.5 rounded-lg bg-[#161F30] hover:bg-[#1E293B] text-[#94A3B8] hover:text-white border border-[#1F2937] transition flex items-center gap-1.5">
-              <i data-lucide="wand-2" class="w-3.5 h-3.5 text-indigo-400"></i>
+            <button id="tab-btn-intake" onclick="switchSourcingTab('intake')" class="text-xs font-medium px-3 py-1.5 rounded-md bg-[#18181B] hover:bg-[#27272A] text-[#A1A1AA] hover:text-white border border-[#27272A] transition flex items-center gap-1.5">
+              <i data-lucide="wand-2" class="w-3.5 h-3.5 text-[#F97316]"></i>
               <span>Portal JD Parser & Skill Architect</span>
-              <span class="text-[9px] bg-indigo-500/20 text-indigo-300 px-1.5 py-0.2 rounded-full font-mono">NEW</span>
+              <span class="text-[9px] bg-orange-500/10 text-orange-400 border border-orange-500/30 px-1.5 py-0.2 rounded font-mono font-bold">PORTAL INTAKE</span>
             </button>
           </div>
         </div>
 
         <!-- TAB 1: Direct Prompt Box -->
-        <div id="tab-direct-content" class="surface-card p-4 border border-[#1F2937] shadow-xl space-y-3 rounded-xl">
+        <div id="tab-direct-content" class="surface-card p-4 border border-[#27272A] shadow-2xl space-y-3 rounded-lg">
           <div class="relative">
-            <textarea id="raw-jd-input" rows="4" class="w-full bg-[#0A0D14] border border-[#1F2937] rounded-lg p-3.5 text-xs text-white placeholder-[#64748B] font-sans leading-relaxed focus:outline-none focus:border-indigo-500 resize-y" placeholder="Describe the candidate you need, or paste a job brief...&#10;e.g. Job Title: SAP HANA Cloud Consultant&#10;Location: Eindhoven, Netherlands&#10;Experience: 7-11 years..."></textarea>
+            <textarea id="raw-jd-input" rows="4" class="w-full bg-[#09090B] border border-[#27272A] rounded-md p-3.5 text-xs text-white placeholder-[#71717A] font-mono leading-relaxed focus:outline-none focus:border-[#F97316] resize-y" placeholder="Describe the candidate you need, or paste a job brief...&#10;e.g. Job Title: SAP HANA Cloud Consultant&#10;Location: Eindhoven, Netherlands&#10;Experience: 7-11 years..."></textarea>
           </div>
 
           <!-- Quick Presets & Sourcing Trigger -->
           <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
             <div class="flex flex-wrap items-center gap-1.5">
-              <span class="text-[11px] text-[#64748B] mr-1">Quick Presets:</span>
-              <button onclick="loadTemplate('sap')" class="text-[11px] bg-[#161F30] hover:bg-[#1E293B] text-[#CBD5E1] hover:text-white border border-[#1F2937] px-2.5 py-1 rounded-full transition">SAP HANA (Eindhoven)</button>
-              <button onclick="loadTemplate('embedded')" class="text-[11px] bg-[#161F30] hover:bg-[#1E293B] text-[#CBD5E1] hover:text-white border border-[#1F2937] px-2.5 py-1 rounded-full transition">Embedded C++ (Munich)</button>
-              <button onclick="loadTemplate('cloud')" class="text-[11px] bg-[#161F30] hover:bg-[#1E293B] text-[#CBD5E1] hover:text-white border border-[#1F2937] px-2.5 py-1 rounded-full transition">Cloud Architect (US)</button>
+              <span class="text-[11px] text-[#71717A] mr-1">Presets:</span>
+              <button onclick="loadTemplate('sap')" class="text-[11px] bg-[#18181B] hover:bg-[#27272A] text-[#E4E4E7] hover:text-white border border-[#27272A] px-2.5 py-1 rounded transition">SAP HANA (Eindhoven)</button>
+              <button onclick="loadTemplate('embedded')" class="text-[11px] bg-[#18181B] hover:bg-[#27272A] text-[#E4E4E7] hover:text-white border border-[#27272A] px-2.5 py-1 rounded transition">Embedded C++ (Munich)</button>
+              <button onclick="loadTemplate('cloud')" class="text-[11px] bg-[#18181B] hover:bg-[#27272A] text-[#E4E4E7] hover:text-white border border-[#27272A] px-2.5 py-1 rounded transition">Cloud Architect (US)</button>
             </div>
 
             <div class="flex items-center gap-2">
-              <button onclick="toggleAdvancedOptions()" id="btn-toggle-advanced" class="text-xs text-[#94A3B8] hover:text-white flex items-center gap-1 px-2 py-1">
-                <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5"></i>
+              <button onclick="toggleAdvancedOptions()" id="btn-toggle-advanced" class="text-xs text-[#A1A1AA] hover:text-white flex items-center gap-1 px-2.5 py-1.5 rounded bg-[#18181B] border border-[#27272A]">
+                <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5 text-[#F97316]"></i>
                 <span>Options</span>
               </button>
-              <button onclick="startSourcingPipeline()" id="btn-start-sourcing" class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 px-5 rounded-lg text-xs shadow-md shadow-indigo-600/20 transition">
-                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+              <button onclick="startSourcingPipeline()" id="btn-start-sourcing" class="flex items-center gap-2 bg-[#F97316] hover:bg-[#EA580C] text-black font-bold py-2 px-5 rounded-md text-xs shadow-md shadow-orange-500/20 transition">
+                <i data-lucide="crosshair" class="w-3.5 h-3.5"></i>
                 <span>Find Candidates</span>
               </button>
             </div>
           </div>
 
           <!-- Optional Collapsible Advanced Filters -->
-          <div id="advanced-options-panel" class="hidden pt-3 border-t border-[#1F2937] space-y-3">
+          <div id="advanced-options-panel" class="hidden pt-3 border-t border-[#27272A] space-y-3">
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
-                <label class="text-[10px] text-[#64748B] uppercase font-semibold block mb-1">Target Title</label>
-                <input type="text" id="rule-role-title" placeholder="e.g. SAP HANA Cloud Consultant" class="w-full bg-[#0A0D14] border border-[#1F2937] rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+                <label class="text-[10px] text-[#71717A] uppercase font-semibold block mb-1">Target Title</label>
+                <input type="text" id="rule-role-title" placeholder="e.g. SAP HANA Cloud Consultant" class="w-full bg-[#09090B] border border-[#27272A] rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#F97316]">
               </div>
               <div>
-                <label class="text-[10px] text-[#64748B] uppercase font-semibold block mb-1">Target Location</label>
-                <input type="text" id="rule-location" placeholder="e.g. Eindhoven, Netherlands" class="w-full bg-[#0A0D14] border border-[#1F2937] rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+                <label class="text-[10px] text-[#71717A] uppercase font-semibold block mb-1">Target Location</label>
+                <input type="text" id="rule-location" placeholder="e.g. Eindhoven, Netherlands" class="w-full bg-[#09090B] border border-[#27272A] rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#F97316]">
               </div>
               <div>
-                <label class="text-[10px] text-[#64748B] uppercase font-semibold block mb-1">Experience</label>
-                <input type="text" id="rule-experience" placeholder="e.g. 7 - 11 years" class="w-full bg-[#0A0D14] border border-[#1F2937] rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+                <label class="text-[10px] text-[#71717A] uppercase font-semibold block mb-1">Experience</label>
+                <input type="text" id="rule-experience" placeholder="e.g. 7 - 11 years" class="w-full bg-[#09090B] border border-[#27272A] rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#F97316]">
               </div>
             </div>
 
             <!-- Mandatory Skills Chips -->
             <div>
               <div class="flex items-center justify-between mb-1">
-                <label class="text-[10px] text-[#64748B] uppercase font-semibold">Mandatory Skills</label>
+                <label class="text-[10px] text-[#71717A] uppercase font-semibold">Mandatory Skills</label>
               </div>
-              <div id="mandatory-chips" class="flex flex-wrap gap-1.5 min-h-[32px] p-2 bg-[#0A0D14] border border-[#1F2937] rounded-lg">
+              <div id="mandatory-chips" class="flex flex-wrap gap-1.5 min-h-[32px] p-2 bg-[#09090B] border border-[#27272A] rounded-md">
                 <!-- Chips rendered by JS -->
               </div>
               <div class="flex gap-2 mt-2">
-                <input type="text" id="new-skill-input" placeholder="Add custom skill..." class="flex-1 bg-[#0A0D14] border border-[#1F2937] rounded-lg px-2.5 py-1 text-xs text-white focus:outline-none focus:border-indigo-500" onkeydown="if(event.key==='Enter'){event.preventDefault();addSkill();}">
-                <button onclick="addSkill()" class="bg-[#161F30] border border-[#1F2937] hover:bg-[#1E293B] text-xs px-3 py-1 rounded-lg text-white">Add</button>
+                <input type="text" id="new-skill-input" placeholder="Add custom skill..." class="flex-1 bg-[#09090B] border border-[#27272A] rounded px-2.5 py-1 text-xs text-white focus:outline-none focus:border-[#F97316]" onkeydown="if(event.key==='Enter'){event.preventDefault();addSkill();}">
+                <button onclick="addSkill()" class="bg-[#18181B] border border-[#27272A] hover:bg-[#27272A] text-xs px-3 py-1 rounded text-white font-medium">Add</button>
               </div>
             </div>
           </div>
@@ -171,19 +171,19 @@
         </div>
 
         <!-- TAB 2: Dedicated Unstructured Portal JD Intake & Skills Architect -->
-        <div id="tab-intake-content" class="hidden surface-card p-5 border border-[#1F2937] shadow-2xl space-y-5 rounded-xl">
+        <div id="tab-intake-content" class="hidden surface-card p-5 border border-[#27272A] shadow-2xl space-y-5 rounded-lg">
           
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#1F2937] pb-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#27272A] pb-3">
             <div>
               <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                <i data-lucide="wand-2" class="w-4 h-4 text-indigo-400"></i>
+                <i data-lucide="wand-2" class="w-4 h-4 text-[#F97316]"></i>
                 <span>Unstructured Portal JD Intake & Skill Extraction</span>
               </h3>
-              <p class="text-xs text-[#94A3B8]">Paste messy JD text from LinkedIn, Indeed, Greenhouse, or PDF. The engine formats it into standard brief format with editable skills.</p>
+              <p class="text-xs text-[#A1A1AA]">Paste messy JD text from LinkedIn, Indeed, Greenhouse, or PDF. The engine formats it into standard brief format with editable skills.</p>
             </div>
             <div class="flex items-center gap-2">
-              <button onclick="loadSamplePortalJD()" class="text-[11px] bg-[#161F30] hover:bg-[#1E293B] text-indigo-300 border border-[#1F2937] px-2.5 py-1 rounded-md transition flex items-center gap-1">
-                <i data-lucide="file-input" class="w-3 h-3"></i>
+              <button onclick="loadSamplePortalJD()" class="text-[11px] bg-[#18181B] hover:bg-[#27272A] text-orange-400 border border-[#27272A] px-2.5 py-1 rounded transition flex items-center gap-1 font-medium">
+                <i data-lucide="file-input" class="w-3 h-3 text-[#F97316]"></i>
                 <span>Load Sample Unstructured JD</span>
               </button>
             </div>
@@ -195,87 +195,87 @@
             <!-- Left: Raw Unstructured Input -->
             <div class="space-y-3 flex flex-col">
               <div class="flex items-center justify-between">
-                <label class="text-[11px] font-semibold uppercase tracking-wider text-[#94A3B8] flex items-center gap-1.5">
-                  <i data-lucide="clipboard-paste" class="w-3.5 h-3.5 text-indigo-400"></i>
+                <label class="text-[11px] font-semibold uppercase tracking-wider text-[#A1A1AA] flex items-center gap-1.5">
+                  <i data-lucide="clipboard-paste" class="w-3.5 h-3.5 text-[#F97316]"></i>
                   <span>1. Paste Raw Portal JD</span>
                 </label>
-                <span class="text-[10px] text-[#64748B]">LinkedIn / Indeed / PDF text</span>
+                <span class="text-[10px] text-[#71717A]">LinkedIn / Indeed / PDF text</span>
               </div>
               
-              <textarea id="portal-raw-jd" rows="13" class="w-full flex-1 bg-[#0A0D14] border border-[#1F2937] rounded-lg p-3.5 text-xs text-white placeholder-[#64748B] font-sans leading-relaxed focus:outline-none focus:border-indigo-500 resize-y" placeholder="Paste full unstructured job post here from LinkedIn, Indeed, Workday, etc...&#10;&#10;The parser will extract:&#10;• Job Title&#10;• Location & Region&#10;• Experience Range&#10;• Core Mandatory Technical Skills"></textarea>
+              <textarea id="portal-raw-jd" rows="13" class="w-full flex-1 bg-[#09090B] border border-[#27272A] rounded-md p-3.5 text-xs text-white placeholder-[#71717A] font-mono leading-relaxed focus:outline-none focus:border-[#F97316] resize-y" placeholder="Paste full unstructured job post here from LinkedIn, Indeed, Workday, etc...&#10;&#10;The parser will extract:&#10;• Job Title&#10;• Location & Region&#10;• Experience Range&#10;• Core Mandatory Technical Skills"></textarea>
 
-              <button id="btn-parse-portal-jd" onclick="parseUnstructuredJD()" class="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2.5 px-4 rounded-lg text-xs shadow-lg shadow-indigo-600/20 transition">
+              <button id="btn-parse-portal-jd" onclick="parseUnstructuredJD()" class="w-full flex items-center justify-center gap-2 bg-[#F97316] hover:bg-[#EA580C] text-black font-bold py-2.5 px-4 rounded-md text-xs shadow-lg shadow-orange-500/20 transition">
                 <i data-lucide="cpu" class="w-4 h-4"></i>
                 <span>⚡ Parse & Structure JD</span>
               </button>
             </div>
 
             <!-- Right: Structured Brief & Skills Architect -->
-            <div class="space-y-3.5 flex flex-col bg-[#0A0D14]/70 border border-[#1F2937] rounded-lg p-4">
-              <div class="flex items-center justify-between border-b border-[#1F2937] pb-2">
-                <label class="text-[11px] font-semibold uppercase tracking-wider text-[#94A3B8] flex items-center gap-1.5">
-                  <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-400"></i>
+            <div class="space-y-3.5 flex flex-col bg-[#09090B] border border-[#27272A] rounded-md p-4">
+              <div class="flex items-center justify-between border-b border-[#27272A] pb-2">
+                <label class="text-[11px] font-semibold uppercase tracking-wider text-[#A1A1AA] flex items-center gap-1.5">
+                  <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-[#10B981]"></i>
                   <span>2. Structured Brief & Skills Architect</span>
                 </label>
-                <span id="parsing-badge" class="hidden text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full font-mono">
-                  ✓ Parsed
+                <span id="parsing-badge" class="hidden text-[10px] text-[#10B981] bg-[#10B981]/10 border border-[#10B981]/20 px-2 py-0.5 rounded font-mono font-bold">
+                  ✓ PARSED
                 </span>
               </div>
 
               <!-- Editable Meta Fields -->
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <div>
-                  <label class="text-[10px] text-[#64748B] uppercase font-semibold block mb-1">Job Title</label>
-                  <input type="text" id="intake-role-title" placeholder="e.g. SAP HANA Cloud Consultant" oninput="updateFormattedBriefPreview()" class="w-full bg-[#111827] border border-[#1F2937] rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+                  <label class="text-[10px] text-[#71717A] uppercase font-semibold block mb-1">Job Title</label>
+                  <input type="text" id="intake-role-title" placeholder="e.g. SAP HANA Cloud Consultant" oninput="updateFormattedBriefPreview()" class="w-full bg-[#18181B] border border-[#27272A] rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#F97316]">
                 </div>
                 <div>
-                  <label class="text-[10px] text-[#64748B] uppercase font-semibold block mb-1">Location</label>
-                  <input type="text" id="intake-location" placeholder="e.g. Eindhoven, Netherlands" oninput="updateFormattedBriefPreview()" class="w-full bg-[#111827] border border-[#1F2937] rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+                  <label class="text-[10px] text-[#71717A] uppercase font-semibold block mb-1">Location</label>
+                  <input type="text" id="intake-location" placeholder="e.g. Eindhoven, Netherlands" oninput="updateFormattedBriefPreview()" class="w-full bg-[#18181B] border border-[#27272A] rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#F97316]">
                 </div>
                 <div>
-                  <label class="text-[10px] text-[#64748B] uppercase font-semibold block mb-1">Experience</label>
-                  <input type="text" id="intake-experience" placeholder="e.g. 7-11 years" oninput="updateFormattedBriefPreview()" class="w-full bg-[#111827] border border-[#1F2937] rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+                  <label class="text-[10px] text-[#71717A] uppercase font-semibold block mb-1">Experience</label>
+                  <input type="text" id="intake-experience" placeholder="e.g. 7-11 years" oninput="updateFormattedBriefPreview()" class="w-full bg-[#18181B] border border-[#27272A] rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#F97316]">
                 </div>
               </div>
 
               <!-- Interactive Mandatory Skills Manager -->
               <div class="space-y-1.5">
                 <div class="flex items-center justify-between">
-                  <label class="text-[10px] text-[#64748B] uppercase font-semibold">Mandatory Skills (Click × to remove)</label>
-                  <span class="text-[10px] text-indigo-400 font-mono" id="intake-skills-count">0 skills</span>
+                  <label class="text-[10px] text-[#71717A] uppercase font-semibold">Mandatory Skills (Click × to remove)</label>
+                  <span class="text-[10px] text-orange-400 font-mono font-bold" id="intake-skills-count">0 skills</span>
                 </div>
                 
                 <!-- Interactive Chips Container -->
-                <div id="intake-skills-chips" class="flex flex-wrap gap-1.5 min-h-[44px] max-h-32 overflow-y-auto p-2 bg-[#111827] border border-[#1F2937] rounded-lg">
-                  <span class="text-[11px] text-[#64748B] italic">No skills added yet. Paste a JD and click parse, or add manually below.</span>
+                <div id="intake-skills-chips" class="flex flex-wrap gap-1.5 min-h-[44px] max-h-32 overflow-y-auto p-2 bg-[#121215] border border-[#27272A] rounded">
+                  <span class="text-[11px] text-[#71717A] italic">No skills added yet. Paste a JD and click parse, or add manually below.</span>
                 </div>
 
                 <!-- Add Custom Skill Input -->
                 <div class="flex gap-2 pt-1">
-                  <input type="text" id="intake-new-skill" placeholder="Add missing skill (e.g. PlanViz, SLT, CDS Views)..." class="flex-1 bg-[#111827] border border-[#1F2937] rounded px-2.5 py-1 text-xs text-white placeholder-[#64748B] focus:outline-none focus:border-indigo-500" onkeydown="if(event.key==='Enter'){event.preventDefault();addIntakeSkill();}">
-                  <button onclick="addIntakeSkill()" class="bg-[#161F30] hover:bg-[#1E293B] border border-[#1F2937] text-white text-xs px-3 py-1 rounded font-medium transition flex items-center gap-1">
-                    <i data-lucide="plus" class="w-3 h-3 text-indigo-400"></i>
+                  <input type="text" id="intake-new-skill" placeholder="Add missing skill (e.g. PlanViz, SLT, CDS Views)..." class="flex-1 bg-[#121215] border border-[#27272A] rounded px-2.5 py-1 text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#F97316]" onkeydown="if(event.key==='Enter'){event.preventDefault();addIntakeSkill();}">
+                  <button onclick="addIntakeSkill()" class="bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-white text-xs px-3 py-1 rounded font-medium transition flex items-center gap-1">
+                    <i data-lucide="plus" class="w-3 h-3 text-[#F97316]"></i>
                     <span>Add Skill</span>
                   </button>
                 </div>
 
                 <!-- Quick Suggestions / Preferred Skills -->
                 <div id="intake-suggestions-container" class="hidden pt-1 space-y-1">
-                  <span class="text-[10px] text-[#64748B] block">Quick-add secondary skills detected:</span>
+                  <span class="text-[10px] text-[#71717A] block">Quick-add secondary skills detected:</span>
                   <div id="intake-suggestions-chips" class="flex flex-wrap gap-1"></div>
                 </div>
               </div>
 
               <!-- Standardized Brief Live Preview (Exact Format) -->
-              <div class="space-y-1 pt-2 border-t border-[#1F2937]">
+              <div class="space-y-1 pt-2 border-t border-[#27272A]">
                 <div class="flex items-center justify-between">
-                  <label class="text-[10px] text-[#64748B] uppercase font-semibold">Standardized Agent Brief Preview</label>
-                  <button onclick="copyFormattedBrief()" class="text-[10px] text-indigo-400 hover:text-indigo-300 flex items-center gap-1">
+                  <label class="text-[10px] text-[#71717A] uppercase font-semibold">Standardized Agent Brief Preview</label>
+                  <button onclick="copyFormattedBrief()" class="text-[10px] text-orange-400 hover:text-orange-300 flex items-center gap-1">
                     <i data-lucide="copy" class="w-3 h-3"></i>
                     <span id="copy-brief-label">Copy Format</span>
                   </button>
                 </div>
-                <pre id="intake-formatted-preview" class="w-full bg-[#0A0D14] border border-[#1F2937] rounded-lg p-2.5 text-[11px] font-mono text-[#E2E8F0] whitespace-pre-wrap leading-relaxed max-h-32 overflow-y-auto">Job Title: SAP HANA Cloud Consultant
+                <pre id="intake-formatted-preview" class="w-full bg-[#121215] border border-[#27272A] rounded p-2.5 text-[11px] font-mono text-white whitespace-pre-wrap leading-relaxed max-h-32 overflow-y-auto">Job Title: SAP HANA Cloud Consultant
 Location: Eindhoven, Netherlands
 Experience: 7-11 years
 
@@ -291,8 +291,8 @@ Mandatory Requirements:
 
               <!-- Action: Find Candidates with this profile -->
               <div class="pt-1">
-                <button id="btn-intake-source" onclick="sourceFromIntake()" class="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2.5 px-4 rounded-lg text-xs shadow-lg shadow-emerald-600/20 transition">
-                  <i data-lucide="search" class="w-4 h-4"></i>
+                <button id="btn-intake-source" onclick="sourceFromIntake()" class="w-full flex items-center justify-center gap-2 bg-[#F97316] hover:bg-[#EA580C] text-black font-bold py-2.5 px-4 rounded-md text-xs shadow-lg shadow-orange-500/20 transition">
+                  <i data-lucide="crosshair" class="w-4 h-4"></i>
                   <span>Find Candidates with this Profile</span>
                 </button>
               </div>
@@ -307,12 +307,12 @@ Mandatory Requirements:
       <!-- ======================================================== -->
       <!-- INLINE LOADING STATE                                     -->
       <!-- ======================================================== -->
-      <div id="sourcing-progress-card" class="hidden max-w-4xl mx-auto surface-card p-4 border border-indigo-500/30">
+      <div id="sourcing-progress-card" class="hidden max-w-4xl mx-auto surface-card p-4 border border-[#F97316]/40">
         <div class="flex items-center gap-3">
-          <div class="w-4 h-4 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin shrink-0"></div>
+          <div class="w-4 h-4 border-2 border-[#F97316] border-t-transparent rounded-full animate-spin shrink-0"></div>
           <div class="flex-1 min-w-0">
-            <h4 class="text-xs font-semibold text-white">Sourcing in progress...</h4>
-            <p id="sourcing-status-text" class="text-[11px] text-indigo-300 truncate">Searching localized indexes & verifying candidate geography...</p>
+            <h4 class="text-xs font-bold text-white">Sourcing in progress...</h4>
+            <p id="sourcing-status-text" class="text-[11px] text-orange-300 font-mono truncate">Searching localized indexes & verifying candidate geography...</p>
           </div>
         </div>
       </div>
@@ -323,17 +323,17 @@ Mandatory Requirements:
       <div id="results-container" class="hidden max-w-4xl mx-auto space-y-4">
         
         <!-- Header & Multi-Filter Bar -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#1F2937] pb-3">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#27272A] pb-3">
           <div class="flex items-center gap-2.5">
-            <h3 class="text-sm font-bold text-white">Discovered Candidates</h3>
-            <span id="results-count-badge" class="text-xs font-mono bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 px-2 py-0.5 rounded-full">
+            <h3 class="text-sm font-bold text-white tracking-tight">Discovered Candidates</h3>
+            <span id="results-count-badge" class="text-xs font-mono bg-orange-500/10 text-orange-400 border border-orange-500/30 px-2 py-0.5 rounded font-bold">
               0 Found
             </span>
           </div>
 
           <div class="flex flex-wrap items-center gap-2">
             <!-- Geographic Filter -->
-            <select id="filter-geo" onchange="filterResults()" class="bg-[#111827] border border-[#1F2937] rounded-lg px-2 py-1 text-xs text-[#CBD5E1] focus:outline-none focus:border-indigo-500">
+            <select id="filter-geo" onchange="filterResults()" class="bg-[#18181B] border border-[#27272A] rounded px-2.5 py-1 text-xs text-white focus:outline-none focus:border-[#F97316]">
               <option value="ALL">All Locations</option>
               <option value="ELIGIBLE">✓ Eligible Only</option>
               <option value="UNKNOWN">? Unresolved</option>
@@ -341,7 +341,7 @@ Mandatory Requirements:
             </select>
 
             <!-- Match Status Filter -->
-            <select id="filter-match" onchange="filterResults()" class="bg-[#111827] border border-[#1F2937] rounded-lg px-2 py-1 text-xs text-[#CBD5E1] focus:outline-none focus:border-indigo-500">
+            <select id="filter-match" onchange="filterResults()" class="bg-[#18181B] border border-[#27272A] rounded px-2.5 py-1 text-xs text-white focus:outline-none focus:border-[#F97316]">
               <option value="ALL">All Match States</option>
               <option value="EXPLICIT_MATCH">Explicit Match</option>
               <option value="PARTIAL_MATCH">Partial Match</option>
@@ -349,14 +349,14 @@ Mandatory Requirements:
             </select>
 
             <div class="relative w-44">
-              <i data-lucide="search" class="w-3.5 h-3.5 text-[#64748B] absolute left-2.5 top-2"></i>
-              <input type="text" id="results-filter" oninput="filterResults()" placeholder="Filter keyword..." class="w-full bg-[#111827] border border-[#1F2937] rounded-lg pl-8 pr-3 py-1 text-xs text-white placeholder-[#64748B] focus:outline-none focus:border-indigo-500">
+              <i data-lucide="search" class="w-3.5 h-3.5 text-[#71717A] absolute left-2.5 top-2"></i>
+              <input type="text" id="results-filter" oninput="filterResults()" placeholder="Filter keyword..." class="w-full bg-[#18181B] border border-[#27272A] rounded pl-8 pr-3 py-1 text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#F97316]">
             </div>
           </div>
         </div>
 
         <!-- Clean Candidates List -->
-        <div id="candidates-grid" class="space-y-2.5">
+        <div id="candidates-grid" class="space-y-2">
           <!-- Populated by JS -->
         </div>
 
@@ -373,89 +373,89 @@ Mandatory Requirements:
     <div class="space-y-4">
       
       <!-- Drawer Header -->
-      <div class="flex items-start justify-between border-b border-[#1F2937] pb-3">
+      <div class="flex items-start justify-between border-b border-[#27272A] pb-3">
         <div class="flex items-center gap-3">
-          <div id="drawer-avatar" class="w-10 h-10 rounded-full bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center font-bold text-indigo-300 text-xs">
+          <div id="drawer-avatar" class="w-10 h-10 rounded bg-[#18181B] border border-[#27272A] flex items-center justify-center font-bold text-[#F97316] text-xs">
             CA
           </div>
           <div>
             <h3 id="drawer-name" class="font-bold text-sm text-white">Candidate Name</h3>
-            <p id="drawer-headline" class="text-xs text-[#94A3B8] line-clamp-1">Headline</p>
+            <p id="drawer-headline" class="text-xs text-[#A1A1AA] line-clamp-1">Headline</p>
           </div>
         </div>
-        <button onclick="closeDrawer()" class="text-[#94A3B8] hover:text-white p-1 rounded-md">
+        <button onclick="closeDrawer()" class="text-[#71717A] hover:text-white p-1 rounded">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
 
       <!-- Match Score & Geographic Eligibility -->
       <div class="grid grid-cols-2 gap-2">
-        <div class="surface-card p-3 border border-[#1F2937]">
-          <span class="text-[10px] text-[#64748B] uppercase font-semibold block mb-0.5">Overall Fit</span>
-          <span id="drawer-score-badge" class="badge-strong text-xs font-mono font-bold px-2 py-0.5 rounded-full">85% Fit</span>
+        <div class="surface-card p-3 border border-[#27272A]">
+          <span class="text-[10px] text-[#71717A] uppercase font-semibold block mb-0.5">Overall Fit</span>
+          <span id="drawer-score-badge" class="badge-strong text-xs font-mono font-bold px-2 py-0.5 rounded">85% Fit</span>
         </div>
-        <div class="surface-card p-3 border border-[#1F2937]">
-          <span class="text-[10px] text-[#64748B] uppercase font-semibold block mb-0.5">Geographic State</span>
-          <span id="drawer-geo-badge" class="text-xs font-bold px-2 py-0.5 rounded-full inline-block">ELIGIBLE</span>
+        <div class="surface-card p-3 border border-[#27272A]">
+          <span class="text-[10px] text-[#71717A] uppercase font-semibold block mb-0.5">Geographic State</span>
+          <span id="drawer-geo-badge" class="text-xs font-bold px-2 py-0.5 rounded inline-block">ELIGIBLE</span>
         </div>
       </div>
 
       <!-- Geographic Explanation -->
-      <div class="surface-card p-3 border border-[#1F2937] space-y-1">
-        <span class="text-[10px] text-[#64748B] uppercase font-semibold block">Location Evidence Audit</span>
-        <p id="drawer-geo-reason" class="text-xs text-[#CBD5E1] leading-relaxed"></p>
+      <div class="surface-card p-3 border border-[#27272A] space-y-1">
+        <span class="text-[10px] text-[#71717A] uppercase font-semibold block">Location Evidence Audit</span>
+        <p id="drawer-geo-reason" class="text-xs text-[#E4E4E7] leading-relaxed"></p>
       </div>
 
       <!-- Component Score Breakdown -->
-      <div class="surface-card p-3 border border-[#1F2937] space-y-2">
-        <span class="text-[10px] text-[#64748B] uppercase font-semibold block">Component Evaluation (0-100)</span>
+      <div class="surface-card p-3 border border-[#27272A] space-y-2">
+        <span class="text-[10px] text-[#71717A] uppercase font-semibold block">Component Evaluation (0-100)</span>
         <div class="grid grid-cols-4 gap-2 text-center text-xs font-mono">
-          <div class="bg-[#0A0D14] p-1.5 rounded border border-[#1F2937]">
-            <span class="text-[9px] text-[#64748B] block">Skills (55%)</span>
-            <span id="drawer-score-skills" class="font-bold text-indigo-400">0</span>
+          <div class="bg-[#09090B] p-1.5 rounded border border-[#27272A]">
+            <span class="text-[9px] text-[#71717A] block">Skills (55%)</span>
+            <span id="drawer-score-skills" class="font-bold text-[#F97316]">0</span>
           </div>
-          <div class="bg-[#0A0D14] p-1.5 rounded border border-[#1F2937]">
-            <span class="text-[9px] text-[#64748B] block">Seniority (20%)</span>
-            <span id="drawer-score-seniority" class="font-bold text-indigo-400">0</span>
+          <div class="bg-[#09090B] p-1.5 rounded border border-[#27272A]">
+            <span class="text-[9px] text-[#71717A] block">Seniority (20%)</span>
+            <span id="drawer-score-seniority" class="font-bold text-[#F97316]">0</span>
           </div>
-          <div class="bg-[#0A0D14] p-1.5 rounded border border-[#1F2937]">
-            <span class="text-[9px] text-[#64748B] block">Role (15%)</span>
-            <span id="drawer-score-role" class="font-bold text-indigo-400">0</span>
+          <div class="bg-[#09090B] p-1.5 rounded border border-[#27272A]">
+            <span class="text-[9px] text-[#71717A] block">Role (15%)</span>
+            <span id="drawer-score-role" class="font-bold text-[#F97316]">0</span>
           </div>
-          <div class="bg-[#0A0D14] p-1.5 rounded border border-[#1F2937]">
-            <span class="text-[9px] text-[#64748B] block">Quality (10%)</span>
-            <span id="drawer-score-evidence" class="font-bold text-indigo-400">0</span>
+          <div class="bg-[#09090B] p-1.5 rounded border border-[#27272A]">
+            <span class="text-[9px] text-[#71717A] block">Quality (10%)</span>
+            <span id="drawer-score-evidence" class="font-bold text-[#F97316]">0</span>
           </div>
         </div>
       </div>
 
       <!-- Verified Supporting Quotations -->
       <div class="space-y-1.5">
-        <span class="text-[11px] text-[#64748B] uppercase font-semibold block">Technical Evidence Quotations</span>
+        <span class="text-[11px] text-[#71717A] uppercase font-semibold block">Technical Evidence Quotations</span>
         <div id="drawer-quotations-list" class="space-y-1.5 max-h-40 overflow-y-auto pr-1"></div>
       </div>
 
       <!-- Personalized Outreach Draft -->
-      <div class="space-y-1.5 pt-2 border-t border-[#1F2937]">
+      <div class="space-y-1.5 pt-2 border-t border-[#27272A]">
         <div class="flex items-center justify-between">
-          <span class="text-[11px] text-indigo-400 uppercase font-semibold flex items-center gap-1">
+          <span class="text-[11px] text-[#F97316] uppercase font-semibold flex items-center gap-1">
             <i data-lucide="sparkles" class="w-3 h-3"></i>
             <span>Personalized Outreach</span>
           </span>
-          <button onclick="regenerateOutreach()" class="text-[10px] text-indigo-400 hover:text-indigo-300">Regenerate</button>
+          <button onclick="regenerateOutreach()" class="text-[10px] text-orange-400 hover:text-orange-300">Regenerate</button>
         </div>
-        <textarea id="drawer-outreach-text" rows="5" class="w-full bg-[#0A0D14] border border-[#1F2937] rounded-lg p-2.5 text-xs text-white leading-relaxed font-sans focus:outline-none focus:border-indigo-500"></textarea>
+        <textarea id="drawer-outreach-text" rows="5" class="w-full bg-[#09090B] border border-[#27272A] rounded p-2.5 text-xs text-white leading-relaxed font-mono focus:outline-none focus:border-[#F97316]"></textarea>
       </div>
 
     </div>
 
     <!-- Actions -->
-    <div class="pt-4 border-t border-[#1F2937] flex gap-2">
-      <button onclick="copyOutreachText()" id="btn-copy-outreach" class="flex-1 flex items-center justify-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold py-2 rounded-lg transition">
+    <div class="pt-4 border-t border-[#27272A] flex gap-2">
+      <button onclick="copyOutreachText()" id="btn-copy-outreach" class="flex-1 flex items-center justify-center gap-1.5 bg-[#F97316] hover:bg-[#EA580C] text-black text-xs font-bold py-2 rounded transition">
         <i data-lucide="copy" class="w-3.5 h-3.5"></i>
         <span id="copy-text-label">Copy Message</span>
       </button>
-      <a id="drawer-profile-link" href="#" target="_blank" class="flex items-center justify-center gap-1.5 bg-[#161F30] hover:bg-[#1E293B] border border-[#1F2937] text-[#CBD5E1] text-xs font-semibold px-4 py-2 rounded-lg transition">
+      <a id="drawer-profile-link" href="#" target="_blank" class="flex items-center justify-center gap-1.5 bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-white text-xs font-semibold px-4 py-2 rounded transition">
         <span>Public Profile</span>
         <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
       </a>
