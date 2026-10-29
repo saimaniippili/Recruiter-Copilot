@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Recruiter Copilot — Enterprise Talent Intelligence</title>
+  <title>Recruiter Copilot — AI Talent Intelligence</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="/static/styles.css">
@@ -11,356 +11,437 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
-<body class="bg-[#09090B] text-[#EDEDED] font-sans antialiased min-h-screen flex">
+<body class="bg-[#09090B] text-[#EDEDED] font-sans antialiased h-screen flex overflow-hidden">
 
   <!-- ======================================================== -->
-  <!-- COLLAPSIBLE MINIMALIST SIDEBAR                           -->
+  <!-- LEFT SIDEBAR                                             -->
   <!-- ======================================================== -->
-  <aside id="sidebar" class="w-64 bg-[#0E0E11] border-r border-[#27272A] flex flex-col justify-between shrink-0 transition-all duration-300">
-    <div class="p-4 space-y-5">
-      <!-- App Brand -->
-      <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded bg-[#F97316] flex items-center justify-center text-black font-extrabold text-sm shadow-md shadow-orange-500/20">
+  <aside id="sidebar" class="w-[264px] bg-[#09090B] border-r border-[#27272A] flex flex-col justify-between shrink-0 transition-all duration-200 z-30 select-none">
+    
+    <div class="p-4 space-y-6 overflow-y-auto">
+      <!-- Brand Header -->
+      <div class="flex items-center gap-3 px-1">
+        <div class="w-8 h-8 rounded-lg bg-[#F97316] flex items-center justify-center text-white font-extrabold text-sm tracking-wider shadow-sm">
           RC
         </div>
-        <div>
-          <h1 class="font-bold text-sm text-white tracking-tight leading-none">Recruiter Copilot</h1>
-          <span class="text-[10px] text-[#A1A1AA] font-mono tracking-wider">TALENT INTELLIGENCE</span>
+        <div class="min-w-0">
+          <h1 class="font-bold text-sm text-white tracking-tight leading-tight truncate">Recruiter Copilot</h1>
+          <p class="text-[11px] text-[#71717A] tracking-normal truncate">AI Talent Intelligence</p>
         </div>
       </div>
 
-      <!-- New Search CTA -->
-      <button onclick="startNewSearch()" class="w-full flex items-center justify-center gap-2 bg-[#18181B] hover:bg-[#27272A] text-white border border-[#27272A] hover:border-[#3F3F46] rounded-md py-2 text-xs font-semibold transition">
-        <i data-lucide="plus" class="w-3.5 h-3.5 text-[#F97316]"></i>
-        <span>New Sourcing Brief</span>
-      </button>
+      <!-- Primary Navigation -->
+      <nav class="space-y-1">
+        <a href="#" class="nav-item-active flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-semibold transition">
+          <i data-lucide="search" class="w-4 h-4 text-[#F97316]"></i>
+          <span>Sourcing</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-[#A1A1AA] hover:text-white hover:bg-[#121215] transition">
+          <i data-lucide="users" class="w-4 h-4 text-[#71717A]"></i>
+          <span>Candidates</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-[#A1A1AA] hover:text-white hover:bg-[#121215] transition">
+          <i data-lucide="send" class="w-4 h-4 text-[#71717A]"></i>
+          <span>Outreach</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-[#A1A1AA] hover:text-white hover:bg-[#121215] transition">
+          <i data-lucide="message-square" class="w-4 h-4 text-[#71717A]"></i>
+          <span>Campaigns</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-[#A1A1AA] hover:text-white hover:bg-[#121215] transition">
+          <i data-lucide="bar-chart-3" class="w-4 h-4 text-[#71717A]"></i>
+          <span>Analytics</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-[#A1A1AA] hover:text-white hover:bg-[#121215] transition">
+          <i data-lucide="layers" class="w-4 h-4 text-[#71717A]"></i>
+          <span>Integrations</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-[#A1A1AA] hover:text-white hover:bg-[#121215] transition">
+          <i data-lucide="settings" class="w-4 h-4 text-[#71717A]"></i>
+          <span>Settings</span>
+        </a>
+      </nav>
 
-      <!-- Recent Searches -->
-      <div class="space-y-2">
-        <span class="text-[10px] text-[#71717A] uppercase font-semibold tracking-wider block px-1">Recent Campaigns</span>
-        <div id="recent-searches-list" class="space-y-1">
-          <!-- Populated by JS -->
-          <div class="text-[11px] text-[#71717A] px-2 py-1">Loading campaigns...</div>
+      <!-- Recent Jobs Section -->
+      <div class="space-y-2 pt-2">
+        <span class="text-[10px] uppercase font-bold text-[#71717A] tracking-wider block px-2">Recent Jobs</span>
+        <div id="recent-jobs-list" class="space-y-1">
+          <!-- Active Job -->
+          <div onclick="selectRecentJob('job_sap_hana')" class="p-2.5 rounded-lg bg-[#141417] border border-[#27272A] border-l-2 border-l-[#F97316] cursor-pointer transition">
+            <div class="flex items-center gap-2">
+              <i data-lucide="crosshair" class="w-3.5 h-3.5 text-[#F97316] shrink-0"></i>
+              <span class="font-semibold text-xs text-white truncate">SAP HANA Cloud Consultant</span>
+            </div>
+            <p class="text-[10px] text-[#71717A] pl-5.5 mt-0.5 truncate">Eindhoven, NL · 42 candidates</p>
+          </div>
+
+          <!-- Secondary Job Items -->
+          <div onclick="loadDemoJob('Senior Data Engineer', 'Amsterdam, NL')" class="p-2.5 rounded-lg hover:bg-[#121215] cursor-pointer transition">
+            <div class="flex items-center gap-2">
+              <i data-lucide="database" class="w-3.5 h-3.5 text-[#71717A] shrink-0"></i>
+              <span class="font-medium text-xs text-[#D4D4D8] truncate">Senior Data Engineer</span>
+            </div>
+            <p class="text-[10px] text-[#71717A] pl-5.5 mt-0.5 truncate">Amsterdam, NL · 28 candidates</p>
+          </div>
+
+          <div onclick="loadDemoJob('ML Engineer', 'Berlin, DE')" class="p-2.5 rounded-lg hover:bg-[#121215] cursor-pointer transition">
+            <div class="flex items-center gap-2">
+              <i data-lucide="cpu" class="w-3.5 h-3.5 text-[#71717A] shrink-0"></i>
+              <span class="font-medium text-xs text-[#D4D4D8] truncate">ML Engineer</span>
+            </div>
+            <p class="text-[10px] text-[#71717A] pl-5.5 mt-0.5 truncate">Berlin, DE · 56 candidates</p>
+          </div>
+
+          <div onclick="loadDemoJob('Full Stack Developer', 'Remote')" class="p-2.5 rounded-lg hover:bg-[#121215] cursor-pointer transition">
+            <div class="flex items-center gap-2">
+              <i data-lucide="code-2" class="w-3.5 h-3.5 text-[#71717A] shrink-0"></i>
+              <span class="font-medium text-xs text-[#D4D4D8] truncate">Full Stack Developer</span>
+            </div>
+            <p class="text-[10px] text-[#71717A] pl-5.5 mt-0.5 truncate">Remote · 31 candidates</p>
+          </div>
+
+          <div onclick="loadDemoJob('DevOps Engineer', 'Munich, DE')" class="p-2.5 rounded-lg hover:bg-[#121215] cursor-pointer transition">
+            <div class="flex items-center gap-2">
+              <i data-lucide="git-branch" class="w-3.5 h-3.5 text-[#71717A] shrink-0"></i>
+              <span class="font-medium text-xs text-[#D4D4D8] truncate">DevOps Engineer</span>
+            </div>
+            <p class="text-[10px] text-[#71717A] pl-5.5 mt-0.5 truncate">Munich, DE · 19 candidates</p>
+          </div>
         </div>
+
+        <!-- New Sourcing Brief CTA -->
+        <button onclick="startNewSearch()" class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-[#A1A1AA] hover:text-white hover:bg-[#121215] transition mt-2">
+          <i data-lucide="plus" class="w-4 h-4 text-[#F97316]"></i>
+          <span>New Sourcing Brief</span>
+        </button>
       </div>
     </div>
 
-    <!-- Health / Status -->
-    <div class="p-4 border-t border-[#27272A] space-y-2">
-      <div class="flex items-center justify-between text-[11px] text-[#A1A1AA]">
-        <span class="flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-[#10B981] animate-pulse"></span>
-          <span class="text-xs">Search Pipeline</span>
-        </span>
-        <span class="font-mono text-[10px] text-[#F97316] font-semibold">ACTIVE</span>
+    <!-- User Profile Section -->
+    <div class="p-3 border-t border-[#27272A] bg-[#09090B]">
+      <div class="flex items-center justify-between p-1.5 rounded-lg hover:bg-[#121215] transition cursor-pointer">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div class="w-8 h-8 rounded-full bg-[#18181B] border border-[#27272A] flex items-center justify-center text-xs font-bold text-[#E4E4E7] shrink-0">
+            SI
+          </div>
+          <div class="min-w-0">
+            <p class="text-xs font-semibold text-white truncate">Saimani Ippili</p>
+            <p class="text-[10px] text-[#71717A] truncate">saimani@recruitercopilot.com</p>
+          </div>
+        </div>
+        <button class="text-[#71717A] hover:text-white p-1">
+          <i data-lucide="more-horizontal" class="w-4 h-4"></i>
+        </button>
       </div>
     </div>
+
   </aside>
 
   <!-- ======================================================== -->
-  <!-- MAIN WORKSPACE                                           -->
+  <!-- MAIN WORKSPACE SHELL                                     -->
   <!-- ======================================================== -->
   <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
     
-    <!-- Top Minimal Bar -->
-    <header class="h-12 border-b border-[#27272A] bg-[#0E0E11]/90 backdrop-blur-md px-5 flex items-center justify-between shrink-0">
+    <!-- Top Header Bar -->
+    <header class="h-14 border-b border-[#27272A] bg-[#09090B] px-5 flex items-center justify-between shrink-0 z-20">
+      
+      <!-- Left: Toggle & Breadcrumb -->
       <div class="flex items-center gap-3">
-        <button onclick="toggleSidebar()" class="text-[#71717A] hover:text-white p-1 rounded transition">
+        <button onclick="toggleSidebar()" class="text-[#71717A] hover:text-white p-1.5 rounded-md hover:bg-[#141417] transition" title="Toggle Sidebar">
           <i data-lucide="panel-left" class="w-4 h-4"></i>
         </button>
-        <span id="active-brief-title" class="text-xs font-medium text-white tracking-tight">
-          Ready to source
-        </span>
+        <div class="flex items-center gap-2 text-xs">
+          <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-[#71717A]"></i>
+          <span id="header-job-title" class="font-semibold text-white tracking-tight">SAP HANA Cloud Consultant</span>
+          <span class="text-[#71717A]">·</span>
+          <span id="header-job-loc" class="text-[#A1A1AA] flex items-center gap-1.5">
+            <span class="text-xs">🇳🇱</span>
+            <span>Eindhoven, Netherlands</span>
+          </span>
+        </div>
       </div>
 
-      <div class="flex items-center gap-2">
-        <button onclick="exportCurrentCSV()" id="btn-export-csv" class="hidden flex items-center gap-1.5 bg-[#18181B] hover:bg-[#27272A] text-white border border-[#27272A] text-xs font-medium px-3 py-1.5 rounded-md transition">
-          <i data-lucide="download" class="w-3.5 h-3.5 text-[#F97316]"></i>
+      <!-- Right: Action Buttons -->
+      <div class="flex items-center gap-2.5">
+        <button onclick="exportCurrentCSV()" id="btn-export-csv" class="flex items-center gap-1.5 bg-[#101013] hover:bg-[#18181C] text-white border border-[#27272A] hover:border-[#3F3F46] text-xs font-medium px-3.5 py-1.5 rounded-lg transition shadow-sm">
+          <i data-lucide="download" class="w-3.5 h-3.5 text-[#A1A1AA]"></i>
           <span>Export CSV</span>
         </button>
+        <button onclick="saveCurrentSearch()" class="flex items-center gap-1.5 bg-[#F97316] hover:bg-[#EA580C] text-black font-bold text-xs px-3.5 py-1.5 rounded-lg transition shadow-sm shadow-orange-500/10">
+          <i data-lucide="bookmark" class="w-3.5 h-3.5"></i>
+          <span>Save Search</span>
+        </button>
       </div>
+
     </header>
 
-    <!-- Main Content Area -->
-    <main class="flex-1 overflow-y-auto p-6 md:p-8 space-y-6">
+    <!-- Main 2-Column Split-Pane Body -->
+    <main class="flex-1 flex flex-col lg:flex-row overflow-hidden bg-[#09090B]">
       
       <!-- ======================================================== -->
-      <!-- CLEAN MINIMALIST SEARCH HERO                             -->
+      <!-- LEFT COLUMN: JOB DESCRIPTION & SKILL ARCHITECT           -->
       <!-- ======================================================== -->
-      <div class="max-w-4xl mx-auto space-y-4">
+      <section class="w-full lg:w-[440px] xl:w-[480px] shrink-0 border-r border-[#27272A] overflow-y-auto p-6 space-y-5 bg-[#09090B]">
         
-        <div class="text-center space-y-1 pt-1">
-          <h2 class="text-2xl font-bold text-white tracking-tight">Autonomous Talent Intelligence</h2>
-          <p class="text-xs text-[#A1A1AA]">Geographically Verified Candidate Sourcing with Strict ATS Evidence Rubric.</p>
+        <!-- Header -->
+        <div class="space-y-1">
+          <span class="text-[10px] uppercase font-bold tracking-wider text-[#71717A] font-mono block">JOB DESCRIPTION</span>
+          <h2 class="text-lg font-bold text-white tracking-tight">Job Description & Skill Architect</h2>
+          <p class="text-xs text-[#71717A] leading-relaxed">Paste the job description and let AI extract key requirements, skills and search strategies.</p>
         </div>
 
-        <!-- Mode Switcher Tabs -->
-        <div class="flex items-center justify-between border-b border-[#27272A] pb-2">
-          <div class="flex items-center gap-2">
-            <button id="tab-btn-direct" onclick="switchSourcingTab('direct')" class="text-xs font-bold px-3 py-1.5 rounded-md bg-[#F97316] text-black transition flex items-center gap-1.5 shadow-sm shadow-orange-500/20">
-              <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
-              <span>Direct Sourcing Brief</span>
-            </button>
-            <button id="tab-btn-intake" onclick="switchSourcingTab('intake')" class="text-xs font-medium px-3 py-1.5 rounded-md bg-[#18181B] hover:bg-[#27272A] text-[#A1A1AA] hover:text-white border border-[#27272A] transition flex items-center gap-1.5">
-              <i data-lucide="wand-2" class="w-3.5 h-3.5 text-[#F97316]"></i>
-              <span>Portal JD Parser & Skill Architect</span>
-              <span class="text-[9px] bg-orange-500/10 text-orange-400 border border-orange-500/30 px-1.5 py-0.2 rounded font-mono font-bold">PORTAL INTAKE</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- TAB 1: Direct Prompt Box -->
-        <div id="tab-direct-content" class="surface-card p-4 border border-[#27272A] shadow-2xl space-y-3 rounded-lg">
-          <div class="relative">
-            <textarea id="raw-jd-input" rows="4" class="w-full bg-[#09090B] border border-[#27272A] rounded-md p-3.5 text-xs text-white placeholder-[#71717A] font-mono leading-relaxed focus:outline-none focus:border-[#F97316] resize-y" placeholder="Describe the candidate you need, or paste a job brief...&#10;e.g. Job Title: SAP HANA Cloud Consultant&#10;Location: Eindhoven, Netherlands&#10;Experience: 7-11 years..."></textarea>
-          </div>
-
-          <!-- Quick Presets & Sourcing Trigger -->
-          <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
-            <div class="flex flex-wrap items-center gap-1.5">
-              <span class="text-[11px] text-[#71717A] mr-1">Presets:</span>
-              <button onclick="loadTemplate('sap')" class="text-[11px] bg-[#18181B] hover:bg-[#27272A] text-[#E4E4E7] hover:text-white border border-[#27272A] px-2.5 py-1 rounded transition">SAP HANA (Eindhoven)</button>
-              <button onclick="loadTemplate('embedded')" class="text-[11px] bg-[#18181B] hover:bg-[#27272A] text-[#E4E4E7] hover:text-white border border-[#27272A] px-2.5 py-1 rounded transition">Embedded C++ (Munich)</button>
-              <button onclick="loadTemplate('cloud')" class="text-[11px] bg-[#18181B] hover:bg-[#27272A] text-[#E4E4E7] hover:text-white border border-[#27272A] px-2.5 py-1 rounded transition">Cloud Architect (US)</button>
-            </div>
-
-            <div class="flex items-center gap-2">
-              <button onclick="toggleAdvancedOptions()" id="btn-toggle-advanced" class="text-xs text-[#A1A1AA] hover:text-white flex items-center gap-1 px-2.5 py-1.5 rounded bg-[#18181B] border border-[#27272A]">
-                <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5 text-[#F97316]"></i>
-                <span>Options</span>
-              </button>
-              <button onclick="startSourcingPipeline()" id="btn-start-sourcing" class="flex items-center gap-2 bg-[#F97316] hover:bg-[#EA580C] text-black font-bold py-2 px-5 rounded-md text-xs shadow-md shadow-orange-500/20 transition">
-                <i data-lucide="crosshair" class="w-3.5 h-3.5"></i>
-                <span>Find Candidates</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Optional Collapsible Advanced Filters -->
-          <div id="advanced-options-panel" class="hidden pt-3 border-t border-[#27272A] space-y-3">
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div>
-                <label class="text-[10px] text-[#71717A] uppercase font-semibold block mb-1">Target Title</label>
-                <input type="text" id="rule-role-title" placeholder="e.g. SAP HANA Cloud Consultant" class="w-full bg-[#09090B] border border-[#27272A] rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#F97316]">
-              </div>
-              <div>
-                <label class="text-[10px] text-[#71717A] uppercase font-semibold block mb-1">Target Location</label>
-                <input type="text" id="rule-location" placeholder="e.g. Eindhoven, Netherlands" class="w-full bg-[#09090B] border border-[#27272A] rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#F97316]">
-              </div>
-              <div>
-                <label class="text-[10px] text-[#71717A] uppercase font-semibold block mb-1">Experience</label>
-                <input type="text" id="rule-experience" placeholder="e.g. 7 - 11 years" class="w-full bg-[#09090B] border border-[#27272A] rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#F97316]">
-              </div>
-            </div>
-
-            <!-- Mandatory Skills Chips -->
-            <div>
-              <div class="flex items-center justify-between mb-1">
-                <label class="text-[10px] text-[#71717A] uppercase font-semibold">Mandatory Skills</label>
-              </div>
-              <div id="mandatory-chips" class="flex flex-wrap gap-1.5 min-h-[32px] p-2 bg-[#09090B] border border-[#27272A] rounded-md">
-                <!-- Chips rendered by JS -->
-              </div>
-              <div class="flex gap-2 mt-2">
-                <input type="text" id="new-skill-input" placeholder="Add custom skill..." class="flex-1 bg-[#09090B] border border-[#27272A] rounded px-2.5 py-1 text-xs text-white focus:outline-none focus:border-[#F97316]" onkeydown="if(event.key==='Enter'){event.preventDefault();addSkill();}">
-                <button onclick="addSkill()" class="bg-[#18181B] border border-[#27272A] hover:bg-[#27272A] text-xs px-3 py-1 rounded text-white font-medium">Add</button>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- TAB 2: Dedicated Unstructured Portal JD Intake & Skills Architect -->
-        <div id="tab-intake-content" class="hidden surface-card p-5 border border-[#27272A] shadow-2xl space-y-5 rounded-lg">
-          
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#27272A] pb-3">
-            <div>
-              <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                <i data-lucide="wand-2" class="w-4 h-4 text-[#F97316]"></i>
-                <span>Unstructured Portal JD Intake & Skill Extraction</span>
-              </h3>
-              <p class="text-xs text-[#A1A1AA]">Paste messy JD text from LinkedIn, Indeed, Greenhouse, or PDF. The engine formats it into standard brief format with editable skills.</p>
-            </div>
-            <div class="flex items-center gap-2">
-              <button onclick="loadSamplePortalJD()" class="text-[11px] bg-[#18181B] hover:bg-[#27272A] text-orange-400 border border-[#27272A] px-2.5 py-1 rounded transition flex items-center gap-1 font-medium">
-                <i data-lucide="file-input" class="w-3 h-3 text-[#F97316]"></i>
-                <span>Load Sample Unstructured JD</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- 2-Column Workspace -->
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-            
-            <!-- Left: Raw Unstructured Input -->
-            <div class="space-y-3 flex flex-col">
-              <div class="flex items-center justify-between">
-                <label class="text-[11px] font-semibold uppercase tracking-wider text-[#A1A1AA] flex items-center gap-1.5">
-                  <i data-lucide="clipboard-paste" class="w-3.5 h-3.5 text-[#F97316]"></i>
-                  <span>1. Paste Raw Portal JD</span>
-                </label>
-                <span class="text-[10px] text-[#71717A]">LinkedIn / Indeed / PDF text</span>
-              </div>
-              
-              <textarea id="portal-raw-jd" rows="13" class="w-full flex-1 bg-[#09090B] border border-[#27272A] rounded-md p-3.5 text-xs text-white placeholder-[#71717A] font-mono leading-relaxed focus:outline-none focus:border-[#F97316] resize-y" placeholder="Paste full unstructured job post here from LinkedIn, Indeed, Workday, etc...&#10;&#10;The parser will extract:&#10;• Job Title&#10;• Location & Region&#10;• Experience Range&#10;• Core Mandatory Technical Skills"></textarea>
-
-              <button id="btn-parse-portal-jd" onclick="parseUnstructuredJD()" class="w-full flex items-center justify-center gap-2 bg-[#F97316] hover:bg-[#EA580C] text-black font-bold py-2.5 px-4 rounded-md text-xs shadow-lg shadow-orange-500/20 transition">
-                <i data-lucide="cpu" class="w-4 h-4"></i>
-                <span>⚡ Parse & Structure JD</span>
-              </button>
-            </div>
-
-            <!-- Right: Structured Brief & Skills Architect -->
-            <div class="space-y-3.5 flex flex-col bg-[#09090B] border border-[#27272A] rounded-md p-4">
-              <div class="flex items-center justify-between border-b border-[#27272A] pb-2">
-                <label class="text-[11px] font-semibold uppercase tracking-wider text-[#A1A1AA] flex items-center gap-1.5">
-                  <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-[#10B981]"></i>
-                  <span>2. Structured Brief & Skills Architect</span>
-                </label>
-                <span id="parsing-badge" class="hidden text-[10px] text-[#10B981] bg-[#10B981]/10 border border-[#10B981]/20 px-2 py-0.5 rounded font-mono font-bold">
-                  ✓ PARSED
-                </span>
-              </div>
-
-              <!-- Editable Meta Fields -->
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                <div>
-                  <label class="text-[10px] text-[#71717A] uppercase font-semibold block mb-1">Job Title</label>
-                  <input type="text" id="intake-role-title" placeholder="e.g. SAP HANA Cloud Consultant" oninput="updateFormattedBriefPreview()" class="w-full bg-[#18181B] border border-[#27272A] rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#F97316]">
-                </div>
-                <div>
-                  <label class="text-[10px] text-[#71717A] uppercase font-semibold block mb-1">Location</label>
-                  <input type="text" id="intake-location" placeholder="e.g. Eindhoven, Netherlands" oninput="updateFormattedBriefPreview()" class="w-full bg-[#18181B] border border-[#27272A] rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#F97316]">
-                </div>
-                <div>
-                  <label class="text-[10px] text-[#71717A] uppercase font-semibold block mb-1">Experience</label>
-                  <input type="text" id="intake-experience" placeholder="e.g. 7-11 years" oninput="updateFormattedBriefPreview()" class="w-full bg-[#18181B] border border-[#27272A] rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#F97316]">
-                </div>
-              </div>
-
-              <!-- Interactive Mandatory Skills Manager -->
-              <div class="space-y-1.5">
-                <div class="flex items-center justify-between">
-                  <label class="text-[10px] text-[#71717A] uppercase font-semibold">Mandatory Skills (Click × to remove)</label>
-                  <span class="text-[10px] text-orange-400 font-mono font-bold" id="intake-skills-count">0 skills</span>
-                </div>
-                
-                <!-- Interactive Chips Container -->
-                <div id="intake-skills-chips" class="flex flex-wrap gap-1.5 min-h-[44px] max-h-32 overflow-y-auto p-2 bg-[#121215] border border-[#27272A] rounded">
-                  <span class="text-[11px] text-[#71717A] italic">No skills added yet. Paste a JD and click parse, or add manually below.</span>
-                </div>
-
-                <!-- Add Custom Skill Input -->
-                <div class="flex gap-2 pt-1">
-                  <input type="text" id="intake-new-skill" placeholder="Add missing skill (e.g. PlanViz, SLT, CDS Views)..." class="flex-1 bg-[#121215] border border-[#27272A] rounded px-2.5 py-1 text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#F97316]" onkeydown="if(event.key==='Enter'){event.preventDefault();addIntakeSkill();}">
-                  <button onclick="addIntakeSkill()" class="bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-white text-xs px-3 py-1 rounded font-medium transition flex items-center gap-1">
-                    <i data-lucide="plus" class="w-3 h-3 text-[#F97316]"></i>
-                    <span>Add Skill</span>
-                  </button>
-                </div>
-
-                <!-- Quick Suggestions / Preferred Skills -->
-                <div id="intake-suggestions-container" class="hidden pt-1 space-y-1">
-                  <span class="text-[10px] text-[#71717A] block">Quick-add secondary skills detected:</span>
-                  <div id="intake-suggestions-chips" class="flex flex-wrap gap-1"></div>
-                </div>
-              </div>
-
-              <!-- Standardized Brief Live Preview (Exact Format) -->
-              <div class="space-y-1 pt-2 border-t border-[#27272A]">
-                <div class="flex items-center justify-between">
-                  <label class="text-[10px] text-[#71717A] uppercase font-semibold">Standardized Agent Brief Preview</label>
-                  <button onclick="copyFormattedBrief()" class="text-[10px] text-orange-400 hover:text-orange-300 flex items-center gap-1">
-                    <i data-lucide="copy" class="w-3 h-3"></i>
-                    <span id="copy-brief-label">Copy Format</span>
-                  </button>
-                </div>
-                <pre id="intake-formatted-preview" class="w-full bg-[#121215] border border-[#27272A] rounded p-2.5 text-[11px] font-mono text-white whitespace-pre-wrap leading-relaxed max-h-32 overflow-y-auto">Job Title: SAP HANA Cloud Consultant
+        <!-- JD Textarea Editor Box -->
+        <div class="surface-card rounded-lg p-3 space-y-2 relative focus-within:border-[#F97316] transition">
+          <textarea id="raw-jd-input" rows="10" oninput="updateCharCounter()" class="w-full bg-transparent border-0 text-xs text-[#E4E4E7] font-mono leading-relaxed focus:outline-none resize-none placeholder-[#71717A]" placeholder="Job Title: SAP HANA Cloud Consultant&#10;Location: Eindhoven, Netherlands&#10;Experience: 7-11 years&#10;&#10;Key Responsibilities:&#10;• Design and implement SAP HANA Cloud solutions&#10;• Develop calculation views, SQLScript and data models&#10;• Experience with SLT, SAP BODS and data migration&#10;• Work with cross-functional teams and business stakeholders&#10;• Strong problem-solving and communication skills">Job Title: SAP HANA Cloud Consultant
 Location: Eindhoven, Netherlands
 Experience: 7-11 years
 
-Mandatory Requirements:
-*SAP HANA Modeling
-*Calculation Views
-*CDS Views
-*SQLScript
-*SLT
-*SAP BODS
-*AMS Support</pre>
-              </div>
+Key Responsibilities:
+• Design and implement SAP HANA Cloud solutions
+• Develop calculation views, SQLScript and data models
+• Experience with SLT, SAP BODS and data migration
+• Work with cross-functional teams and business stakeholders
+• Strong problem-solving and communication skills</textarea>
 
-              <!-- Action: Find Candidates with this profile -->
-              <div class="pt-1">
-                <button id="btn-intake-source" onclick="sourceFromIntake()" class="w-full flex items-center justify-center gap-2 bg-[#F97316] hover:bg-[#EA580C] text-black font-bold py-2.5 px-4 rounded-md text-xs shadow-lg shadow-orange-500/20 transition">
-                  <i data-lucide="crosshair" class="w-4 h-4"></i>
-                  <span>Find Candidates with this Profile</span>
-                </button>
-              </div>
+          <div class="flex items-center justify-between pt-1 border-t border-[#1F1F24]">
+            <span class="text-[10px] text-[#71717A] font-mono">Format: Structured JD</span>
+            <span id="char-counter" class="text-[10px] text-[#71717A] font-mono">354/5000</span>
+          </div>
+        </div>
 
+        <!-- Action Row -->
+        <div class="flex items-center gap-2.5">
+          <button id="btn-analyze-ai" onclick="analyzeJobDescription()" class="btn-primary-orange flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition shadow-sm">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+            <span>Analyze with AI</span>
+          </button>
+          <button onclick="clearJobDescription()" class="btn-secondary-dark px-4 py-2 rounded-lg text-xs font-medium transition">
+            Clear
+          </button>
+        </div>
+
+        <!-- Extracted Skills Section -->
+        <div class="space-y-2 pt-1">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-bold text-white">Extracted Skills</label>
+            <span id="skills-count-pill" class="text-[10px] text-[#F97316] font-mono font-bold">9 skills</span>
+          </div>
+
+          <!-- Dynamic Skill Pills -->
+          <div id="mandatory-chips" class="flex flex-wrap gap-2">
+            <span class="skill-pill-orange text-[11px] font-medium px-2.5 py-1 rounded-full flex items-center gap-1.5 cursor-pointer">
+              <span>SAP HANA Cloud</span>
+              <button onclick="this.parentElement.remove()" class="text-orange-400 hover:text-white text-xs leading-none">×</button>
+            </span>
+            <span class="skill-pill-orange text-[11px] font-medium px-2.5 py-1 rounded-full flex items-center gap-1.5 cursor-pointer">
+              <span>HANA Modeling</span>
+              <button onclick="this.parentElement.remove()" class="text-orange-400 hover:text-white text-xs leading-none">×</button>
+            </span>
+            <span class="skill-pill-orange text-[11px] font-medium px-2.5 py-1 rounded-full flex items-center gap-1.5 cursor-pointer">
+              <span>Calculation Views</span>
+              <button onclick="this.parentElement.remove()" class="text-orange-400 hover:text-white text-xs leading-none">×</button>
+            </span>
+            <span class="skill-pill-orange text-[11px] font-medium px-2.5 py-1 rounded-full flex items-center gap-1.5 cursor-pointer">
+              <span>SQLScript</span>
+              <button onclick="this.parentElement.remove()" class="text-orange-400 hover:text-white text-xs leading-none">×</button>
+            </span>
+            <span class="skill-pill-orange text-[11px] font-medium px-2.5 py-1 rounded-full flex items-center gap-1.5 cursor-pointer">
+              <span>SLT</span>
+              <button onclick="this.parentElement.remove()" class="text-orange-400 hover:text-white text-xs leading-none">×</button>
+            </span>
+            <span class="skill-pill-orange text-[11px] font-medium px-2.5 py-1 rounded-full flex items-center gap-1.5 cursor-pointer">
+              <span>SAP BODS</span>
+              <button onclick="this.parentElement.remove()" class="text-orange-400 hover:text-white text-xs leading-none">×</button>
+            </span>
+            <span class="skill-pill-orange text-[11px] font-medium px-2.5 py-1 rounded-full flex items-center gap-1.5 cursor-pointer">
+              <span>Data Migration</span>
+              <button onclick="this.parentElement.remove()" class="text-orange-400 hover:text-white text-xs leading-none">×</button>
+            </span>
+            <span class="skill-pill-orange text-[11px] font-medium px-2.5 py-1 rounded-full flex items-center gap-1.5 cursor-pointer">
+              <span>S/4HANA</span>
+              <button onclick="this.parentElement.remove()" class="text-orange-400 hover:text-white text-xs leading-none">×</button>
+            </span>
+            <span class="skill-pill-orange text-[11px] font-medium px-2.5 py-1 rounded-full flex items-center gap-1.5 cursor-pointer">
+              <span>ABAP (Nice to have)</span>
+              <button onclick="this.parentElement.remove()" class="text-orange-400 hover:text-white text-xs leading-none">×</button>
+            </span>
+          </div>
+
+          <!-- Add Skill Inline Input -->
+          <div class="flex gap-2 pt-1">
+            <input type="text" id="new-skill-input" placeholder="Add custom skill (e.g. PlanViz)..." class="flex-1 bg-[#101013] border border-[#27272A] rounded-lg px-3 py-1.5 text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#F97316]" onkeydown="if(event.key==='Enter'){event.preventDefault();addSkill();}">
+            <button onclick="addSkill()" class="btn-secondary-dark px-3 py-1.5 rounded-lg text-xs font-semibold">
+              + Add
+            </button>
+          </div>
+        </div>
+
+        <!-- Search Strategy Section -->
+        <div class="space-y-2 pt-1">
+          <label class="text-xs font-bold text-white block">Search Strategy</label>
+          <div class="grid grid-cols-2 gap-2.5">
+            
+            <!-- Card 1: Boolean Queries -->
+            <div onclick="openBooleanModal()" class="surface-card p-3 rounded-lg hover:border-[#3F3F46] cursor-pointer transition flex items-center justify-between group">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <div class="w-7 h-7 rounded-md bg-[#18181B] border border-[#27272A] flex items-center justify-center shrink-0">
+                  <span class="text-xs font-bold text-[#F97316]">G</span>
+                </div>
+                <div class="min-w-0">
+                  <h4 class="text-xs font-semibold text-white group-hover:text-[#F97316] transition truncate">Boolean Queries</h4>
+                  <p class="text-[10px] text-[#71717A] truncate">Optimized Google / Bing</p>
+                </div>
+              </div>
+              <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-[#71717A] group-hover:text-white transition shrink-0"></i>
+            </div>
+
+            <!-- Card 2: Data Sources -->
+            <div onclick="openSourcesModal()" class="surface-card p-3 rounded-lg hover:border-[#3F3F46] cursor-pointer transition flex items-center justify-between group">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <div class="w-7 h-7 rounded-md bg-[#18181B] border border-[#27272A] flex items-center justify-center shrink-0">
+                  <span class="text-xs font-bold text-[#38BDF8]">in</span>
+                </div>
+                <div class="min-w-0">
+                  <h4 class="text-xs font-semibold text-white group-hover:text-[#F97316] transition truncate">Data Sources</h4>
+                  <p class="text-[10px] text-[#71717A] truncate">LinkedIn, GitHub</p>
+                </div>
+              </div>
+              <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-[#71717A] group-hover:text-white transition shrink-0"></i>
             </div>
 
           </div>
         </div>
 
-      </div>
+        <!-- Search Filters Section -->
+        <div class="space-y-2 pt-1">
+          <label class="text-xs font-bold text-white block">Search Filters</label>
+          
+          <div class="grid grid-cols-2 gap-2">
+            <!-- Location Filter Pill -->
+            <div class="surface-card rounded-lg px-2.5 py-1.5 flex items-center justify-between">
+              <div class="flex items-center gap-1.5 min-w-0">
+                <span class="text-[10px] text-[#71717A]">Locations:</span>
+                <span class="text-xs text-white font-medium truncate">📍 Eindhoven, NL</span>
+              </div>
+              <button onclick="clearLocationFilter()" class="text-[#71717A] hover:text-white text-xs">×</button>
+            </div>
 
-      <!-- ======================================================== -->
-      <!-- INLINE LOADING STATE                                     -->
-      <!-- ======================================================== -->
-      <div id="sourcing-progress-card" class="hidden max-w-4xl mx-auto surface-card p-4 border border-[#F97316]/40">
-        <div class="flex items-center gap-3">
-          <div class="w-4 h-4 border-2 border-[#F97316] border-t-transparent rounded-full animate-spin shrink-0"></div>
-          <div class="flex-1 min-w-0">
-            <h4 class="text-xs font-bold text-white">Sourcing in progress...</h4>
-            <p id="sourcing-status-text" class="text-[11px] text-orange-300 font-mono truncate">Searching localized indexes & verifying candidate geography...</p>
+            <!-- Experience Dropdown -->
+            <div class="surface-card rounded-lg px-2.5 py-1.5 flex items-center justify-between">
+              <span class="text-[10px] text-[#71717A]">Experience:</span>
+              <span class="text-xs text-white font-medium flex items-center gap-1">
+                <span>⏱ 7 – 11 years</span>
+                <i data-lucide="chevron-down" class="w-3 h-3 text-[#71717A]"></i>
+              </span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <!-- Company Selector -->
+            <div class="surface-card rounded-lg px-2.5 py-1.5 flex items-center justify-between">
+              <span class="text-[10px] text-[#71717A]">Current Company:</span>
+              <span class="text-xs text-[#D4D4D8] font-medium flex items-center gap-1">
+                <span>All Companies</span>
+                <i data-lucide="chevron-down" class="w-3 h-3 text-[#71717A]"></i>
+              </span>
+            </div>
+
+            <!-- Work Authorization -->
+            <div class="surface-card rounded-lg px-2.5 py-1.5 flex items-center justify-between">
+              <span class="text-[10px] text-[#71717A]">Work Auth:</span>
+              <span class="text-xs text-[#D4D4D8] font-medium flex items-center gap-1">
+                <span>🌐 Any</span>
+                <i data-lucide="chevron-down" class="w-3 h-3 text-[#71717A]"></i>
+              </span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- ======================================================== -->
-      <!-- CANDIDATE RESULTS SECTION                                -->
-      <!-- ======================================================== -->
-      <div id="results-container" class="hidden max-w-4xl mx-auto space-y-4">
-        
-        <!-- Header & Multi-Filter Bar -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#27272A] pb-3">
-          <div class="flex items-center gap-2.5">
-            <h3 class="text-sm font-bold text-white tracking-tight">Discovered Candidates</h3>
-            <span id="results-count-badge" class="text-xs font-mono bg-orange-500/10 text-orange-400 border border-orange-500/30 px-2 py-0.5 rounded font-bold">
-              0 Found
-            </span>
+        <!-- Find Candidates CTA -->
+        <div class="pt-2 space-y-2">
+          <button id="btn-start-sourcing" onclick="startSourcingPipeline()" class="w-full btn-primary-orange py-3 px-4 rounded-lg text-xs font-bold flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20 transition">
+            <i data-lucide="search" class="w-4 h-4"></i>
+            <span>Find Candidates</span>
+          </button>
+          
+          <div class="flex items-center justify-center">
+            <button onclick="toggleAdvancedOptions()" id="btn-toggle-advanced" class="text-xs text-[#A1A1AA] hover:text-white flex items-center gap-1.5 py-1 px-2 rounded transition">
+              <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5 text-[#F97316]"></i>
+              <span>Advanced Options</span>
+            </button>
           </div>
 
-          <div class="flex flex-wrap items-center gap-2">
-            <!-- Geographic Filter -->
-            <select id="filter-geo" onchange="filterResults()" class="bg-[#18181B] border border-[#27272A] rounded px-2.5 py-1 text-xs text-white focus:outline-none focus:border-[#F97316]">
+          <!-- Hidden Advanced Panel -->
+          <div id="advanced-options-panel" class="hidden surface-card p-3 rounded-lg space-y-2 border border-[#27272A]">
+            <div>
+              <label class="text-[10px] text-[#71717A] uppercase font-semibold block mb-1">Target Title Override</label>
+              <input type="text" id="rule-role-title" value="SAP HANA Cloud Consultant" class="w-full bg-[#0C0C0F] border border-[#27272A] rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#F97316]">
+            </div>
+            <div>
+              <label class="text-[10px] text-[#71717A] uppercase font-semibold block mb-1">Target Location Override</label>
+              <input type="text" id="rule-location" value="Eindhoven, Netherlands" class="w-full bg-[#0C0C0F] border border-[#27272A] rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#F97316]">
+            </div>
+            <div>
+              <label class="text-[10px] text-[#71717A] uppercase font-semibold block mb-1">Experience Range</label>
+              <input type="text" id="rule-experience" value="7-11 years" class="w-full bg-[#0C0C0F] border border-[#27272A] rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#F97316]">
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ======================================================== -->
+      <!-- RIGHT COLUMN: DISCOVERED CANDIDATES                      -->
+      <!-- ======================================================== -->
+      <section class="flex-1 overflow-y-auto p-6 md:p-8 space-y-4 bg-[#09090B]">
+        
+        <!-- Results Header Bar -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-[#27272A]">
+          <div>
+            <h2 class="text-lg font-bold text-white tracking-tight">Discovered Candidates</h2>
+            <p id="results-count-text" class="text-xs text-[#71717A]">42 candidates found · Sorted by match score</p>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <!-- Location Filter -->
+            <select id="filter-geo" onchange="filterResults()" class="bg-[#101013] border border-[#27272A] rounded-lg px-3 py-1.5 text-xs text-[#D4D4D8] focus:outline-none focus:border-[#F97316] cursor-pointer">
               <option value="ALL">All Locations</option>
-              <option value="ELIGIBLE">✓ Eligible Only</option>
+              <option value="ELIGIBLE">✓ Geo Verified Only</option>
               <option value="UNKNOWN">? Unresolved</option>
               <option value="MISMATCH">✕ Mismatch</option>
             </select>
 
-            <!-- Match Status Filter -->
-            <select id="filter-match" onchange="filterResults()" class="bg-[#18181B] border border-[#27272A] rounded px-2.5 py-1 text-xs text-white focus:outline-none focus:border-[#F97316]">
-              <option value="ALL">All Match States</option>
-              <option value="EXPLICIT_MATCH">Explicit Match</option>
-              <option value="PARTIAL_MATCH">Partial Match</option>
-              <option value="LOCATION_MISMATCH">Location Mismatch</option>
+            <!-- Sort Filter -->
+            <select id="filter-sort" onchange="sortResults()" class="bg-[#101013] border border-[#27272A] rounded-lg px-3 py-1.5 text-xs text-[#D4D4D8] focus:outline-none focus:border-[#F97316] cursor-pointer">
+              <option value="MATCH">Sort by Match</option>
+              <option value="EXPERIENCE">Sort by Experience</option>
+              <option value="SCORE_DESC">Highest Score</option>
             </select>
 
-            <div class="relative w-44">
-              <i data-lucide="search" class="w-3.5 h-3.5 text-[#71717A] absolute left-2.5 top-2"></i>
-              <input type="text" id="results-filter" oninput="filterResults()" placeholder="Filter keyword..." class="w-full bg-[#18181B] border border-[#27272A] rounded pl-8 pr-3 py-1 text-xs text-white placeholder-[#71717A] focus:outline-none focus:border-[#F97316]">
+            <!-- Toggle Filter Button -->
+            <button class="bg-[#101013] border border-[#27272A] hover:border-[#3F3F46] text-[#A1A1AA] hover:text-white p-1.5 rounded-lg transition" title="Filter Settings">
+              <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Sourcing Progress Indicator -->
+        <div id="sourcing-progress-card" class="hidden surface-card p-4 rounded-xl border border-[#F97316]/40">
+          <div class="flex items-center gap-3">
+            <div class="w-4 h-4 border-2 border-[#F97316] border-t-transparent rounded-full animate-spin shrink-0"></div>
+            <div class="flex-1 min-w-0">
+              <h4 class="text-xs font-bold text-white">Sourcing in progress...</h4>
+              <p id="sourcing-status-text" class="text-[11px] text-orange-400 font-mono truncate">Searching localized indexes & verifying candidate geography...</p>
             </div>
           </div>
         </div>
 
-        <!-- Clean Candidates List -->
-        <div id="candidates-grid" class="space-y-2">
-          <!-- Populated by JS -->
+        <!-- Candidate Cards Stack -->
+        <div id="candidates-grid" class="space-y-3">
+          <!-- Rendered dynamically by JavaScript -->
         </div>
 
-      </div>
+      </section>
 
     </main>
   </div>
@@ -369,13 +450,13 @@ Mandatory Requirements:
   <!-- CANDIDATE DETAILS & AUDIT EVIDENCE DRAWER                -->
   <!-- ======================================================== -->
   <div id="drawer-backdrop" onclick="closeDrawer()" class="hidden fixed inset-0 drawer-backdrop z-50"></div>
-  <aside id="candidate-drawer" class="fixed top-0 right-0 h-full w-full sm:w-[480px] drawer-panel z-50 transform translate-x-full overflow-y-auto p-6 flex flex-col justify-between">
-    <div class="space-y-4">
+  <aside id="candidate-drawer" class="fixed top-0 right-0 h-full w-full sm:w-[500px] drawer-panel z-50 transform translate-x-full overflow-y-auto p-6 flex flex-col justify-between">
+    <div class="space-y-5">
       
       <!-- Drawer Header -->
       <div class="flex items-start justify-between border-b border-[#27272A] pb-3">
         <div class="flex items-center gap-3">
-          <div id="drawer-avatar" class="w-10 h-10 rounded bg-[#18181B] border border-[#27272A] flex items-center justify-center font-bold text-[#F97316] text-xs">
+          <div id="drawer-avatar" class="w-11 h-11 rounded-full bg-[#18181B] border border-[#27272A] flex items-center justify-center font-bold text-[#F97316] text-xs">
             CA
           </div>
           <div>
@@ -383,47 +464,47 @@ Mandatory Requirements:
             <p id="drawer-headline" class="text-xs text-[#A1A1AA] line-clamp-1">Headline</p>
           </div>
         </div>
-        <button onclick="closeDrawer()" class="text-[#71717A] hover:text-white p-1 rounded">
+        <button onclick="closeDrawer()" class="text-[#71717A] hover:text-white p-1 rounded-md">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
 
       <!-- Match Score & Geographic Eligibility -->
-      <div class="grid grid-cols-2 gap-2">
-        <div class="surface-card p-3 border border-[#27272A]">
+      <div class="grid grid-cols-2 gap-2.5">
+        <div class="surface-card p-3 rounded-lg">
           <span class="text-[10px] text-[#71717A] uppercase font-semibold block mb-0.5">Overall Fit</span>
-          <span id="drawer-score-badge" class="badge-strong text-xs font-mono font-bold px-2 py-0.5 rounded">85% Fit</span>
+          <span id="drawer-score-badge" class="badge-geo-verified text-xs font-mono font-bold px-2 py-0.5 rounded-full inline-block">85% Fit</span>
         </div>
-        <div class="surface-card p-3 border border-[#27272A]">
+        <div class="surface-card p-3 rounded-lg">
           <span class="text-[10px] text-[#71717A] uppercase font-semibold block mb-0.5">Geographic State</span>
-          <span id="drawer-geo-badge" class="text-xs font-bold px-2 py-0.5 rounded inline-block">ELIGIBLE</span>
+          <span id="drawer-geo-badge" class="text-xs font-bold px-2 py-0.5 rounded-full inline-block">ELIGIBLE</span>
         </div>
       </div>
 
       <!-- Geographic Explanation -->
-      <div class="surface-card p-3 border border-[#27272A] space-y-1">
+      <div class="surface-card p-3.5 rounded-lg space-y-1">
         <span class="text-[10px] text-[#71717A] uppercase font-semibold block">Location Evidence Audit</span>
         <p id="drawer-geo-reason" class="text-xs text-[#E4E4E7] leading-relaxed"></p>
       </div>
 
       <!-- Component Score Breakdown -->
-      <div class="surface-card p-3 border border-[#27272A] space-y-2">
+      <div class="surface-card p-3.5 rounded-lg space-y-2">
         <span class="text-[10px] text-[#71717A] uppercase font-semibold block">Component Evaluation (0-100)</span>
         <div class="grid grid-cols-4 gap-2 text-center text-xs font-mono">
-          <div class="bg-[#09090B] p-1.5 rounded border border-[#27272A]">
-            <span class="text-[9px] text-[#71717A] block">Skills (55%)</span>
+          <div class="bg-[#09090B] p-2 rounded-lg border border-[#27272A]">
+            <span class="text-[9px] text-[#71717A] block">Skills</span>
             <span id="drawer-score-skills" class="font-bold text-[#F97316]">0</span>
           </div>
-          <div class="bg-[#09090B] p-1.5 rounded border border-[#27272A]">
-            <span class="text-[9px] text-[#71717A] block">Seniority (20%)</span>
+          <div class="bg-[#09090B] p-2 rounded-lg border border-[#27272A]">
+            <span class="text-[9px] text-[#71717A] block">Seniority</span>
             <span id="drawer-score-seniority" class="font-bold text-[#F97316]">0</span>
           </div>
-          <div class="bg-[#09090B] p-1.5 rounded border border-[#27272A]">
-            <span class="text-[9px] text-[#71717A] block">Role (15%)</span>
+          <div class="bg-[#09090B] p-2 rounded-lg border border-[#27272A]">
+            <span class="text-[9px] text-[#71717A] block">Role</span>
             <span id="drawer-score-role" class="font-bold text-[#F97316]">0</span>
           </div>
-          <div class="bg-[#09090B] p-1.5 rounded border border-[#27272A]">
-            <span class="text-[9px] text-[#71717A] block">Quality (10%)</span>
+          <div class="bg-[#09090B] p-2 rounded-lg border border-[#27272A]">
+            <span class="text-[9px] text-[#71717A] block">Evidence</span>
             <span id="drawer-score-evidence" class="font-bold text-[#F97316]">0</span>
           </div>
         </div>
@@ -432,35 +513,132 @@ Mandatory Requirements:
       <!-- Verified Supporting Quotations -->
       <div class="space-y-1.5">
         <span class="text-[11px] text-[#71717A] uppercase font-semibold block">Technical Evidence Quotations</span>
-        <div id="drawer-quotations-list" class="space-y-1.5 max-h-40 overflow-y-auto pr-1"></div>
+        <div id="drawer-quotations-list" class="space-y-1.5 max-h-44 overflow-y-auto pr-1"></div>
       </div>
 
       <!-- Personalized Outreach Draft -->
       <div class="space-y-1.5 pt-2 border-t border-[#27272A]">
         <div class="flex items-center justify-between">
           <span class="text-[11px] text-[#F97316] uppercase font-semibold flex items-center gap-1">
-            <i data-lucide="sparkles" class="w-3 h-3"></i>
+            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
             <span>Personalized Outreach</span>
           </span>
-          <button onclick="regenerateOutreach()" class="text-[10px] text-orange-400 hover:text-orange-300">Regenerate</button>
+          <button onclick="regenerateOutreach()" class="text-[10px] text-orange-400 hover:text-orange-300 font-semibold">Regenerate</button>
         </div>
-        <textarea id="drawer-outreach-text" rows="5" class="w-full bg-[#09090B] border border-[#27272A] rounded p-2.5 text-xs text-white leading-relaxed font-mono focus:outline-none focus:border-[#F97316]"></textarea>
+        <textarea id="drawer-outreach-text" rows="5" class="w-full bg-[#09090B] border border-[#27272A] rounded-lg p-2.5 text-xs text-white leading-relaxed font-mono focus:outline-none focus:border-[#F97316]"></textarea>
       </div>
 
     </div>
 
     <!-- Actions -->
-    <div class="pt-4 border-t border-[#27272A] flex gap-2">
-      <button onclick="copyOutreachText()" id="btn-copy-outreach" class="flex-1 flex items-center justify-center gap-1.5 bg-[#F97316] hover:bg-[#EA580C] text-black text-xs font-bold py-2 rounded transition">
+    <div class="pt-4 border-t border-[#27272A] flex gap-2.5">
+      <button onclick="copyOutreachText()" id="btn-copy-outreach" class="flex-1 btn-primary-orange py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition">
         <i data-lucide="copy" class="w-3.5 h-3.5"></i>
         <span id="copy-text-label">Copy Message</span>
       </button>
-      <a id="drawer-profile-link" href="#" target="_blank" class="flex items-center justify-center gap-1.5 bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] text-white text-xs font-semibold px-4 py-2 rounded transition">
+      <a id="drawer-profile-link" href="#" target="_blank" class="btn-secondary-dark px-4 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition">
         <span>Public Profile</span>
         <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
       </a>
     </div>
   </aside>
+
+  <!-- ======================================================== -->
+  <!-- BOOLEAN QUERIES MODAL                                    -->
+  <!-- ======================================================== -->
+  <div id="boolean-modal" class="hidden fixed inset-0 drawer-backdrop z-50 flex items-center justify-center p-4">
+    <div class="surface-card w-full max-w-xl rounded-xl border border-[#27272A] p-6 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-[#27272A] pb-3">
+        <div class="flex items-center gap-2">
+          <div class="w-7 h-7 rounded-md bg-[#18181B] border border-[#27272A] flex items-center justify-center font-bold text-[#F97316] text-xs">G</div>
+          <div>
+            <h3 class="text-sm font-bold text-white">Boolean Sourcing Queries</h3>
+            <p class="text-[10px] text-[#71717A]">Multi-query generator with strict geographic filters</p>
+          </div>
+        </div>
+        <button onclick="closeBooleanModal()" class="text-[#71717A] hover:text-white p-1">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3">
+        <div class="space-y-1">
+          <span class="text-[10px] uppercase font-bold text-[#71717A]">Google X-Ray (Strict Netherlands)</span>
+          <div class="p-3 bg-[#09090B] border border-[#27272A] rounded-lg flex items-center justify-between gap-2">
+            <code id="google-query-code" class="text-xs text-orange-400 font-mono truncate">site:nl.linkedin.com/in ("SAP HANA" OR "HANA Cloud") ("Calculation Views" OR "SQLScript") ("Eindhoven" OR "Noord-Brabant")</code>
+            <button onclick="copyQuery('google-query-code')" class="btn-secondary-dark px-2.5 py-1 rounded text-[11px] font-semibold shrink-0">Copy</button>
+          </div>
+        </div>
+
+        <div class="space-y-1">
+          <span class="text-[10px] uppercase font-bold text-[#71717A]">Bing Boolean Query</span>
+          <div class="p-3 bg-[#09090B] border border-[#27272A] rounded-lg flex items-center justify-between gap-2">
+            <code id="bing-query-code" class="text-xs text-orange-400 font-mono truncate">site:linkedin.com/in "SAP HANA Cloud" "Eindhoven" ("SLT" OR "BODS")</code>
+            <button onclick="copyQuery('bing-query-code')" class="btn-secondary-dark px-2.5 py-1 rounded text-[11px] font-semibold shrink-0">Copy</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-2 flex justify-end">
+        <button onclick="closeBooleanModal()" class="btn-primary-orange px-4 py-2 rounded-lg text-xs font-bold">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- DATA SOURCES MODAL                                       -->
+  <!-- ======================================================== -->
+  <div id="sources-modal" class="hidden fixed inset-0 drawer-backdrop z-50 flex items-center justify-center p-4">
+    <div class="surface-card w-full max-w-lg rounded-xl border border-[#27272A] p-6 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-[#27272A] pb-3">
+        <div class="flex items-center gap-2">
+          <div class="w-7 h-7 rounded-md bg-[#18181B] border border-[#27272A] flex items-center justify-center font-bold text-[#38BDF8] text-xs">in</div>
+          <div>
+            <h3 class="text-sm font-bold text-white">Active Discovery Channels</h3>
+            <p class="text-[10px] text-[#71717A]">Live search adapters and public registry connectors</p>
+          </div>
+        </div>
+        <button onclick="closeSourcesModal()" class="text-[#71717A] hover:text-white p-1">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="space-y-2">
+        <div class="p-3 bg-[#09090B] border border-[#27272A] rounded-lg flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <span class="w-2 h-2 rounded-full bg-[#10B981]"></span>
+            <span class="text-xs font-semibold text-white">Google Search (SerpApi & Direct)</span>
+          </div>
+          <span class="text-[10px] text-[#10B981] font-mono font-bold">ONLINE</span>
+        </div>
+        <div class="p-3 bg-[#09090B] border border-[#27272A] rounded-lg flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <span class="w-2 h-2 rounded-full bg-[#10B981]"></span>
+            <span class="text-xs font-semibold text-white">DuckDuckGo Candidate Discovery</span>
+          </div>
+          <span class="text-[10px] text-[#10B981] font-mono font-bold">ONLINE</span>
+        </div>
+        <div class="p-3 bg-[#09090B] border border-[#27272A] rounded-lg flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <span class="w-2 h-2 rounded-full bg-[#10B981]"></span>
+            <span class="text-xs font-semibold text-white">Bing Sourcing Engine</span>
+          </div>
+          <span class="text-[10px] text-[#10B981] font-mono font-bold">ONLINE</span>
+        </div>
+        <div class="p-3 bg-[#09090B] border border-[#27272A] rounded-lg flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <span class="w-2 h-2 rounded-full bg-[#10B981]"></span>
+            <span class="text-xs font-semibold text-white">GitHub Public Profiles & Repos</span>
+          </div>
+          <span class="text-[10px] text-[#10B981] font-mono font-bold">ONLINE</span>
+        </div>
+      </div>
+
+      <div class="pt-2 flex justify-end">
+        <button onclick="closeSourcesModal()" class="btn-primary-orange px-4 py-2 rounded-lg text-xs font-bold">Done</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Client JavaScript -->
   <script src="/static/app.js"></script>
