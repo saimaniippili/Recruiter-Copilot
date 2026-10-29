@@ -51,7 +51,7 @@ const BENCHMARK_CANDIDATES = [
       { skill: "SQLScript", state: "VERIFIED", evidence_level: 0.92, quotation: "Advanced SQLScript procedure authoring, table functions, and PlanViz execution analysis." },
       { skill: "SLT", state: "VERIFIED", evidence_level: 0.90, quotation: "Configured SAP Landscape Transformation (SLT) real-time replication into SAP HANA." }
     ],
-    outreach_draft: "Hi Mark,\n\nI was very impressed by your extensive native SAP HANA data modeling and Calculation Views architecture at ASML in Eindhoven. We are currently architecting a high-availability SAP HANA Cloud data foundation based in Eindhoven and your 9 years of hands-on SQLScript, PlanViz, and SLT experience would make you an outstanding fit.\n\nWould you be open to a brief confidential chat this week?\n\nBest regards,\nSaimani Ippili\nPrincipal Talent Intelligence, Recruiter Copilot"
+    outreach_draft: "Hi Mark,\n\nI was very impressed by your extensive native SAP HANA data modeling and Calculation Views architecture at ASML in Eindhoven. We are currently architecting a high-availability SAP HANA Cloud data foundation based in Eindhoven and your 9 years of hands-on SQLScript, PlanViz, and SLT experience would make you an outstanding fit.\n\nWould you be open to a brief confidential chat this week?\n\nBest regards,\n[Your Name]\nTalent Acquisition Team"
   },
   {
     candidate_id: "cand_sophie_02",
@@ -75,7 +75,7 @@ const BENCHMARK_CANDIDATES = [
       { skill: "SLT", state: "VERIFIED", evidence_level: 0.89, quotation: "Managed high-throughput SLT replication clusters with zero data divergence." },
       { skill: "HANA Modeling", state: "VERIFIED", evidence_level: 0.88, quotation: "Developed native HANA analytical views, dimension views, and calculation views." }
     ],
-    outreach_draft: "Hi Sophie,\n\nI came across your impressive track record leading SAP BODS, SLT, and HANA data migrations at Deloitte in the Netherlands. We are hiring a senior SAP HANA Cloud Consultant for an enterprise initiative in Eindhoven and your deep experience in native modeling and data provisioning is exactly what we need.\n\nWould you have 15 minutes for an introductory conversation?\n\nBest regards,\nSaimani Ippili"
+    outreach_draft: "Hi Sophie,\n\nI came across your impressive track record leading SAP BODS, SLT, and HANA data migrations at Deloitte in the Netherlands. We are hiring a senior SAP HANA Cloud Consultant for an enterprise initiative in Eindhoven and your deep experience in native modeling and data provisioning is exactly what we need.\n\nWould you have 15 minutes for an introductory conversation?\n\nBest regards,\n[Your Name]\nTalent Acquisition Team"
   },
   {
     candidate_id: "cand_thomas_03",
@@ -98,7 +98,7 @@ const BENCHMARK_CANDIDATES = [
       { skill: "SQLScript", state: "VERIFIED", evidence_level: 0.90, quotation: "Authored complex SQLScript stored procedures, dynamic filtering, and window aggregations." },
       { skill: "S/4HANA", state: "VERIFIED", evidence_level: 0.86, quotation: "Delivered greenfield S/4HANA analytical data architectures and CDS view hierarchies." }
     ],
-    outreach_draft: "Hi Thomas,\n\nGiven your 11 years of enterprise SAP data architecture at Philips in Eindhoven, your background in SQLScript performance tuning and Calculation Views aligns seamlessly with an upcoming SAP HANA Cloud architect role we are leading.\n\nAre you open to discussing this opportunity?\n\nBest,\nSaimani Ippili"
+    outreach_draft: "Hi Thomas,\n\nGiven your 11 years of enterprise SAP data architecture at Philips in Eindhoven, your background in SQLScript performance tuning and Calculation Views aligns seamlessly with an upcoming SAP HANA Cloud architect role we are leading.\n\nAre you open to discussing this opportunity?\n\nBest regards,\n[Your Name]\nTalent Acquisition Team"
   },
   {
     candidate_id: "cand_laura_04",
@@ -121,7 +121,7 @@ const BENCHMARK_CANDIDATES = [
       { skill: "Calculation Views", state: "VERIFIED", evidence_level: 0.85, quotation: "Optimized Calculation View memory footprints and parallelized join processing using PlanViz." },
       { skill: "HANA Cloud", state: "VERIFIED", evidence_level: 0.84, quotation: "Configured SAP BTP HDI containers and SAP HANA Cloud native deployments." }
     ],
-    outreach_draft: "Hi Laura,\n\nI was reviewing your work with SAP HANA Cloud and PlanViz query tuning at Accenture Netherlands. We have a compelling SAP HANA Cloud consulting engagement with key stakeholders in Eindhoven and would love to connect.\n\nBest,\nSaimani Ippili"
+    outreach_draft: "Hi Laura,\n\nI was reviewing your work with SAP HANA Cloud and PlanViz query tuning at Accenture Netherlands. We have a compelling SAP HANA Cloud consulting engagement with key stakeholders in Eindhoven and would love to connect.\n\nBest regards,\n[Your Name]\nTalent Acquisition Team"
   },
   {
     candidate_id: "cand_ravi_05",
@@ -144,7 +144,7 @@ const BENCHMARK_CANDIDATES = [
       { skill: "SAP BODS", state: "VERIFIED", evidence_level: 0.85, quotation: "Designed complex batch jobs in SAP BODS integrating SAP ECC with HANA Data Marts." },
       { skill: "SQLScript", state: "VERIFIED", evidence_level: 0.80, quotation: "Refactored legacy ABAP routines into native HANA SQLScript table user-defined functions." }
     ],
-    outreach_draft: "Hi Ravi,\n\nYour 10 years of SAP consulting in Eindhoven, particularly across SAP BODS and SQLScript optimization, caught our attention. We are expanding our SAP HANA Cloud practice and would value having an introductory chat.\n\nBest regards,\nSaimani Ippili"
+    outreach_draft: "Hi Ravi,\n\nYour 10 years of SAP consulting in Eindhoven, particularly across SAP BODS and SQLScript optimization, caught our attention. We are expanding our SAP HANA Cloud practice and would value having an introductory chat.\n\nBest regards,\n[Your Name]\nTalent Acquisition Team"
   },
   {
     candidate_id: "cand_jeroen_06",
@@ -166,7 +166,7 @@ const BENCHMARK_CANDIDATES = [
     supporting_evidence: [
       { skill: "HANA Modeling", state: "VERIFIED", evidence_level: 0.82, quotation: "Supervised migration of classical SAP BW data models into native SAP HANA Calculation Views." }
     ],
-    outreach_draft: "Hi Jeroen,\n\nI noticed your leadership in native SAP HANA modeling and data migrations at ASML. We are looking for high-caliber consultants in Eindhoven and would be thrilled to connect.\n\nBest,\nSaimani Ippili"
+    outreach_draft: "Hi Jeroen,\n\nI noticed your leadership in native SAP HANA modeling and data migrations at ASML. We are looking for high-caliber consultants in Eindhoven and would be thrilled to connect.\n\nBest regards,\n[Your Name]\nTalent Acquisition Team"
   }
 ];
 
@@ -521,7 +521,7 @@ function openDrawer(candidate) {
   document.getElementById('drawer-profile-link').href = candidate.profile_url || '#';
 
   // Outreach Draft
-  const defaultDraft = `Hi ${candidate.name.split(' ')[0]},\n\nI noticed your strong experience in SAP HANA Cloud and Calculation Views in Eindhoven. We are currently architecting an enterprise data platform and your background with native HANA data modeling and SQLScript is a standout match.\n\nWould you be open to connecting for 15 minutes this week?\n\nBest,\nSaimani Ippili`;
+  const defaultDraft = `Hi ${candidate.name.split(' ')[0]},\n\nI noticed your strong experience in SAP HANA Cloud and Calculation Views in Eindhoven. We are currently architecting an enterprise data platform and your background with native HANA data modeling and SQLScript is a standout match.\n\nWould you be open to connecting for 15 minutes this week?\n\nBest regards,\n[Your Name]\nTalent Acquisition Team`;
   document.getElementById('drawer-outreach-text').value = candidate.outreach_draft || defaultDraft;
 
   // Reveal Drawer
@@ -548,7 +548,7 @@ function copyOutreachText() {
 function regenerateOutreach() {
   if (!activeCandidate) return;
   const firstName = activeCandidate.name.split(' ')[0];
-  const draft = `Hello ${firstName},\n\nI was reviewing your technical work with SAP HANA and data modeling at ${activeCandidate.current_company || 'your current company'} in ${activeCandidate.location || 'the Netherlands'}. We have a high-impact technical consulting role in Eindhoven that directly matches your specialized expertise.\n\nAre you available for a brief introductory call?\n\nBest regards,\nSaimani Ippili`;
+  const draft = `Hello ${firstName},\n\nI was reviewing your technical work with SAP HANA and data modeling at ${activeCandidate.current_company || 'your current company'} in ${activeCandidate.location || 'the Netherlands'}. We have a high-impact technical consulting role in Eindhoven that directly matches your specialized expertise.\n\nAre you available for a brief introductory call?\n\nBest regards,\n[Your Name]\nTalent Acquisition Team`;
   document.getElementById('drawer-outreach-text').value = draft;
 }
 
