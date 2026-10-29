@@ -1,10 +1,32 @@
-// Recruiter Copilot — Premium Enterprise Talent Intelligence Client
+// Recruiter Copilot — Streamlined Talent Sourcing & Geographic Verification Client
 
 let activeJobId = null;
 let allCandidates = [];
 let activeCandidate = null;
 
-// Benchmark Reference Candidates (matches reference UI specification)
+// Presets
+const TEMPLATES = {
+  sap: {
+    title: 'SAP HANA Cloud Consultant',
+    loc: 'Eindhoven, Netherlands',
+    exp: '7-11 years',
+    prompt: `Job Title: SAP HANA Cloud Consultant\nLocation: Eindhoven, Netherlands\nExperience: 7-11 years\n\nMandatory Requirements:\n*SAP HANA Modeling\n*Calculation Views\n*CDS Views\n*SQLScript\n*PlanViz\n*SLT\n*SAP BODS\n*AMS Support`
+  },
+  embedded: {
+    title: 'Embedded C++ Engineer',
+    loc: 'Eindhoven, Netherlands',
+    exp: '5-8 years',
+    prompt: `Job Title: Senior Embedded Software Engineer\nLocation: Eindhoven, Netherlands\nExperience: 5-8 years\n\nMandatory Requirements:\n*Modern C++ (C++17/20)\n*RTOS (FreeRTOS or Zephyr)\n*ARM Cortex-M Architecture\n*CAN / SPI / I2C Protocols\n*Device Driver Development`
+  },
+  cloud: {
+    title: 'Cloud Architect',
+    loc: 'Remote / US',
+    exp: '8-12 years',
+    prompt: `Job Title: Staff Cloud Platform Architect\nLocation: Remote / US\nExperience: 8-12 years\n\nMandatory Requirements:\n*Kubernetes (EKS/GKE)\n*Terraform / IaC\n*Multi-Cloud AWS & GCP\n*Go / Python\n*Distributed Systems Architecture`
+  }
+};
+
+// Benchmark Reference Candidates
 const BENCHMARK_CANDIDATES = [
   {
     candidate_id: "cand_mark_01",
@@ -170,13 +192,8 @@ function clearJobDescription() {
   if (input) {
     input.value = '';
     updateCharCounter();
+    input.focus();
   }
-  const chipsContainer = document.getElementById('mandatory-chips');
-  if (chipsContainer) {
-    chipsContainer.innerHTML = '<span class="text-[11px] text-[#71717A] italic py-1">No skills extracted yet. Click Analyze with AI.</span>';
-  }
-  const countPill = document.getElementById('skills-count-pill');
-  if (countPill) countPill.innerText = '0 skills';
 }
 
 // Toggle Sidebar
@@ -199,32 +216,22 @@ function toggleAdvancedOptions() {
   }
 }
 
-// Add Custom Skill to Chips
-function addSkill() {
-  const input = document.getElementById('new-skill-input');
-  const val = input.value.trim();
-  if (!val) return;
-
-  const container = document.getElementById('mandatory-chips');
-  const clean = val.replace(/^\*+/, '').trim();
+// Load Preset Template
+function loadTemplate(key) {
+  const t = TEMPLATES[key];
+  if (!t) return;
+  document.getElementById('raw-jd-input').value = t.prompt;
+  document.getElementById('header-job-title').innerText = t.title;
+  document.getElementById('header-job-loc').innerHTML = `<span>📍</span><span>${t.loc}</span>`;
   
-  // Remove placeholder if present
-  const placeholder = container.querySelector('.italic');
-  if (placeholder) placeholder.remove();
+  const ruleTitle = document.getElementById('rule-role-title');
+  if (ruleTitle) ruleTitle.value = t.title;
+  const ruleLoc = document.getElementById('rule-location');
+  if (ruleLoc) ruleLoc.value = t.loc;
+  const ruleExp = document.getElementById('rule-experience');
+  if (ruleExp) ruleExp.value = t.exp;
 
-  const chip = document.createElement('span');
-  chip.className = 'skill-pill-orange text-[11px] font-medium px-2.5 py-1 rounded-full flex items-center gap-1.5 cursor-pointer';
-  chip.innerHTML = `<span>${clean}</span><button onclick="this.parentElement.remove(); updateSkillsCount();" class="text-orange-400 hover:text-white text-xs leading-none">×</button>`;
-  container.appendChild(chip);
-  input.value = '';
-  updateSkillsCount();
-}
-
-function updateSkillsCount() {
-  const container = document.getElementById('mandatory-chips');
-  const pills = container.querySelectorAll('.skill-pill-orange');
-  const countSpan = document.getElementById('skills-count-pill');
-  if (countSpan) countSpan.innerText = `${pills.length} skills`;
+  updateCharCounter();
 }
 
 // Initialize Application Data
@@ -233,80 +240,14 @@ async function initApplicationData() {
     const res = await fetch('/api/jobs');
     const jobs = await res.json();
     if (jobs && jobs.length > 0) {
-      // Find latest SAP HANA job or first job
-      const latestJob = jobs[0];
-      await loadJobCandidates(latestJob.job_id);
+      await loadJobCandidates(jobs[0].job_id);
     } else {
-      // Load benchmark reference data
       allCandidates = [...BENCHMARK_CANDIDATES];
       renderCandidates(allCandidates);
     }
   } catch (e) {
-    console.log('Using benchmark candidates:', e);
     allCandidates = [...BENCHMARK_CANDIDATES];
     renderCandidates(allCandidates);
-  }
-}
-
-// AI Extraction of Job Description
-async function analyzeJobDescription() {
-  const rawText = document.getElementById('raw-jd-input').value.trim();
-  if (!rawText) {
-    alert('Please enter or paste a job description first.');
-    return;
-  }
-
-  const btn = document.getElementById('btn-analyze-ai');
-  const originalHtml = btn.innerHTML;
-  btn.disabled = true;
-  btn.innerHTML = `<div class="w-3.5 h-3.5 border-2 border-black border-t-transparent rounded-full animate-spin"></div><span>Extracting...</span>`;
-
-  try {
-    const res = await fetch('/api/jobs/extract', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ raw_jd: rawText })
-    });
-
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-
-    // Update Header Breadcrumbs
-    if (data.role_title) {
-      document.getElementById('header-job-title').innerText = data.role_title;
-    }
-    if (data.location_str) {
-      document.getElementById('header-job-loc').innerHTML = `<span class="text-xs">📍</span><span>${data.location_str}</span>`;
-    }
-
-    // Render Extracted Skills
-    const container = document.getElementById('mandatory-chips');
-    container.innerHTML = '';
-    const skills = (data.mandatory_skills && data.mandatory_skills.length) 
-      ? data.mandatory_skills 
-      : ["SAP HANA Cloud", "HANA Modeling", "Calculation Views", "SQLScript", "SLT", "SAP BODS"];
-
-    skills.forEach(skill => {
-      const chip = document.createElement('span');
-      chip.className = 'skill-pill-orange text-[11px] font-medium px-2.5 py-1 rounded-full flex items-center gap-1.5 cursor-pointer';
-      chip.innerHTML = `<span>${skill}</span><button onclick="this.parentElement.remove(); updateSkillsCount();" class="text-orange-400 hover:text-white text-xs leading-none">×</button>`;
-      container.appendChild(chip);
-    });
-
-    updateSkillsCount();
-
-    // Update Google & Bing Query Previews
-    const cleanSkills = skills.slice(0, 3).map(s => `"${s}"`).join(' OR ');
-    document.getElementById('google-query-code').innerText = `site:nl.linkedin.com/in ("${data.role_title || 'SAP HANA'}") (${cleanSkills}) ("${data.locations ? data.locations[0] : 'Eindhoven'}")`;
-    document.getElementById('bing-query-code').innerText = `site:linkedin.com/in "${data.role_title || 'SAP HANA'}" "${data.locations ? data.locations[0] : 'Eindhoven'}"`;
-
-  } catch (err) {
-    console.error('AI Extraction Notice:', err);
-    alert('Extraction completed with standard rule extraction.');
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = originalHtml;
-    if (window.lucide) lucide.createIcons();
   }
 }
 
@@ -319,14 +260,18 @@ async function startSourcingPipeline() {
   }
 
   const btn = document.getElementById('btn-start-sourcing');
+  const originalHtml = btn.innerHTML;
   btn.disabled = true;
-  btn.innerHTML = `<div class="w-3.5 h-3.5 border-2 border-black border-t-transparent rounded-full animate-spin"></div><span>Sourcing Candidates...</span>`;
+  btn.innerHTML = `<div class="w-3.5 h-3.5 border-2 border-black border-t-transparent rounded-full animate-spin"></div><span>Searching...</span>`;
 
   const progressCard = document.getElementById('sourcing-progress-card');
   progressCard.classList.remove('hidden');
 
-  const chips = document.querySelectorAll('#mandatory-chips .skill-pill-orange span');
-  const overrideSkills = Array.from(chips).map(c => c.innerText.trim()).filter(Boolean);
+  const panel = document.getElementById('advanced-options-panel');
+  const overrideTitle = (panel && !panel.classList.contains('hidden')) 
+    ? document.getElementById('rule-role-title')?.value.trim() : null;
+  const overrideLoc = (panel && !panel.classList.contains('hidden')) 
+    ? document.getElementById('rule-location')?.value.trim() : null;
 
   try {
     const res = await fetch('/api/jobs/source', {
@@ -334,9 +279,8 @@ async function startSourcingPipeline() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         raw_jd: rawJd,
-        override_role_title: document.getElementById('rule-role-title')?.value || null,
-        override_location: document.getElementById('rule-location')?.value || null,
-        override_mandatory_skills: overrideSkills.length ? overrideSkills : null
+        override_role_title: overrideTitle || null,
+        override_location: overrideLoc || null
       })
     });
 
@@ -345,19 +289,17 @@ async function startSourcingPipeline() {
       activeJobId = data.job_id;
       await loadJobCandidates(activeJobId);
     } else {
-      // Fallback to benchmark set
       allCandidates = [...BENCHMARK_CANDIDATES];
       renderCandidates(allCandidates);
     }
 
   } catch (err) {
     console.error('Sourcing Pipeline Error:', err);
-    // Keep benchmark candidates displayed so the view is always pristine
     allCandidates = [...BENCHMARK_CANDIDATES];
     renderCandidates(allCandidates);
   } finally {
     btn.disabled = false;
-    btn.innerHTML = `<i data-lucide="search" class="w-4 h-4"></i><span>Find Candidates</span>`;
+    btn.innerHTML = originalHtml;
     progressCard.classList.add('hidden');
     if (window.lucide) lucide.createIcons();
   }
@@ -380,7 +322,7 @@ async function loadJobCandidates(jobId) {
   renderCandidates(allCandidates);
 }
 
-// Candidate Card Rendering (Matching the Reference UI Layout Exactly)
+// Candidate Card Rendering
 function renderCandidates(candidates) {
   const container = document.getElementById('candidates-grid');
   if (!container) return;
@@ -395,7 +337,7 @@ function renderCandidates(candidates) {
     container.innerHTML = `
       <div class="surface-card p-8 rounded-xl text-center space-y-2">
         <p class="text-sm font-semibold text-white">No candidates found matching the active filter.</p>
-        <p class="text-xs text-[#71717A]">Try setting the Location filter to "All Locations" or clear your search keyword.</p>
+        <p class="text-xs text-[#71717A]">Try setting the Location filter to "All Locations".</p>
       </div>
     `;
     return;
@@ -408,7 +350,6 @@ function renderCandidates(candidates) {
 
     // Score Calculations
     const scoreNum = Math.round(c.score || 85);
-    // Circumference = 2 * PI * 18 = 113.1
     const dashOffset = Math.max(0, 113.1 - (113.1 * scoreNum / 100));
 
     // Avatar
@@ -499,9 +440,6 @@ function renderCandidates(candidates) {
         <!-- Secondary Controls -->
         <button onclick="toggleBookmark('${c.candidate_id}')" class="text-[#71717A] hover:text-[#F97316] p-1.5 rounded-lg hover:bg-[#18181B] transition" title="Save Candidate">
           <i data-lucide="bookmark" class="w-4 h-4"></i>
-        </button>
-        <button class="text-[#71717A] hover:text-white p-1.5 rounded-lg hover:bg-[#18181B] transition">
-          <i data-lucide="more-horizontal" class="w-4 h-4"></i>
         </button>
 
       </div>
@@ -636,11 +574,6 @@ function sortResults() {
   renderCandidates(sorted);
 }
 
-function clearLocationFilter() {
-  document.getElementById('filter-geo').value = 'ALL';
-  filterResults();
-}
-
 // Bookmark Toggle
 function toggleBookmark(candidateId) {
   alert(`Candidate ${candidateId} saved to your recruitment pipeline bookmarks.`);
@@ -665,15 +598,11 @@ function exportCurrentCSV() {
   a.click();
 }
 
-// Save Search
-function saveCurrentSearch() {
-  alert('Search brief "SAP HANA Cloud Consultant · Eindhoven, NL" successfully saved to your active campaigns.');
-}
-
 // Recent Job Selector
 function selectRecentJob(key) {
   document.getElementById('header-job-title').innerText = 'SAP HANA Cloud Consultant';
   document.getElementById('header-job-loc').innerHTML = '<span class="text-xs">🇳🇱</span><span>Eindhoven, Netherlands</span>';
+  loadTemplate('sap');
   allCandidates = [...BENCHMARK_CANDIDATES];
   renderCandidates(allCandidates);
 }
@@ -683,7 +612,6 @@ function loadDemoJob(title, loc) {
   document.getElementById('header-job-loc').innerHTML = `<span>📍</span><span>${loc}</span>`;
   document.getElementById('raw-jd-input').value = `Job Title: ${title}\nLocation: ${loc}\nExperience: 5-8 years\n\nRequirements:\n• Senior engineering and domain expertise\n• Architecture, testing and high-availability operations`;
   updateCharCounter();
-  analyzeJobDescription();
 }
 
 function startNewSearch() {
@@ -691,25 +619,4 @@ function startNewSearch() {
   document.getElementById('header-job-title').innerText = 'New Sourcing Brief';
   document.getElementById('header-job-loc').innerText = 'Unspecified Location';
   document.getElementById('raw-jd-input').focus();
-}
-
-// Modals
-function openBooleanModal() {
-  document.getElementById('boolean-modal').classList.remove('hidden');
-}
-function closeBooleanModal() {
-  document.getElementById('boolean-modal').classList.add('hidden');
-}
-
-function openSourcesModal() {
-  document.getElementById('sources-modal').classList.remove('hidden');
-}
-function closeSourcesModal() {
-  document.getElementById('sources-modal').classList.add('hidden');
-}
-
-function copyQuery(elementId) {
-  const code = document.getElementById(elementId).innerText;
-  navigator.clipboard.writeText(code);
-  alert('Boolean query copied to clipboard!');
 }
