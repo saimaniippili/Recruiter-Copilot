@@ -3,7 +3,12 @@ import urllib.parse
 from datetime import datetime
 from typing import List
 from bs4 import BeautifulSoup
-from curl_cffi import requests
+
+try:
+    from curl_cffi import requests as cffi_requests
+except ImportError:
+    cffi_requests = None
+import requests
 
 from .base import SearchProvider
 from ..core.schemas import SearchResultSchema
@@ -39,12 +44,21 @@ class BingSearchProvider(SearchProvider):
         results = []
         now_iso = datetime.utcnow().isoformat()
         try:
-            r = requests.get(
-                "https://www.bing.com/search",
-                params={"q": clean_q, "count": max_results},
-                timeout=timeout,
-                impersonate="chrome120"
-            )
+            if cffi_requests:
+                r = cffi_requests.get(
+                    "https://www.bing.com/search",
+                    params={"q": clean_q, "count": max_results},
+                    timeout=timeout,
+                    impersonate="chrome120"
+                )
+            else:
+                headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"}
+                r = requests.get(
+                    "https://www.bing.com/search",
+                    params={"q": clean_q, "count": max_results},
+                    headers=headers,
+                    timeout=timeout
+                )
             if r.status_code != 200:
                 return []
 
