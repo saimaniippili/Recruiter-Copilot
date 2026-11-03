@@ -70,7 +70,7 @@ Output a JSON list of evaluations:
         system_prompt = "You are an expert technical talent assessor. Output valid JSON list only. No markdown formatting."
 
         try:
-            raw_resp = llm_client.complete(prompt, system_prompt=system_prompt, temperature=0.1, max_tokens=1500)
+            raw_resp = llm_client.complete(prompt, system_prompt=system_prompt, temperature=0.1, max_tokens=2500)
             if not raw_resp:
                 continue
 
@@ -85,10 +85,27 @@ Output a JSON list of evaluations:
 
             start_idx = clean_json.find("[")
             end_idx = clean_json.rfind("]")
-            if start_idx != -1 and end_idx != -1:
-                clean_json = clean_json[start_idx:end_idx+1]
+            if start_idx != -1 and end_idx != -1 and end_idx > start_idx:
+                json_candidate = clean_json[start_idx:end_idx+1]
+            else:
+                json_candidate = clean_json
 
-            parsed_list = json.loads(clean_json)
+            parsed_list = None
+            try:
+                parsed_list = json.loads(json_candidate)
+            except Exception:
+                # Fallback: extract individual valid JSON objects using regex
+                import re
+                obj_pattern = re.compile(r'\{[^{}]*"id"\s*:\s*"([^"]+)"[^{}]*\}', re.DOTALL)
+                parsed_list = []
+                for m in re.finditer(r'\{[^{}]*"id"[^}]+\}', clean_json):
+                    try:
+                        obj = json.loads(m.group(0))
+                        if isinstance(obj, dict) and "id" in obj:
+                            parsed_list.append(obj)
+                    except Exception:
+                        pass
+
             if isinstance(parsed_list, list):
                 for item in parsed_list:
                     if isinstance(item, dict) and "id" in item:

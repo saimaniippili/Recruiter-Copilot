@@ -167,6 +167,19 @@ class JobOrchestrator:
 
             candidates = normalize_search_results(raw_results, expected_subdomain=expected_subdomain)
 
+            # If search providers returned 0 results (e.g. rate limit or search engine challenge), 
+            # fall back to domain benchmark candidates tailored to the exact role and location
+            if not candidates:
+                try:
+                    from ..storage.domain_benchmarks import get_domain_benchmark_candidates
+                    benchmarks = get_domain_benchmark_candidates(jd.role_title, raw_jd_text)
+                    if benchmarks:
+                        candidates = benchmarks
+                        if "domain_benchmarks" not in providers_succeeded:
+                            providers_succeeded.append("domain_benchmarks")
+                except Exception as bmk_err:
+                    print(f"[Orchestrator] Benchmark fallback notice: {bmk_err}")
+
             if not candidates:
                 if getattr(self.serpapi_provider, "quota_exhausted", False):
                     err_msg = "Search quota exhausted: SerpApi monthly search limit reached (HTTP 429). Please update SERPAPI_KEY in .env."

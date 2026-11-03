@@ -205,6 +205,11 @@ def get_job_candidates(job_id: str):
             except Exception:
                 evidence = {}
         
+        meta = {}
+        if evidence.get("sources") and isinstance(evidence["sources"], list) and len(evidence["sources"]) > 0:
+            if isinstance(evidence["sources"][0], dict):
+                meta = evidence["sources"][0]
+
         processed.append({
             "candidate_id": c["candidate_id"],
             "job_id": c["job_id"],
@@ -225,6 +230,16 @@ def get_job_candidates(job_id: str):
             "pipeline_stage": c.get("pipeline_stage") or "discovered",
             "outreach_draft": c.get("outreach_draft") or "",
             "notes": c.get("notes") or "",
+            "current_company": meta.get("current_company"),
+            "current_title": meta.get("current_title"),
+            "current_tenure": meta.get("current_tenure"),
+            "total_tenure": meta.get("total_tenure"),
+            "past_company": meta.get("past_company"),
+            "education": meta.get("education"),
+            "verified_residence": meta.get("verified_residence"),
+            "commute_status": meta.get("commute_status"),
+            "connection_degree": meta.get("connection_degree", "1st"),
+            "skills": meta.get("skills") or [],
             "supporting_evidence": evidence.get("supporting_evidence") or [],
             "missing_requirements": evidence.get("missing_requirements") or [],
             "evidence": evidence

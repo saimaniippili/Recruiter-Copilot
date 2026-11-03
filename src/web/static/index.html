@@ -40,8 +40,8 @@
       <div class="space-y-1.5 pt-1">
         <span class="text-[10px] uppercase font-bold text-[#71717A] tracking-wider block px-1">Recent Briefs</span>
         <div id="recent-jobs-list" class="space-y-1">
-          <!-- Active Job -->
-          <div onclick="selectRecentJob('job_sap_hana')" class="p-2 rounded-md bg-[#141418] border border-[#27272A] border-l-2 border-l-[#F97316] cursor-pointer transition">
+          <!-- Preset Brief 1 -->
+          <div id="brief-tab-sap" onclick="loadPresetBrief('sap')" class="p-2 rounded-md bg-[#141418] border border-[#27272A] border-l-2 border-l-[#F97316] cursor-pointer transition">
             <div class="flex items-center gap-2">
               <i data-lucide="crosshair" class="w-3 h-3 text-[#F97316] shrink-0"></i>
               <span class="font-semibold text-xs text-white truncate">SAP HANA Cloud</span>
@@ -49,8 +49,8 @@
             <p class="text-[10px] text-[#71717A] pl-5 mt-0.5 truncate">Eindhoven, NL · 15 verified</p>
           </div>
 
-          <!-- Secondary Saved Jobs -->
-          <div onclick="loadDemoJob('Senior Data Engineer', 'Amsterdam, NL')" class="p-2 rounded-md hover:bg-[#141418] cursor-pointer transition">
+          <!-- Preset Brief 2 -->
+          <div id="brief-tab-data_eng" onclick="loadPresetBrief('data_eng')" class="p-2 rounded-md hover:bg-[#141418] cursor-pointer transition">
             <div class="flex items-center gap-2">
               <i data-lucide="database" class="w-3 h-3 text-[#71717A] shrink-0"></i>
               <span class="font-medium text-xs text-[#D4D4D8] truncate">Senior Data Engineer</span>
@@ -58,7 +58,8 @@
             <p class="text-[10px] text-[#71717A] pl-5 mt-0.5 truncate">Amsterdam, NL · 28 profiles</p>
           </div>
 
-          <div onclick="loadDemoJob('Embedded C++ Engineer', 'Eindhoven, NL')" class="p-2 rounded-md hover:bg-[#141418] cursor-pointer transition">
+          <!-- Preset Brief 3 -->
+          <div id="brief-tab-embedded" onclick="loadPresetBrief('embedded')" class="p-2 rounded-md hover:bg-[#141418] cursor-pointer transition">
             <div class="flex items-center gap-2">
               <i data-lucide="cpu" class="w-3 h-3 text-[#71717A] shrink-0"></i>
               <span class="font-medium text-xs text-[#D4D4D8] truncate">Embedded C++</span>
@@ -135,9 +136,10 @@
         <div class="space-y-1">
           <span class="text-[10px] uppercase font-bold text-[#71717A] block">Quick Presets</span>
           <div class="flex flex-wrap gap-1.5">
-            <button onclick="loadTemplate('sap')" class="text-[11px] bg-[#141418] hover:bg-[#1C1C22] text-[#E4E4E7] hover:text-white border border-[#27272A] px-2 py-1 rounded transition font-medium">SAP HANA (Eindhoven)</button>
-            <button onclick="loadTemplate('embedded')" class="text-[11px] bg-[#141418] hover:bg-[#1C1C22] text-[#E4E4E7] hover:text-white border border-[#27272A] px-2 py-1 rounded transition font-medium">Embedded C++</button>
-            <button onclick="loadTemplate('cloud')" class="text-[11px] bg-[#141418] hover:bg-[#1C1C22] text-[#E4E4E7] hover:text-white border border-[#27272A] px-2 py-1 rounded transition font-medium">Cloud Architect</button>
+            <button onclick="loadPresetBrief('data_eng')" class="text-[11px] bg-[#141418] hover:bg-[#1C1C22] text-[#E4E4E7] hover:text-white border border-[#27272A] px-2 py-1 rounded transition font-medium">Data Engineer (Amsterdam)</button>
+            <button onclick="loadPresetBrief('sap')" class="text-[11px] bg-[#141418] hover:bg-[#1C1C22] text-[#E4E4E7] hover:text-white border border-[#27272A] px-2 py-1 rounded transition font-medium">SAP HANA (Eindhoven)</button>
+            <button onclick="loadPresetBrief('embedded')" class="text-[11px] bg-[#141418] hover:bg-[#1C1C22] text-[#E4E4E7] hover:text-white border border-[#27272A] px-2 py-1 rounded transition font-medium">Embedded C++ (Eindhoven)</button>
+            <button onclick="loadPresetBrief('cloud')" class="text-[11px] bg-[#141418] hover:bg-[#1C1C22] text-[#E4E4E7] hover:text-white border border-[#27272A] px-2 py-1 rounded transition font-medium">Cloud Architect</button>
           </div>
         </div>
 
