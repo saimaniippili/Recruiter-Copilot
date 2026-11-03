@@ -357,6 +357,17 @@ def score_and_rank_candidates(jd: JobDescriptionSchema, candidates: List[Candida
 
         scored.append(c)
 
+    # AI Semantic Evaluation Layer (Enterprise Intelligence Tier)
+    # Evaluates candidates in a unified batch call using fast LLM reasoning
+    if scored:
+        try:
+            from .semantic_evaluator import evaluate_candidates_batch, apply_semantic_batch_to_candidates
+            batch_results = evaluate_candidates_batch(jd, scored[:12])
+            if batch_results:
+                apply_semantic_batch_to_candidates(jd, scored, batch_results)
+        except Exception as e:
+            print(f"[ScoringEngine] Batch semantic evaluation notice: {e}")
+
     # Sort candidates prioritizing verified geographic eligibility, then overall score
     def get_candidate_sort_key(c: CandidateSchema) -> Tuple[int, float]:
         # Primary Tier: Verified ELIGIBLE > UNKNOWN > MISMATCH

@@ -11,7 +11,11 @@ class LLMClient:
         self.gemini_api_key = settings.GEMINI_API_KEY
         self.gemini_model = settings.GEMINI_MODEL
         self.groq_api_key = settings.GROQ_API_KEY
-        self.groq_models = [settings.GROQ_PRIMARY_MODEL, settings.GROQ_FALLBACK_MODEL, "openai/gpt-oss-20b"]
+        self.groq_models = [
+            "openai/gpt-oss-20b",
+            "openai/gpt-oss-120b",
+            "qwen/qwen3.8-27b"
+        ]
         self.ollama_url = settings.OLLAMA_BASE_URL
         self.ollama_models = [settings.OLLAMA_MODEL, "gemma3:4b", "mistral:latest", "phi3:mini"]
 

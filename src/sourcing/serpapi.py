@@ -31,9 +31,8 @@ class SerpApiSearchProvider(SearchProvider):
         if not self.api_key:
             return []
 
-        # Localized parameters for targeted European/Global search
+        # Google Search parameters optimized for reliable LinkedIn candidate retrieval
         gl = target_country.lower() if target_country else "nl"
-        google_domain = f"google.{gl}" if gl in ("nl", "de", "uk", "fr", "es", "it") else "google.com"
 
         params: Dict[str, Any] = {
             "engine": "google",
@@ -42,10 +41,10 @@ class SerpApiSearchProvider(SearchProvider):
             "num": max_results,
             "gl": gl,
             "hl": "en",
-            "google_domain": google_domain
+            "google_domain": "google.com"
         }
-        if target_location:
-            params["location"] = target_location
+        # Note: Do not pass location parameter for site:linkedin.com queries as it causes Google to 
+        # return local municipal/tourist pages instead of LinkedIn profiles.
 
         try:
             resp = requests.get("https://serpapi.com/search", params=params, timeout=timeout)

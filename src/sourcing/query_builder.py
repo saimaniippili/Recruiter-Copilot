@@ -102,8 +102,10 @@ class MultiQuerySearchPlanner:
                 target_subdomain = code
                 break
 
-        primary_site = f"site:{target_subdomain}.linkedin.com/in" if target_subdomain else "site:linkedin.com/in"
-        alt_site = f"(site:{target_subdomain}.linkedin.com/in OR site:linkedin.com/in)" if target_subdomain else "site:linkedin.com/in"
+        # Note: Use site:linkedin.com/in globally without forcing country subdomains,
+        # as Google indexes all profiles under linkedin.com/in and localizes via regional parameters.
+        primary_site = "site:linkedin.com/in"
+        alt_site = "site:linkedin.com/in"
 
         # Negative geo exclusion clause
         if enable_negative_geo and not is_india and is_nl:
@@ -116,44 +118,32 @@ class MultiQuerySearchPlanner:
         primary_title = titles[0]
         flex_title = titles[1] if len(titles) > 1 else primary_title
 
-        # Query Family 1: City-Level High Precision
-        if city:
-            if len(mand_skills) >= 2:
-                q1 = f'{primary_site} {format_skill_keyword(mand_skills[0])} {format_skill_keyword(mand_skills[1])} "{city}"{neg_clause}'
-            else:
-                q1 = f'{primary_site} {primary_title} "{city}"{neg_clause}'
-            queries.append(q1.strip())
+        # Query Family 1: Core Technical Skill + Location Anchor
+        loc_anchor = city if city else (country if country else "")
+        if mand_skills:
+            q1 = f'{primary_site} {format_skill_keyword(mand_skills[0])} {loc_anchor}'.strip()
+            queries.append(q1)
 
-        # Query Family 2: Role & Subdomain City / Country Search
-        if city:
-            q2 = f'{primary_site} {flex_title} "{city}"'
-            queries.append(q2.strip())
-        elif target_subdomain:
-            q2 = f'{primary_site} {flex_title} {format_skill_keyword(mand_skills[0]) if mand_skills else ""}'
-            queries.append(q2.strip())
-        else:
-            target_loc = country or city
-            q2 = f'{primary_site} {flex_title} {format_skill_keyword(mand_skills[0]) if mand_skills else ""} {target_loc}'.strip()
-            queries.append(q2)
+        # Query Family 2: Role Title + Location Anchor
+        q2 = f'{primary_site} {flex_title} {loc_anchor}'.strip()
+        queries.append(q2)
 
-        # Query Family 3: Technical-Skill Focused Query (Independent of exact role title)
-        if len(mand_skills) >= 3:
-            loc_term = f'"{city}"' if city else (f'"{country}"' if country else "")
-            q3 = f'{primary_site} {format_skill_keyword(mand_skills[0])} {format_skill_keyword(mand_skills[2])} {loc_term}{neg_clause}'.strip()
+        # Query Family 3: Secondary Skill + Location Anchor
+        if len(mand_skills) >= 2:
+            q3 = f'{primary_site} {format_skill_keyword(mand_skills[1])} {loc_anchor}'.strip()
             queries.append(q3)
-        elif mand_skills:
-            q3 = f'{primary_site} {format_skill_keyword(mand_skills[0])} {flex_title}{neg_clause}'.strip()
+        elif primary_title != flex_title:
+            q3 = f'{primary_site} {primary_title} {loc_anchor}'.strip()
             queries.append(q3)
 
-        # Query Family 4: Broad Role & Subdomain Expansion with negative geo exclusions
-        loc_term = f'"{country}"' if country else (f'"{city}"' if city else "")
-        q4 = f'{alt_site} {primary_title} {loc_term}{neg_clause}'.strip()
-        queries.append(q4)
+        # Query Family 4: Regional Expansion
+        if country and country.lower() != (city or "").lower():
+            q4 = f'{primary_site} {format_skill_keyword(mand_skills[0]) if mand_skills else primary_title} {country}'.strip()
+            queries.append(q4)
 
         # Query Family 5: GitHub Technical Evidence Query
-        if mand_skills and (city or country):
-            gh_loc = f'("{city}" OR "{country}")' if (city and country) else f'"{city or country}"'
-            q5 = f'site:github.com {format_skill_keyword(mand_skills[0])} {gh_loc}'.strip()
+        if mand_skills and loc_anchor:
+            q5 = f'site:github.com {format_skill_keyword(mand_skills[0])} "{loc_anchor}"'.strip()
             queries.append(q5)
 
         # Deduplicate while preserving order
