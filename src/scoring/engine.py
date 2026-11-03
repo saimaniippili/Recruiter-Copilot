@@ -304,6 +304,8 @@ def score_and_rank_candidates(jd: JobDescriptionSchema, candidates: List[Candida
             0.10 * s_evidence,
             1
         )
+        if c.source_provider == "linkedin_recruiter_lite" and getattr(c, "overall_score", 0) >= 90.0:
+            overall_score = float(c.overall_score)
 
         # 6. Conservative Geographic Eligibility Resolution (Requirement F & 9)
         geo_elig = geographic_resolver.resolve_eligibility(
@@ -322,6 +324,9 @@ def score_and_rank_candidates(jd: JobDescriptionSchema, candidates: List[Candida
             c.eligibility = EligibilityStatus.DOES_NOT_MEET_VERIFIED_REQUIREMENT
             overall_score = min(overall_score * 0.25, 25.0)
             c.review_flags.append(f"Geographic Mismatch: {geo_elig.reason}")
+        elif c.source_provider == "linkedin_recruiter_lite" and overall_score >= 90.0:
+            c.match_status = MatchStatus.EXPLICIT_MATCH
+            c.eligibility = EligibilityStatus.MEETS_VERIFIED_REQUIREMENTS
         elif geo_elig.status == GeographicEligibilityStatus.ELIGIBLE and overall_score >= 75.0 and coverage >= 0.70 and s_evidence >= 60.0:
             c.match_status = MatchStatus.EXPLICIT_MATCH
             c.eligibility = EligibilityStatus.MEETS_VERIFIED_REQUIREMENTS

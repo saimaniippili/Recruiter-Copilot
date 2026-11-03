@@ -3,10 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Recruiter Copilot — AI Talent Intelligence</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="stylesheet" href="/static/styles.css?v=3.0.0">
+  <link rel="stylesheet" href="/static/styles.css?v=4.0.0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -38,18 +41,18 @@
 
       <!-- Recent Sourcing Briefs Section -->
       <div class="space-y-1.5 pt-1">
-        <span class="text-[10px] uppercase font-bold text-[#71717A] tracking-wider block px-1">Recent Briefs</span>
+        <span class="text-[10px] uppercase font-bold text-[#71717A] tracking-wider block px-1">Saved Presets</span>
         <div id="recent-jobs-list" class="space-y-1">
-          <!-- Preset Brief 1 -->
-          <div id="brief-tab-sap" onclick="loadPresetBrief('sap')" class="p-2 rounded-md bg-[#141418] border border-[#27272A] border-l-2 border-l-[#F97316] cursor-pointer transition">
+          <!-- Preset Brief: DevOps -->
+          <div id="brief-tab-devops" onclick="loadPresetBrief('devops')" class="p-2 rounded-md hover:bg-[#141418] cursor-pointer transition">
             <div class="flex items-center gap-2">
-              <i data-lucide="crosshair" class="w-3 h-3 text-[#F97316] shrink-0"></i>
-              <span class="font-semibold text-xs text-white truncate">SAP HANA Cloud</span>
+              <i data-lucide="terminal" class="w-3 h-3 text-[#71717A] shrink-0"></i>
+              <span class="font-medium text-xs text-[#D4D4D8] truncate">Lead DevOps Engineer</span>
             </div>
-            <p class="text-[10px] text-[#71717A] pl-5 mt-0.5 truncate">Eindhoven, NL · 15 verified</p>
+            <p class="text-[10px] text-[#71717A] pl-5 mt-0.5 truncate">Eindhoven / Ams · 30 profiles</p>
           </div>
 
-          <!-- Preset Brief 2 -->
+          <!-- Preset Brief: Data Eng -->
           <div id="brief-tab-data_eng" onclick="loadPresetBrief('data_eng')" class="p-2 rounded-md hover:bg-[#141418] cursor-pointer transition">
             <div class="flex items-center gap-2">
               <i data-lucide="database" class="w-3 h-3 text-[#71717A] shrink-0"></i>
@@ -58,13 +61,22 @@
             <p class="text-[10px] text-[#71717A] pl-5 mt-0.5 truncate">Amsterdam, NL · 28 profiles</p>
           </div>
 
-          <!-- Preset Brief 3 -->
+          <!-- Preset Brief: Embedded -->
           <div id="brief-tab-embedded" onclick="loadPresetBrief('embedded')" class="p-2 rounded-md hover:bg-[#141418] cursor-pointer transition">
             <div class="flex items-center gap-2">
               <i data-lucide="cpu" class="w-3 h-3 text-[#71717A] shrink-0"></i>
               <span class="font-medium text-xs text-[#D4D4D8] truncate">Embedded C++</span>
             </div>
             <p class="text-[10px] text-[#71717A] pl-5 mt-0.5 truncate">Eindhoven, NL · 35 profiles</p>
+          </div>
+
+          <!-- Preset Brief: SAP HANA -->
+          <div id="brief-tab-sap" onclick="loadPresetBrief('sap')" class="p-2 rounded-md hover:bg-[#141418] cursor-pointer transition">
+            <div class="flex items-center gap-2">
+              <i data-lucide="crosshair" class="w-3 h-3 text-[#71717A] shrink-0"></i>
+              <span class="font-medium text-xs text-[#D4D4D8] truncate">SAP HANA Cloud</span>
+            </div>
+            <p class="text-[10px] text-[#71717A] pl-5 mt-0.5 truncate">Eindhoven, NL · 15 verified</p>
           </div>
         </div>
       </div>
@@ -98,11 +110,11 @@
         </button>
         <div class="flex items-center gap-2 text-xs">
           <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-[#71717A]"></i>
-          <span id="header-job-title" class="font-semibold text-white tracking-tight">SAP HANA Cloud Consultant</span>
+          <span id="header-job-title" class="font-semibold text-white tracking-tight">AI Talent Intelligence Workspace</span>
           <span class="text-[#71717A]">·</span>
           <span id="header-job-loc" class="text-[#A1A1AA] flex items-center gap-1.5">
-            <span class="text-xs">🇳🇱</span>
-            <span>Eindhoven, Netherlands</span>
+            <span class="text-xs">📍</span>
+            <span>Ready to Source</span>
           </span>
         </div>
       </div>
@@ -136,32 +148,20 @@
         <div class="space-y-1">
           <span class="text-[10px] uppercase font-bold text-[#71717A] block">Quick Presets</span>
           <div class="flex flex-wrap gap-1.5">
+            <button onclick="loadPresetBrief('devops')" class="text-[11px] bg-[#141418] hover:bg-[#1C1C22] text-[#E4E4E7] hover:text-white border border-[#27272A] px-2 py-1 rounded transition font-medium">DevOps (Eindhoven/Ams)</button>
             <button onclick="loadPresetBrief('data_eng')" class="text-[11px] bg-[#141418] hover:bg-[#1C1C22] text-[#E4E4E7] hover:text-white border border-[#27272A] px-2 py-1 rounded transition font-medium">Data Engineer (Amsterdam)</button>
-            <button onclick="loadPresetBrief('sap')" class="text-[11px] bg-[#141418] hover:bg-[#1C1C22] text-[#E4E4E7] hover:text-white border border-[#27272A] px-2 py-1 rounded transition font-medium">SAP HANA (Eindhoven)</button>
-            <button onclick="loadPresetBrief('embedded')" class="text-[11px] bg-[#141418] hover:bg-[#1C1C22] text-[#E4E4E7] hover:text-white border border-[#27272A] px-2 py-1 rounded transition font-medium">Embedded C++ (Eindhoven)</button>
-            <button onclick="loadPresetBrief('cloud')" class="text-[11px] bg-[#141418] hover:bg-[#1C1C22] text-[#E4E4E7] hover:text-white border border-[#27272A] px-2 py-1 rounded transition font-medium">Cloud Architect</button>
+            <button onclick="loadPresetBrief('embedded')" class="text-[11px] bg-[#141418] hover:bg-[#1C1C22] text-[#E4E4E7] hover:text-white border border-[#27272A] px-2 py-1 rounded transition font-medium">Embedded C++</button>
+            <button onclick="loadPresetBrief('sap')" class="text-[11px] bg-[#141418] hover:bg-[#1C1C22] text-[#E4E4E7] hover:text-white border border-[#27272A] px-2 py-1 rounded transition font-medium">SAP HANA</button>
           </div>
         </div>
 
-        <!-- JD Textarea Editor Box -->
+        <!-- JD Textarea Editor Box (Empty by default) -->
         <div class="surface-card rounded-lg p-3 space-y-2 relative focus-within:border-[#F97316] transition">
-          <textarea id="raw-jd-input" rows="12" oninput="updateCharCounter()" class="w-full bg-transparent border-0 text-xs text-[#E4E4E7] font-mono leading-relaxed focus:outline-none resize-none placeholder-[#71717A]" placeholder="Describe the candidate you need, or paste a job brief...&#10;Job Title: SAP HANA Cloud Consultant&#10;Location: Eindhoven, Netherlands&#10;Experience: 7-11 years&#10;&#10;Mandatory Requirements:&#10;*SAP HANA Modeling&#10;*Calculation Views&#10;*CDS Views&#10;*SQLScript&#10;*PlanViz&#10;*SLT&#10;*SAP BODS&#10;*AMS Support">Job Title: SAP HANA Cloud Consultant
-Location: Eindhoven, Netherlands
-Experience: 7-11 years
-
-Mandatory Requirements:
-*SAP HANA Modeling
-*Calculation Views
-*CDS Views
-*SQLScript
-*PlanViz
-*SLT
-*SAP BODS
-*AMS Support</textarea>
+          <textarea id="raw-jd-input" rows="12" oninput="updateCharCounter()" class="w-full bg-transparent border-0 text-xs text-[#E4E4E7] font-mono leading-relaxed focus:outline-none resize-none placeholder-[#71717A]" placeholder="Describe the candidate you need, or paste a job brief...&#10;&#10;Example:&#10;Job Title: Lead DevOps Engineer&#10;Location: Eindhoven, Netherlands&#10;Experience: 5-8 years&#10;&#10;Mandatory Requirements:&#10;*Kubernetes&#10;*Terraform&#10;*Docker & CI/CD Pipelines&#10;*AWS or Azure Cloud&#10;*Prometheus & Monitoring"></textarea>
 
           <div class="flex items-center justify-between pt-1 border-t border-[#1C1C22]">
             <span class="text-[10px] text-[#71717A] font-mono">Format: Structured Brief</span>
-            <span id="char-counter" class="text-[10px] text-[#71717A] font-mono">220/5000</span>
+            <span id="char-counter" class="text-[10px] text-[#71717A] font-mono">0/5000</span>
           </div>
         </div>
 
@@ -180,23 +180,32 @@ Mandatory Requirements:
           <div class="flex items-center justify-between">
             <button onclick="toggleAdvancedOptions()" id="btn-toggle-advanced" class="text-xs text-[#A1A1AA] hover:text-white flex items-center gap-1.5 py-1 rounded transition">
               <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5 text-[#F97316]"></i>
-              <span>Advanced Filters</span>
+              <span>Advanced Search Rules</span>
             </button>
           </div>
+        </div>
 
-          <!-- Collapsible Advanced Search Filters -->
-          <div id="advanced-options-panel" class="hidden surface-card p-3 rounded-md space-y-2.5 border border-[#27272A]">
+        <!-- Advanced Options Panel (Collapsible) -->
+        <div id="advanced-options-panel" class="hidden surface-card p-3 rounded-lg space-y-3 border border-[#27272A] transition">
+          <div class="text-[11px] font-semibold text-white flex items-center justify-between">
+            <span>Hard Sourcing Constraints</span>
+            <span class="text-[10px] text-[#F97316] font-mono font-normal">Active Overrides</span>
+          </div>
+          
+          <div class="space-y-2 text-xs">
             <div>
-              <label class="text-[10px] text-[#71717A] uppercase font-semibold block mb-1">Target Job Title</label>
-              <input type="text" id="rule-role-title" value="SAP HANA Cloud Consultant" class="w-full bg-[#0C0C0F] border border-[#27272A] rounded px-2.5 py-1 text-xs text-white focus:outline-none focus:border-[#F97316]">
+              <label class="text-[10px] uppercase font-bold text-[#71717A] block mb-1">Target Job Title</label>
+              <input type="text" id="rule-role-title" placeholder="e.g. Lead DevOps Engineer" class="w-full bg-[#141418] border border-[#27272A] rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#F97316]">
             </div>
+
             <div>
-              <label class="text-[10px] text-[#71717A] uppercase font-semibold block mb-1">Target Location</label>
-              <input type="text" id="rule-location" value="Eindhoven, Netherlands" class="w-full bg-[#0C0C0F] border border-[#27272A] rounded px-2.5 py-1 text-xs text-white focus:outline-none focus:border-[#F97316]">
+              <label class="text-[10px] uppercase font-bold text-[#71717A] block mb-1">Target Location (Strict Fence)</label>
+              <input type="text" id="rule-location" placeholder="e.g. Eindhoven, Netherlands" class="w-full bg-[#141418] border border-[#27272A] rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#F97316]">
             </div>
+
             <div>
-              <label class="text-[10px] text-[#71717A] uppercase font-semibold block mb-1">Experience Range</label>
-              <input type="text" id="rule-experience" value="7-11 years" class="w-full bg-[#0C0C0F] border border-[#27272A] rounded px-2.5 py-1 text-xs text-white focus:outline-none focus:border-[#F97316]">
+              <label class="text-[10px] uppercase font-bold text-[#71717A] block mb-1">Target Experience</label>
+              <input type="text" id="rule-experience" placeholder="e.g. 5-9 years" class="w-full bg-[#141418] border border-[#27272A] rounded px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#F97316]">
             </div>
           </div>
         </div>
@@ -215,7 +224,7 @@ Mandatory Requirements:
               <h2 class="text-base font-bold text-white tracking-tight">Discovered Candidates</h2>
               <span class="bg-[#1C1C24] text-[#A1A1AA] text-[10px] font-mono px-2 py-0.5 rounded border border-[#2A2A34] font-semibold">Recruiter Lite Dossier</span>
             </div>
-            <p id="results-count-text" class="text-xs text-[#71717A] mt-0.5">6 candidates found · Sorted by match score</p>
+            <p id="results-count-text" class="text-xs text-[#71717A] mt-0.5">0 candidates · Ready to source</p>
           </div>
 
           <div class="flex items-center gap-2">
@@ -248,14 +257,28 @@ Mandatory Requirements:
             <div class="w-4 h-4 border-2 border-[#F97316] border-t-transparent rounded-full animate-spin shrink-0"></div>
             <div class="flex-1 min-w-0">
               <h4 class="text-xs font-bold text-white">Sourcing in progress...</h4>
-              <p id="sourcing-status-text" class="text-[11px] text-orange-400 font-mono truncate">Searching Google X-Ray & Bing with 3-tier geographic gate...</p>
+              <p id="sourcing-status-text" class="text-[11px] text-orange-400 font-mono truncate">Searching Google X-Ray & verified talent indexes...</p>
             </div>
           </div>
         </div>
 
-        <!-- Candidate Cards Stack -->
+        <!-- Candidate Cards Stack (Ready state by default) -->
         <div id="candidates-grid" class="space-y-2.5">
-          <!-- Rendered dynamically by JavaScript -->
+          <div class="surface-card p-12 rounded-xl text-center space-y-4 border border-[#22222A] bg-[#0C0C10] max-w-lg mx-auto my-12">
+            <div class="w-14 h-14 rounded-full bg-[#181822] text-[#F97316] flex items-center justify-center mx-auto border border-[#2E2E3C] shadow-inner">
+              <i data-lucide="search" class="w-6 h-6"></i>
+            </div>
+            <div class="space-y-1.5">
+              <h3 class="text-base font-bold text-white tracking-tight">Ready to Source Candidates</h3>
+              <p class="text-xs text-[#A1A1AA] max-w-md mx-auto leading-relaxed">
+                Paste your job requirements in the editor on the left (or pick a preset brief) and click <strong class="text-white">Find Candidates</strong> to discover and evaluate verified talent.
+              </p>
+            </div>
+            <div class="pt-2 flex items-center justify-center gap-2">
+              <button onclick="loadPresetBrief('devops')" class="text-xs bg-[#181820] hover:bg-[#22222A] text-zinc-300 hover:text-white border border-[#2E2E3A] px-3 py-1.5 rounded-md transition font-medium">Try DevOps Preset</button>
+              <button onclick="loadPresetBrief('data_eng')" class="text-xs bg-[#181820] hover:bg-[#22222A] text-zinc-300 hover:text-white border border-[#2E2E3A] px-3 py-1.5 rounded-md transition font-medium">Try Data Engineer</button>
+            </div>
+          </div>
         </div>
 
       </section>
@@ -278,89 +301,105 @@ Mandatory Requirements:
           </div>
           <div class="min-w-0">
             <h3 id="drawer-name" class="font-bold text-sm text-white truncate">Candidate Name</h3>
-            <p id="drawer-headline" class="text-xs text-[#A1A1AA] line-clamp-1">Headline</p>
+            <p id="drawer-headline" class="text-xs text-[#71717A] truncate">Candidate Headline</p>
           </div>
         </div>
-        <button onclick="closeDrawer()" class="text-[#71717A] hover:text-white p-1 rounded-md">
+        <button onclick="closeDrawer()" class="text-[#71717A] hover:text-white p-1 rounded-md hover:bg-[#141418] transition">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
 
-      <!-- Match Score & Geographic Eligibility -->
+      <!-- Match Score & Geographic Status -->
       <div class="grid grid-cols-2 gap-2">
-        <div class="surface-card p-2.5 rounded-md">
-          <span class="text-[10px] text-[#71717A] uppercase font-semibold block mb-0.5">Overall Fit</span>
-          <span id="drawer-score-badge" class="badge-geo-verified text-xs font-mono font-bold px-2 py-0.5 rounded-full inline-block">85% Fit</span>
+        <div class="surface-card p-3 rounded-lg border border-[#27272A] text-center">
+          <span class="text-[10px] text-[#71717A] uppercase font-bold block mb-1">ATS Semantic Score</span>
+          <span id="drawer-score-badge" class="text-base font-extrabold text-[#F97316] font-mono">95% Match</span>
         </div>
-        <div class="surface-card p-2.5 rounded-md">
-          <span class="text-[10px] text-[#71717A] uppercase font-semibold block mb-0.5">Geographic State</span>
-          <span id="drawer-geo-badge" class="text-xs font-bold px-2 py-0.5 rounded-full inline-block">ELIGIBLE</span>
+        <div class="surface-card p-3 rounded-lg border border-[#27272A] text-center">
+          <span class="text-[10px] text-[#71717A] uppercase font-bold block mb-1">Geographic Gate</span>
+          <span id="drawer-geo-badge" class="badge-geo-verified text-xs font-bold px-2 py-0.5 rounded-full inline-block">ELIGIBLE</span>
         </div>
       </div>
 
-      <!-- Geographic Explanation -->
-      <div class="surface-card p-3 rounded-md space-y-1">
-        <span class="text-[10px] text-[#71717A] uppercase font-semibold block">Location Evidence Audit</span>
-        <p id="drawer-geo-reason" class="text-xs text-[#E4E4E7] leading-relaxed"></p>
+      <!-- Geographic Audit Trail -->
+      <div class="surface-card p-3 rounded-lg border border-[#27272A] space-y-1.5">
+        <span class="text-[10px] text-[#71717A] uppercase font-bold tracking-wider block">Physical Residency Audit</span>
+        <p id="drawer-geo-reason" class="text-xs text-[#E4E4E7] leading-relaxed">Verified physical residency confirmed within target commuting boundary.</p>
       </div>
 
       <!-- Component Score Breakdown -->
-      <div class="surface-card p-3 rounded-md space-y-2">
-        <span class="text-[10px] text-[#71717A] uppercase font-semibold block">Component Evaluation (0-100)</span>
-        <div class="grid grid-cols-4 gap-1.5 text-center text-xs font-mono">
-          <div class="bg-[#09090B] p-1.5 rounded border border-[#27272A]">
-            <span class="text-[9px] text-[#71717A] block">Skills</span>
-            <span id="drawer-score-skills" class="font-bold text-[#F97316]">0</span>
+      <div class="surface-card p-3 rounded-lg border border-[#27272A] space-y-2">
+        <span class="text-[10px] text-[#71717A] uppercase font-bold tracking-wider block">Evidence-Weighted Components</span>
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <div class="flex justify-between p-1.5 bg-[#0C0C0F] rounded border border-[#1C1C22]">
+            <span class="text-[#71717A]">Mandatory Skills:</span>
+            <span id="drawer-score-skills" class="font-mono text-white font-bold">95</span>
           </div>
-          <div class="bg-[#09090B] p-1.5 rounded border border-[#27272A]">
-            <span class="text-[9px] text-[#71717A] block">Seniority</span>
-            <span id="drawer-score-seniority" class="font-bold text-[#F97316]">0</span>
+          <div class="flex justify-between p-1.5 bg-[#0C0C0F] rounded border border-[#1C1C22]">
+            <span class="text-[#71717A]">Seniority:</span>
+            <span id="drawer-score-seniority" class="font-mono text-white font-bold">90</span>
           </div>
-          <div class="bg-[#09090B] p-1.5 rounded border border-[#27272A]">
-            <span class="text-[9px] text-[#71717A] block">Role</span>
-            <span id="drawer-score-role" class="font-bold text-[#F97316]">0</span>
+          <div class="flex justify-between p-1.5 bg-[#0C0C0F] rounded border border-[#1C1C22]">
+            <span class="text-[#71717A]">Role Alignment:</span>
+            <span id="drawer-score-role" class="font-mono text-white font-bold">92</span>
           </div>
-          <div class="bg-[#09090B] p-1.5 rounded border border-[#27272A]">
-            <span class="text-[9px] text-[#71717A] block">Evidence</span>
-            <span id="drawer-score-evidence" class="font-bold text-[#F97316]">0</span>
+          <div class="flex justify-between p-1.5 bg-[#0C0C0F] rounded border border-[#1C1C22]">
+            <span class="text-[#71717A]">Corroboration:</span>
+            <span id="drawer-score-evidence" class="font-mono text-white font-bold">95</span>
           </div>
         </div>
       </div>
 
-      <!-- Verified Supporting Quotations -->
-      <div class="space-y-1">
-        <span class="text-[11px] text-[#71717A] uppercase font-semibold block">Technical Evidence Quotations</span>
-        <div id="drawer-quotations-list" class="space-y-1.5 max-h-40 overflow-y-auto pr-1"></div>
+      <!-- Extracted Evidence Quotations -->
+      <div class="space-y-1.5">
+        <span class="text-[10px] text-[#71717A] uppercase font-bold tracking-wider block">Quoted Evidence Citations</span>
+        <div id="drawer-quotations-list" class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- Pipeline Stage Management -->
+      <div class="space-y-1.5">
+        <span class="text-[10px] text-[#71717A] uppercase font-bold tracking-wider block">Candidate Workflow Stage</span>
+        <select id="drawer-pipeline-stage" onchange="updateCandidateStage()" class="w-full bg-[#141418] border border-[#27272A] rounded px-3 py-2 text-xs text-white focus:outline-none focus:border-[#F97316]">
+          <option value="discovered">Discovered</option>
+          <option value="contacted">Contacted</option>
+          <option value="responded">Responded</option>
+          <option value="screened">Screened</option>
+          <option value="interviewed">Interviewed</option>
+          <option value="offered">Offered</option>
+          <option value="rejected">Rejected</option>
+        </select>
       </div>
 
       <!-- Personalized Outreach Draft -->
-      <div class="space-y-1 pt-1 border-t border-[#222226]">
+      <div class="space-y-1.5">
         <div class="flex items-center justify-between">
-          <span class="text-[11px] text-[#F97316] uppercase font-semibold flex items-center gap-1">
-            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-            <span>Personalized Outreach</span>
-          </span>
-          <button onclick="regenerateOutreach()" class="text-[10px] text-orange-400 hover:text-orange-300 font-semibold">Regenerate</button>
+          <span class="text-[10px] text-[#71717A] uppercase font-bold tracking-wider">Generated InMail Outreach</span>
+          <button onclick="copyOutreachDraft()" class="text-[11px] text-[#F97316] hover:text-[#EA580C] font-semibold flex items-center gap-1">
+            <i data-lucide="copy" class="w-3 h-3"></i>
+            <span>Copy</span>
+          </button>
         </div>
-        <textarea id="drawer-outreach-text" rows="5" class="w-full bg-[#09090B] border border-[#27272A] rounded-md p-2 text-xs text-white leading-relaxed font-mono focus:outline-none focus:border-[#F97316]"></textarea>
+        <textarea id="drawer-outreach-text" rows="5" class="w-full bg-[#0C0C0F] border border-[#27272A] rounded-md p-2.5 text-xs text-[#E4E4E7] font-sans leading-relaxed focus:outline-none focus:border-[#F97316] resize-none"></textarea>
       </div>
 
     </div>
 
-    <!-- Actions -->
-    <div class="pt-3 border-t border-[#222226] flex gap-2">
-      <button onclick="copyOutreachText()" id="btn-copy-outreach" class="flex-1 btn-primary-orange py-2 rounded-md text-xs font-bold flex items-center justify-center gap-1.5 transition">
-        <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-        <span id="copy-text-label">Copy Message</span>
-      </button>
-      <a id="drawer-profile-link" href="#" target="_blank" class="btn-secondary-dark px-3 py-2 rounded-md text-xs font-semibold flex items-center justify-center gap-1.5 transition">
-        <span>Open LinkedIn</span>
+    <!-- Drawer Footer Actions -->
+    <div class="pt-4 border-t border-[#222226] flex items-center gap-2">
+      <a id="drawer-linkedin-link" href="#" target="_blank" class="flex-1 btn-primary-orange py-2 px-3 rounded-md text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm">
+        <span>View on LinkedIn</span>
         <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
       </a>
+      <button onclick="closeDrawer()" class="btn-secondary-dark py-2 px-4 rounded-md text-xs font-semibold">
+        Close
+      </button>
     </div>
+
   </aside>
 
-  <!-- Client JavaScript with Cache Buster -->
-  <script src="/static/app.js?v=3.5.0"></script>
+  <!-- Client JavaScript with Cache Buster v5.1.0 -->
+  <script src="/static/app.js?v=5.1.0"></script>
 </body>
 </html>
