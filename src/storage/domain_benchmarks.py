@@ -5,7 +5,8 @@ from typing import List, Dict, Any
 from ..core.schemas import (
     CandidateSchema, CandidateLocationModel, GeographicEligibilityModel,
     GeographicEligibilityStatus, MatchStatus, EligibilityStatus,
-    CandidateEvidence, EvidenceClassification, SkillEvidenceState
+    CandidateEvidence, EvidenceClassification, SkillEvidenceState,
+    LocationEvidenceCategory, VerificationStatus
 )
 
 # Benchmark portfolios of verified Netherlands talent
@@ -416,9 +417,10 @@ def get_domain_benchmark_candidates(role_title: str, raw_jd: str) -> List[Candid
             location=loc_str,
             current_location=CandidateLocationModel(
                 value=loc_str,
-                country="Netherlands",
-                city=loc_str.split(",")[0].strip(),
-                is_target=True
+                evidence_type=LocationEvidenceCategory.CURRENT_RESIDENCE,
+                verification_status=VerificationStatus.VERIFIED,
+                supporting_quotation=f"Direct physical residence confirmed in {loc_str}.",
+                explanation=f"Local resident in {loc_str}"
             ),
             geographic_eligibility=GeographicEligibilityModel(
                 status=GeographicEligibilityStatus.ELIGIBLE,

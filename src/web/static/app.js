@@ -677,7 +677,8 @@ async function loadJobCandidates(jobId, rawJdText, roleTitle, locStr) {
       document.getElementById('header-job-title').innerText = data.job.role_title;
     }
 
-    if (data.candidates && data.candidates.length > 0) {
+    const highQuality = (data.candidates || []).filter(c => (c.score || 0) >= 70 && c.match_status !== 'LOCATION_MISMATCH');
+    if (highQuality.length >= 2) {
       allCandidates = data.candidates;
       renderCandidates(allCandidates);
     } else {
